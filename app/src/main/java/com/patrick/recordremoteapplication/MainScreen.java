@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
 
-public class MainScreen extends ActionBarActivity {
+public class MainScreen extends ActionBarActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +17,6 @@ public class MainScreen extends ActionBarActivity {
         // use this to start and trigger a service
        startService(new Intent(this,ListenerService.class));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,11 +42,22 @@ public class MainScreen extends ActionBarActivity {
 
     public void goToCurrentList(View view){
         Intent intent = new Intent(this, CurrentListScreen.class);
+        intent.putExtra("newAlbumBreaks", 5);
+        intent.putExtra("newAlbumKey", new byte[]{24,43});
         startActivity(intent);
     }
 
     public void goToTotalList(View view){
         Intent intent = new Intent(this, TotalListScreen.class);
+        startActivity(intent);
+    }
+
+    public void goToArtistAssociation(View view){
+        Intent intent = new Intent(this, ArtistAssociationScreen.class);
+        intent.putExtra("newAlbumBreaks", 5);
+        intent.putExtra("newAlbumKey", new byte[]{24,43});
+        //This is necessary
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }

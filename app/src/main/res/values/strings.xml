@@ -6,5 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_total_list_screen">TotalListScreen</string>
     <string name="title_activity_current_list_screen">CurrentListScreen</string>
+    <string name="title_activity_album_association_screen">AlbumAssociationScreen</string>
+    <string name="title_activity_artist_association_screen">ArtistAssociationScreen</string>
+    <string name="title_activity_song_association_screen">SongAssociationScreen</string>
 
 </resources>

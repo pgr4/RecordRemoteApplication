@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+//todo:Whenever we come back to this screen we need to check for updates.
 public class TotalListScreen extends ActionBarActivity {
 
     @Override

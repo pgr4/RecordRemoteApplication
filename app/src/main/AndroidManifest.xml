@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.patrick.recordremoteapplication" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
     <application
         android:allowBackup="true"
@@ -40,6 +40,29 @@
             android:name=".ListenerService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".SongAssociationScreen"
+            android:label="@string/title_activity_song_association_screen"
+            android:parentActivityName=".SongAssociationScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.patrick.recordremoteapplication.AlbumAssociationScreen" />
+        </activity>
+
+        <activity
+            android:name=".AlbumAssociationScreen"
+            android:label="@string/title_activity_album_association_screen"
+            android:parentActivityName=".AlbumAssociationScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.patrick.recordremoteapplication.ArtistAssociationScreen" />
+        </activity>
+
+        <activity
+            android:name=".ArtistAssociationScreen"
+            android:label="@string/title_activity_artist_association_screen" >
+        </activity>
 
     </application>
 

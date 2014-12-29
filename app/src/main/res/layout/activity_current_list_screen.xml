@@ -35,21 +35,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ALBUM"
-                android:id="@+id/textView3"
+                android:id="@+id/albumText"
                 android:paddingStart="2dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ARTIST"
-                android:id="@+id/textView2"
-                android:layout_below="@+id/textView3"
+                android:id="@+id/artistText"
+                android:layout_below="@+id/albumText"
                 android:paddingStart="2dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SONG"
-                android:layout_centerVertical="true"
-                android:layout_below="@+id/textView2"
+                android:id="@+id/songText"
+                android:layout_below="@+id/artistText"
                 android:paddingStart="2dp"/>
 
             <ImageButton

@@ -11,43 +11,57 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class CurrentListScreen extends ActionBarActivity {
+public class CurrentListScreen extends ActionBarActivity{
     private ImageView imgAlbumArt;
     private ImageButton imgbtnPlay;
     private ImageButton imgbtnSkip;
     private ImageButton imgbtnBack;
     private ListView mainListView;
     private ArrayAdapter<Song> listAdapter;
-
-
     private Song SelectedSong = null;
+    private TextView ArtistText;
+    private TextView AlbumText;
+    private TextView SongText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_list_screen);
 
+        //Grab the NewAlbum from the intent
+        //Go through database to fill in the view.
+        Bundle b = getIntent().getExtras();
+
+        byte[] key = b.getByteArray("newAlbumKey");
+        int breaks = b.getInt("newAlbumBreaks");
+
+        //Use key to get the album and song information
+
+        //Get the List
         mainListView = (ListView) findViewById( R.id.currentListView );
 
-        // Create and populate a List of planet names.
-        //String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
-        //        "Jupiter", "Saturn", "Uranus", "Neptune"};
+        //Initialize the songList
         ArrayList<Song> songList = new ArrayList<Song>();
-        for(int i = 0; i< 15; i++) {
+
+        //Fill the list
+        for(int i = 0; i< breaks; i++) {
             songList.add(new Song("Mercury",i));
         }
 
-        // Create ArrayAdapter using the planet list.
+        //Use the list_Item to display the song info
         listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
 
-        // Set the ArrayAdapter as the ListView's adapter.
+        //Set the list's adapter
         mainListView.setAdapter( listAdapter );
 
+        //Set up the item on click event
+        //TODO: Bring up a popup to play or.....
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -57,9 +71,23 @@ public class CurrentListScreen extends ActionBarActivity {
             }
         });
 
+        //Set the Album Text
+        AlbumText = (TextView)findViewById( R.id.albumText );
+        AlbumText.setText("albumText");
+
+        //Set the Artist Text
+        ArtistText = (TextView)findViewById( R.id.artistText );
+        ArtistText.setText("artistText");
+
+        //Set the Song Text (SHOW AS EMPTY)
+        ArtistText = (TextView)findViewById( R.id.songText );
+        ArtistText.setText("");
+
+        //Set the album art
         imgAlbumArt = (ImageView)findViewById( R.id.imgAlbumArt );
         imgAlbumArt.setImageResource(R.drawable.abc_btn_radio_to_on_mtrl_015);
 
+        /* Media Control Images */
         imgbtnPlay = (ImageButton)findViewById( R.id.imgbtnPlay );
         imgbtnPlay.setImageResource(R.drawable.ic_action_play);
 

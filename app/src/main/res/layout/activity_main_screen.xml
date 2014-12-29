@@ -28,4 +28,13 @@
         android:layout_centerHorizontal="true"
         android:onClick="goToTotalList"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Association View"
+        android:id="@+id/albumAssociation"
+        android:layout_below="@+id/totalButton"
+        android:layout_centerHorizontal="true"
+        android:onClick="goToArtistAssociation"/>
+
 </RelativeLayout>
