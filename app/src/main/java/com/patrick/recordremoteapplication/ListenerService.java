@@ -55,7 +55,7 @@ public class ListenerService extends IntentService {
                 //Before we create the intent to show the CurrentListScreen we need to check if the
                 //album is not in our database. If it is not then we need to show the
                 //AlbumAssociationView.
-                switch (mh.Command){
+                switch (mh.Command) {
                     case None:
                         break;
                     case NewAlbum:

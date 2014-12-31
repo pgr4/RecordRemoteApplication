@@ -7,13 +7,11 @@ import java.net.InetAddress;
  */
 public class MessageHeader {
 
-    public MessageHeader()
-    {
+    public MessageHeader() {
 
     }
 
-    public MessageHeader(InetAddress sourceAddress, InetAddress destinationAddress, MessageCommand command)
-    {
+    public MessageHeader(InetAddress sourceAddress, InetAddress destinationAddress, MessageCommand command) {
         SourceAddress = sourceAddress;
         DestinationAddress = destinationAddress;
         Command = command;

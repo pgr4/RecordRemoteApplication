@@ -5,7 +5,7 @@ package com.patrick.recordremoteapplication;
  */
 public class NewAlbum {
 
-    public NewAlbum(int breaks, byte[] key){
+    public NewAlbum(int breaks, byte[] key) {
         Breaks = breaks;
         Key = key;
     }

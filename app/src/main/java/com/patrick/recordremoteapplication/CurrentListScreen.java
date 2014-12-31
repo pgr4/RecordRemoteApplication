@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class CurrentListScreen extends ActionBarActivity{
+public class CurrentListScreen extends ActionBarActivity {
     private ImageView imgAlbumArt;
     private ImageButton imgbtnPlay;
     private ImageButton imgbtnSkip;
@@ -44,57 +44,57 @@ public class CurrentListScreen extends ActionBarActivity{
         //Use key to get the album and song information
 
         //Get the List
-        mainListView = (ListView) findViewById( R.id.currentListView );
+        mainListView = (ListView) findViewById(R.id.currentListView);
 
         //Initialize the songList
         ArrayList<Song> songList = new ArrayList<Song>();
 
         //Fill the list
-        for(int i = 0; i< breaks; i++) {
-            songList.add(new Song("Mercury",i));
+        for (int i = 0; i < breaks; i++) {
+            songList.add(new Song("Mercury", i));
         }
 
         //Use the list_Item to display the song info
         listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
 
         //Set the list's adapter
-        mainListView.setAdapter( listAdapter );
+        mainListView.setAdapter(listAdapter);
 
         //Set up the item on click event
         //TODO: Bring up a popup to play or.....
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song)adapter.getAdapter().getItem(position);
+                Song selItem = (Song) adapter.getAdapter().getItem(position);
                 SelectedSong = selItem;
                 view.setSelected(true);
             }
         });
 
         //Set the Album Text
-        AlbumText = (TextView)findViewById( R.id.albumText );
+        AlbumText = (TextView) findViewById(R.id.albumText);
         AlbumText.setText("albumText");
 
         //Set the Artist Text
-        ArtistText = (TextView)findViewById( R.id.artistText );
+        ArtistText = (TextView) findViewById(R.id.artistText);
         ArtistText.setText("artistText");
 
         //Set the Song Text (SHOW AS EMPTY)
-        ArtistText = (TextView)findViewById( R.id.songText );
+        ArtistText = (TextView) findViewById(R.id.songText);
         ArtistText.setText("");
 
         //Set the album art
-        imgAlbumArt = (ImageView)findViewById( R.id.imgAlbumArt );
+        imgAlbumArt = (ImageView) findViewById(R.id.imgAlbumArt);
         imgAlbumArt.setImageResource(R.drawable.abc_btn_radio_to_on_mtrl_015);
 
         /* Media Control Images */
-        imgbtnPlay = (ImageButton)findViewById( R.id.imgbtnPlay );
+        imgbtnPlay = (ImageButton) findViewById(R.id.imgbtnPlay);
         imgbtnPlay.setImageResource(R.drawable.ic_action_play);
 
-        imgbtnSkip = (ImageButton)findViewById( R.id.imgbtnSkip );
+        imgbtnSkip = (ImageButton) findViewById(R.id.imgbtnSkip);
         imgbtnSkip.setImageResource(R.drawable.ic_action_fast_forward);
 
-        imgbtnBack = (ImageButton)findViewById( R.id.imgbtnBack );
+        imgbtnBack = (ImageButton) findViewById(R.id.imgbtnBack);
         imgbtnBack.setImageResource(R.drawable.ic_action_rewind);
     }
 

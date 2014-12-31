@@ -5,17 +5,17 @@ package com.patrick.recordremoteapplication;
  */
 public class Song {
 
-    Song(){
+    Song() {
 
     }
 
-    Song(String title, Integer breakNum){
+    Song(String title, Integer breakNum) {
 
         Title = title;
         BreakNum = breakNum;
     }
 
-    Song(String title, String artist, String album, Integer id, Integer breakNum, byte[] key){
+    Song(String title, String artist, String album, Integer id, Integer breakNum, byte[] key) {
 
         Title = title;
         Artist = artist;
@@ -24,6 +24,7 @@ public class Song {
         ID = id;
         Key = key;
     }
+
     public String Title;
     public String Artist;
     public String Album;
@@ -32,7 +33,7 @@ public class Song {
     public byte[] Key;
 
     @Override
-    public String toString(){
-       return (BreakNum + 1) + ". " + Title;
+    public String toString() {
+        return (BreakNum + 1) + ". " + Title;
     }
 }

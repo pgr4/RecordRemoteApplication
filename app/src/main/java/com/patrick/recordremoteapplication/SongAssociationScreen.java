@@ -35,28 +35,28 @@ public class SongAssociationScreen extends ActionBarActivity {
         //Use key to get the album and song information
 
         //Get the List
-        mainListView = (ListView) findViewById( R.id.songAssociationList );
+        mainListView = (ListView) findViewById(R.id.songAssociationList);
 
         //Initialize the songList
         ArrayList<Song> songList = new ArrayList<Song>();
 
         //Fill the list
-        for(int i = 0; i< breaks; i++) {
-            songList.add(new Song("Song " + i,i));
+        for (int i = 0; i < breaks; i++) {
+            songList.add(new Song("Song " + i, i));
         }
 
         //Use the list_Item to display the song info
         listAdapter = new ArrayAdapter<Song>(this, R.layout.editable_list_item, songList);
 
         //Set the list's adapter
-        mainListView.setAdapter( listAdapter );
+        mainListView.setAdapter(listAdapter);
 
         //Set up the item on click event
         //TODO: Bring up a popup to delete/merge
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song)adapter.getAdapter().getItem(position);
+                Song selItem = (Song) adapter.getAdapter().getItem(position);
                 SelectedSong = selItem;
                 view.setSelected(true);
             }
@@ -86,7 +86,7 @@ public class SongAssociationScreen extends ActionBarActivity {
     //Do a check to make sure information is valid
     //If it is create an intent to show the CurrentListScreen
     //Else show a popup of what went wrong
-    private void handleAccept(){
+    private void handleAccept() {
         Intent intent = new Intent(this, CurrentListScreen.class);
         intent.putExtra("newAlbumBreaks", key);
         startActivity(intent);

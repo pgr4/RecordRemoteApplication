@@ -35,7 +35,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
         artist = b.getString("Artist");
 
         //Get the List
-        mainListView = (ListView) findViewById( R.id.albumAssociationList );
+        mainListView = (ListView) findViewById(R.id.albumAssociationList);
 
         //Initialize the songList
         ArrayList<Song> songList = new ArrayList<Song>();
@@ -48,7 +48,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song)adapter.getAdapter().getItem(position);
+                Song selItem = (Song) adapter.getAdapter().getItem(position);
                 SelectedSong = selItem;
                 view.setSelected(true);
             }
@@ -78,28 +78,28 @@ public class AlbumAssociationScreen extends ActionBarActivity {
     }
 
     //Get the album list from the online database
-    public void getAlbums(){
+    public void getAlbums() {
 
     }
 
-    public void fillList(){
+    public void fillList() {
         //Initialize the songList
         ArrayList<Song> songList = new ArrayList<Song>();
 
         //Fill the list
-        for(int i = 0; i< breaks; i++) {
-            songList.add(new Song("Song " + i,i));
+        for (int i = 0; i < breaks; i++) {
+            songList.add(new Song("Song " + i, i));
         }
 
         //Use the list_Item to display the song info
         listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
 
         //Set the list's adapter
-        mainListView.setAdapter( listAdapter );
+        mainListView.setAdapter(listAdapter);
     }
 
-    public void goToSongAssociationScreen(View view){
-        TextView tv = (TextView) findViewById( R.id.albumText );
+    public void goToSongAssociationScreen(View view) {
+        TextView tv = (TextView) findViewById(R.id.albumText);
         Intent intent = new Intent(this, SongAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", breaks);
         intent.putExtra("newAlbumKey", key);

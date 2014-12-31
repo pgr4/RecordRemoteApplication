@@ -8,14 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class MainScreen extends ActionBarActivity{
+public class MainScreen extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         // use this to start and trigger a service
-       startService(new Intent(this,ListenerService.class));
+        startService(new Intent(this, ListenerService.class));
     }
 
     @Override
@@ -40,22 +40,22 @@ public class MainScreen extends ActionBarActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToCurrentList(View view){
+    public void goToCurrentList(View view) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         intent.putExtra("newAlbumBreaks", 5);
-        intent.putExtra("newAlbumKey", new byte[]{24,43});
+        intent.putExtra("newAlbumKey", new byte[]{24, 43});
         startActivity(intent);
     }
 
-    public void goToTotalList(View view){
+    public void goToTotalList(View view) {
         Intent intent = new Intent(this, TotalListScreen.class);
         startActivity(intent);
     }
 
-    public void goToArtistAssociation(View view){
+    public void goToArtistAssociation(View view) {
         Intent intent = new Intent(this, ArtistAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", 5);
-        intent.putExtra("newAlbumKey", new byte[]{24,43});
+        intent.putExtra("newAlbumKey", new byte[]{24, 43});
         //This is necessary
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
