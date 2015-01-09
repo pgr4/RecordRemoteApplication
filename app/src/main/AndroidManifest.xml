@@ -41,6 +41,11 @@
             android:exported="false" >
         </service>
 
+        <service
+            android:name=".DatabaseService"
+            android:exported="false" >
+        </service>
+
         <activity
             android:name=".SongAssociationScreen"
             android:label="@string/title_activity_song_association_screen"

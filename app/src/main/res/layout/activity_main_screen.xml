@@ -37,4 +37,13 @@
         android:layout_centerHorizontal="true"
         android:onClick="goToArtistAssociation"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Launch Service"
+        android:id="@+id/webService"
+        android:onClick="launchWebService"
+        android:layout_below="@+id/albumAssociation"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

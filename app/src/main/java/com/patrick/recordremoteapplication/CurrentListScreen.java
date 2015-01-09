@@ -23,8 +23,7 @@ public class CurrentListScreen extends ActionBarActivity {
     private ImageButton imgbtnSkip;
     private ImageButton imgbtnBack;
     private ListView mainListView;
-    private ArrayAdapter<Song> listAdapter;
-    private Song SelectedSong = null;
+    //private ArrayAdapter<Song> listAdapter;
     private TextView ArtistText;
     private TextView AlbumText;
     private TextView SongText;
@@ -46,30 +45,30 @@ public class CurrentListScreen extends ActionBarActivity {
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);
 
-        //Initialize the songList
-        ArrayList<Song> songList = new ArrayList<Song>();
-
-        //Fill the list
-        for (int i = 0; i < breaks; i++) {
-            songList.add(new Song("Mercury", i));
-        }
-
-        //Use the list_Item to display the song info
-        listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
-
-        //Set the list's adapter
-        mainListView.setAdapter(listAdapter);
-
-        //Set up the item on click event
-        //TODO: Bring up a popup to play or.....
-        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song) adapter.getAdapter().getItem(position);
-                SelectedSong = selItem;
-                view.setSelected(true);
-            }
-        });
+//        //Initialize the songList
+//        ArrayList<Song> songList = new ArrayList<Song>();
+//
+//        //Fill the list
+//        for (int i = 0; i < breaks; i++) {
+//            songList.add(new Song("Mercury", i));
+//        }
+//
+//        //Use the list_Item to display the song info
+//        listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
+//
+//        //Set the list's adapter
+//        mainListView.setAdapter(listAdapter);
+//
+//        //Set up the item on click event
+//        //TODO: Bring up a popup to play or.....
+//        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+//                Song selItem = (Song) adapter.getAdapter().getItem(position);
+//                SelectedSong = selItem;
+//                view.setSelected(true);
+//            }
+//        });
 
         //Set the Album Text
         AlbumText = (TextView) findViewById(R.id.albumText);

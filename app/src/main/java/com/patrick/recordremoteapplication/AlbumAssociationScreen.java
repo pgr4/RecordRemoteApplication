@@ -1,8 +1,10 @@
 package com.patrick.recordremoteapplication;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,41 +18,42 @@ import java.util.ArrayList;
 
 public class AlbumAssociationScreen extends ActionBarActivity {
     private ListView mainListView;
-    private ArrayAdapter<Song> listAdapter;
-    private Song SelectedSong = null;
+    private ArrayAdapter<LastFmAlbum> listAdapter;
+    private LastFmAlbum SelectedAlbum = null;
     private byte[] key;
     private int breaks;
-    private String artist;
+    private String artistName;
+    private Bitmap artistBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_association_screen);
+
         //Grab the NewAlbum from the intent
-        //Go through database to fill in the view.
         Bundle b = getIntent().getExtras();
 
         key = b.getByteArray("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
-        artist = b.getString("Artist");
+        artistName = b.getString("artistName");
+        //artistBitmap = b.getParcelable("artistBitmap");
 
         //Get the List
         mainListView = (ListView) findViewById(R.id.albumAssociationList);
 
-        //Initialize the songList
-        ArrayList<Song> songList = new ArrayList<Song>();
-
         //Get and fill the List with albums from the online database matching the artist selected
-        getAlbums();
+        getAlbums(artistName);
 
         //Set up the item on click event
         //TODO: Bring up a popup to delete/merge
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song) adapter.getAdapter().getItem(position);
-                SelectedSong = selItem;
                 view.setSelected(true);
+                SelectedAlbum = (LastFmAlbum) adapter.getAdapter().getItem(position);
+                //TextView tv = (TextView) findViewById(R.id.artistText);
+                //tv.setText(SelectedAlbum.AlbumName.toString());
+                goToSongAssociationScreen(SelectedAlbum.AlbumName, SelectedAlbum.Bitmap);
             }
         });
     }
@@ -78,33 +81,38 @@ public class AlbumAssociationScreen extends ActionBarActivity {
     }
 
     //Get the album list from the online database
-    public void getAlbums() {
+    private void getAlbums(String artistName) {
+        //GET START TIME
+        Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
+        new LastFmAlbumLookup() {
+
+            @Override
+            protected void onPostExecute(ArrayList<LastFmAlbum> result) {
+                //GET START TIME
+                Log.d("getAlbumsTiming",  String.valueOf(System.currentTimeMillis()));
+
+                setAdapter(result);
+
+                //GET START TIME
+                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
+            }
+
+        }.execute(artistName);
     }
 
-    public void fillList() {
-        //Initialize the songList
-        ArrayList<Song> songList = new ArrayList<Song>();
-
-        //Fill the list
-        for (int i = 0; i < breaks; i++) {
-            songList.add(new Song("Song " + i, i));
-        }
-
-        //Use the list_Item to display the song info
-        listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
-
-        //Set the list's adapter
-        mainListView.setAdapter(listAdapter);
+    private void setAdapter(ArrayList<LastFmAlbum> lst) {
+        AlbumListAdapter adapter = new AlbumListAdapter(this, lst);
+        mainListView.setAdapter(adapter);
     }
 
-    public void goToSongAssociationScreen(View view) {
-        TextView tv = (TextView) findViewById(R.id.albumText);
+    private void goToSongAssociationScreen(String albumName, Bitmap bitmap){
         Intent intent = new Intent(this, SongAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", breaks);
         intent.putExtra("newAlbumKey", key);
-        intent.putExtra("Artist", artist);
-        intent.putExtra("Album", tv.getText());
+        intent.putExtra("artistName", artistName);
+        intent.putExtra("albumName", albumName);
+        //intent.putExtra("artistBitmap",bitmap);
         startActivity(intent);
     }
 }

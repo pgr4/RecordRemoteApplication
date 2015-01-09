@@ -1,45 +1,27 @@
 package com.patrick.recordremoteapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
 public class ArtistAssociationScreen extends ActionBarActivity {
     private ListView mainListView;
-    private ArrayAdapter<Song> listAdapter;
-    private Song SelectedSong = null;
+    private LastFmArtist SelectedArtist;
     private byte[] key;
     private int breaks;
-    private ArrayList<LastFmArtist> lst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +29,6 @@ public class ArtistAssociationScreen extends ActionBarActivity {
         setContentView(R.layout.activity_artist_association_screen);
 
         //Grab the NewAlbum from the intent
-        //Go through database to fill in the view.
         Bundle b = getIntent().getExtras();
 
         key = b.getByteArray("newAlbumKey");
@@ -61,12 +42,24 @@ public class ArtistAssociationScreen extends ActionBarActivity {
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                Song selItem = (Song) adapter.getAdapter().getItem(position);
-                SelectedSong = selItem;
                 view.setSelected(true);
+                SelectedArtist = (LastFmArtist) adapter.getAdapter().getItem(position);
+                TextView tv = (TextView) findViewById(R.id.artistText);
+                tv.setText(SelectedArtist.Name.toString());
+
+                goToAlbumAssociationScreen(SelectedArtist.Name.toString(), SelectedArtist.Bitmap);
             }
         });
 
+    }
+
+    private void goToAlbumAssociationScreen(String artistName,Bitmap bitmap){
+        Intent intent = new Intent(this, AlbumAssociationScreen.class);
+        intent.putExtra("newAlbumBreaks", breaks);
+        intent.putExtra("newAlbumKey", key);
+        intent.putExtra("artistName", artistName);
+        //intent.putExtra("artistBitmap",bitmap);
+        startActivity(intent);
     }
 
     @Override
@@ -93,36 +86,26 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
     public void getArtists(View view) throws IOException {
         EditText et = (EditText) findViewById(R.id.artistText);
-        new LastFmLookup() {
+
+        new LastFmArtistLookup() {
 
             @Override
             protected void onPostExecute(ArrayList<LastFmArtist> result) {
-                String[] names = new String[result.size()];
-                Bitmap[] images = new Bitmap[result.size()];
+                //GET START TIME
+                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
 
-                //Split the ArrayList into two separate arrays
-                for (int i = 0; i < result.size(); i++) {
-                    names[i] = result.get(i).Name;
-                    images[i] = result.get(i).Bitmap;
-                }
+                setAdapter(result);
 
-                setAdapter(names, images);
+                //GET START TIME
+                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
             }
 
-        }.execute("Artist", et.getText().toString());
+        }.execute(et.getText().toString());
     }
 
-    public void setAdapter(String[] a, Bitmap[] b) {
-        ImageStringListAdapter adapter = new ImageStringListAdapter(this, a, b);
+    public void setAdapter(ArrayList<LastFmArtist> lst) {
+        ArtistListAdapter adapter = new ArtistListAdapter(this, lst);
         mainListView.setAdapter(adapter);
     }
 
-    public void goToAlbumAssociationScreen(View view) {
-        TextView tv = (TextView) findViewById(R.id.artistText);
-        Intent intent = new Intent(this, AlbumAssociationScreen.class);
-        intent.putExtra("newAlbumBreaks", breaks);
-        intent.putExtra("newAlbumKey", key);
-        intent.putExtra("Album", tv.getText().toString());
-        startActivity(intent);
-    }
 }

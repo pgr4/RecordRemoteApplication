@@ -35,17 +35,7 @@
     <ListView
         android:id="@+id/artistAssociationList"
         android:layout_below="@+id/btnArtistGet"
-        android:layout_above="@+id/btnArtistNext"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:id="@+id/btnArtistNext"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="goToAlbumAssociationScreen"/>
 
 </RelativeLayout>

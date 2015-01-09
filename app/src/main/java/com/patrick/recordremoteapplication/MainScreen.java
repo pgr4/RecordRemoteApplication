@@ -60,4 +60,10 @@ public class MainScreen extends ActionBarActivity {
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    public void launchWebService(View view) {
+        Intent intent = new Intent(this, DatabaseService.class);
+        intent.putExtra("type","getAllSongs");
+        startService(intent);
+    }
 }

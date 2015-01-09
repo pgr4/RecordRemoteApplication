@@ -1,8 +1,6 @@
 package com.patrick.recordremoteapplication;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,37 +8,32 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 
 
 /**
  * Created by pat on 12/30/2014.
  */
-public class ImageStringListAdapter extends ArrayAdapter<String>{
+public class ArtistListAdapter extends ArrayAdapter<LastFmArtist>{
     private final Activity context;
-    private final String[] itemName;
-    private final Bitmap[] imgId;
+    private ArrayList<LastFmArtist> list;
 
-    public ImageStringListAdapter(Activity c, String[] itemname, Bitmap[] imgid) {
-        super(c, R.layout.artist_item, itemname);
+    public ArtistListAdapter(Activity c, ArrayList<LastFmArtist> lst) {
+        super(c, R.layout.picture_text_list_item, lst);
 
+        list = lst;
         context = c;
-        itemName = itemname;
-        imgId = imgid;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.artist_item, null, true);
+        View rowView = inflater.inflate(R.layout.picture_text_list_item, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.textView);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView);
 
-        imageView.setImageBitmap(imgId[position]);
-        txtTitle.setText(itemName[position]);
+        imageView.setImageBitmap(list.get(position).Bitmap);
+        txtTitle.setText(list.get(position).Name);
         return rowView;
     }
 
