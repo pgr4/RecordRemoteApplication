@@ -32,8 +32,8 @@ public class LastFmSongLookup extends AsyncTask<String, Void, ArrayList<String>>
         try {
             //Form the query String
             String query = LastFmBaseLookup.StartQuery + LastFmBaseLookup.albumInfoQuery +
-                    LastFmBaseLookup.albumInfoArtistSubQuery+ URLEncoder.encode(strings[0], "UTF-8") +
-                    LastFmBaseLookup.albumInfoAlbumSubQuery+ URLEncoder.encode(strings[1], "UTF-8") +
+                    LastFmBaseLookup.albumInfoArtistSubQuery + URLEncoder.encode(strings[0], "UTF-8") +
+                    LastFmBaseLookup.albumInfoAlbumSubQuery + URLEncoder.encode(strings[1], "UTF-8") +
                     LastFmBaseLookup.EndQuery;
 
             HttpResponse response = null;
@@ -48,7 +48,7 @@ public class LastFmSongLookup extends AsyncTask<String, Void, ArrayList<String>>
             //Convert the Stream to a String
             String res = LastFmBaseLookup.ConvertStreamToString(s);
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             //Create the JSONObject from the string
             JSONObject jso = new JSONObject(res);
             //Get the names from the JSONObject
@@ -59,13 +59,13 @@ public class LastFmSongLookup extends AsyncTask<String, Void, ArrayList<String>>
             JSONObject artists = LastFmBaseLookup.getFoundResultCount(jsonArray, "Track");
             JSONArray lst = artists.getJSONArray("track");
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             for (int i = 0; i < lst.length(); i++) {
                 JSONObject obj = lst.getJSONObject(i);
                 songList.add(obj.getString("name"));
             }
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             return songList;
         } catch (URISyntaxException | IOException | JSONException e) {
             e.printStackTrace();

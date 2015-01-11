@@ -2,6 +2,7 @@ package com.patrick.recordremoteapplication;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import org.apache.http.HttpResponse;
@@ -14,6 +15,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +42,7 @@ public class DatabaseService extends IntentService {
             try {
                 Bundle b = intent.getExtras();
 
-                switch (b.getString("type")){
+                switch (b.getString("type")) {
                     case "getAllSongs":
                         getAllSongs();
                         break;
@@ -52,10 +54,10 @@ public class DatabaseService extends IntentService {
                         break;
                     case "addAlbumData":
                         addAlbumData(b.getByteArray("key"),
-                        b.getStringArray("songs"),
-                        b.getString("artist"),
-                        b.getString("album"),
-                        b.getString("image"));
+                                b.getString("songs"),
+                                b.getString("artist"),
+                                b.getString("album"),
+                                b.getString("image"));
 
                         break;
                     default:
@@ -68,7 +70,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create a HTTP GET Request to get all Songs
-    private void getAllSongs() throws IOException {
+    private void getAllSongs() throws IOException, JSONException {
         //Form the query String
         String query = "http://192.168.1.247/api/Song";
         HttpResponse response;
@@ -82,11 +84,12 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
+        goToTotalSongListScreen(StringToSongArr(res));
     }
 
     //Create a HTTP GET Request to get an album
     private void getAlbum(byte[] by) throws IOException {
-        byte[] bytes = {(byte)0x54,(byte)0x54};
+        byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
@@ -108,7 +111,7 @@ public class DatabaseService extends IntentService {
 
     //Create a HTTP GET Request to get all Songs associated with the album
     private void getAlbumSongs(byte[] by) throws IOException {
-        byte[] bytes = {(byte)0x54,(byte)0x54};
+        byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
@@ -129,10 +132,10 @@ public class DatabaseService extends IntentService {
     }
 
     //Create a HTTP POST Request with album and song data from a new album
-    private void addAlbumData(byte[] by, String[]song, String artist,String album,String image) throws IOException, URISyntaxException, JSONException {
-        byte[] bytes = {(byte)0x54,(byte)0x54};
+    private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
+        Bitmap bitmap = LastFmBaseLookup.getBitmapFromURL(image);
         StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
+        for (byte b : key) {
             sb.append(String.format("%02X", b));
         }
         //Form the query String
@@ -143,9 +146,10 @@ public class DatabaseService extends IntentService {
 
         JSONObject Song = new JSONObject();
         Song.put("Key", sb);
-        Song.put("Songs", "Tit,Asf,sfa,sfa");
-        Song.put("Artist", "Art");
-        Song.put("Album", "Alb");
+        Song.put("Songs", songs);
+        Song.put("Artist", artist);
+        Song.put("Album", album);
+        Song.put("Image", bitmap);
 
         StringEntity entity = new StringEntity(Song.toString(), HTTP.UTF_8);
         entity.setContentType("application/json");
@@ -158,5 +162,43 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
+
+        //Bring up the CurrentListScreen
+        goToCurrentSongListScreen(songs, artist, album, bitmap);
+    }
+
+    private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap) {
+        Intent intent = new Intent(this, CurrentListScreen.class);
+        //intent.putExtra("newAlbumKey", key);
+        intent.putExtra("image", bitmap);
+        intent.putExtra("songs", songs);
+        intent.putExtra("album", album);
+        intent.putExtra("artist", artist);
+        //This is necessary
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void goToTotalSongListScreen(ArrayList<TotalListSong> list) {
+        Intent intent = new Intent(this, TotalListScreen.class);
+        intent.putExtra("list", list);
+        //This is necessary
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private ArrayList<TotalListSong> StringToSongArr(String s) throws JSONException {
+        ArrayList<TotalListSong> ret = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(s);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            ArrayList<String> songArr = new ArrayList<>();
+            JSONArray songs = obj.getJSONArray("Titles");
+            for (int j=0;j<songs.length();j++){
+                songArr.add(songs.get(j).toString());
+            }
+            ret.add(new TotalListSong(songArr, obj.getString("Album"), obj.getString("Artist")));
+        }
+        return ret;
     }
 }

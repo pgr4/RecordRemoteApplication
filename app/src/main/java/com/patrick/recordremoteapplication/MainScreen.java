@@ -48,22 +48,21 @@ public class MainScreen extends ActionBarActivity {
     }
 
     public void goToTotalList(View view) {
-        Intent intent = new Intent(this, TotalListScreen.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, DatabaseService.class);
+        intent.putExtra("type", "getAllSongs");
+        startService(intent);
     }
 
     public void goToArtistAssociation(View view) {
         Intent intent = new Intent(this, ArtistAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", 5);
         intent.putExtra("newAlbumKey", new byte[]{24, 43});
-        //This is necessary
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
     public void launchWebService(View view) {
         Intent intent = new Intent(this, DatabaseService.class);
-        intent.putExtra("type","getAllSongs");
+        intent.putExtra("type", "getAllSongs");
         startService(intent);
     }
 }

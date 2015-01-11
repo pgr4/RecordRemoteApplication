@@ -1,6 +1,7 @@
 package com.patrick.recordremoteapplication;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ public class SongAssociationScreen extends ActionBarActivity {
     private int breaks;
     private String artistName;
     private String albumName;
+    private String csSongs;
+    private String albumImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class SongAssociationScreen extends ActionBarActivity {
         breaks = b.getInt("newAlbumBreaks");
         albumName = b.getString("albumName");
         artistName = b.getString("artistName");
+        albumImageUrl = b.getString("albumImgUrl");
 
         //Get the ListView
         mainListView = (ListView) findViewById(R.id.songAssociationList);
@@ -79,7 +83,7 @@ public class SongAssociationScreen extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getSongs(){
+    private void getSongs() {
         //GET START TIME
         Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
@@ -88,12 +92,14 @@ public class SongAssociationScreen extends ActionBarActivity {
             @Override
             protected void onPostExecute(ArrayList<String> result) {
                 //GET START TIME
-                Log.d("getAlbumsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
                 setAdapter(result);
 
+                csSongs = listToString(result);
+
                 //GET START TIME
-                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
             }
 
         }.execute(artistName, albumName);
@@ -104,13 +110,31 @@ public class SongAssociationScreen extends ActionBarActivity {
         mainListView.setAdapter(adapter);
     }
 
+    //TODO:checkConditons
     private boolean checkConditions() {
         return true;
     }
 
-    private void goToCurrentSongListScreen() {
-        Intent intent = new Intent(this, CurrentListScreen.class);
-        intent.putExtra("newAlbumKey", key);
-        startActivity(intent);
+    //Create the Database Service
+    public void onAccept(View view) {
+        Intent intent = new Intent(this, DatabaseService.class);
+        intent.putExtra("type", "addAlbumData");
+        intent.putExtra("key", key);
+        intent.putExtra("songs", csSongs);
+        intent.putExtra("album", albumName);
+        intent.putExtra("artist", artistName);
+        intent.putExtra("image", albumImageUrl);
+        startService(intent);
+    }
+
+    private String listToString(ArrayList<String> arr) {
+        String ret = "";
+        for (int i = 0; i < arr.size(); i++) {
+            if (i != 0) {
+                ret += ",";
+            }
+            ret += arr.get(i);
+        }
+        return ret;
     }
 }

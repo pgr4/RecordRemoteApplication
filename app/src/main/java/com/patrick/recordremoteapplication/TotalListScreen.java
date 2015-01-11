@@ -4,16 +4,36 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 //todo:Whenever we come back to this screen we need to check for updates.
 public class TotalListScreen extends ActionBarActivity {
+
+    private ListView mainListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_total_list_screen);
-    }
 
+        Bundle b = getIntent().getExtras();
+
+        ArrayList<TotalListSong> list = b.getParcelableArrayList("list");
+
+        //Get the List
+        mainListView = (ListView) findViewById(R.id.currentListView);
+
+        //Setup the adapter
+        TotalListAdapter adapter = new TotalListAdapter(this, list);
+        mainListView.setAdapter(adapter);
+
+        View v = getWindow().getDecorView().findViewById(android.R.id.content);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

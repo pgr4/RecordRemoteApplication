@@ -1,5 +1,6 @@
 package com.patrick.recordremoteapplication;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +24,13 @@ public class CurrentListScreen extends ActionBarActivity {
     private ImageButton imgbtnSkip;
     private ImageButton imgbtnBack;
     private ListView mainListView;
-    //private ArrayAdapter<Song> listAdapter;
+    private ArrayAdapter<String> listAdapter;
     private TextView ArtistText;
     private TextView AlbumText;
     private TextView SongText;
+    private String artistName;
+    private String albumName;
+    private String[] arrSongs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,54 +41,49 @@ public class CurrentListScreen extends ActionBarActivity {
         //Go through database to fill in the view.
         Bundle b = getIntent().getExtras();
 
-        byte[] key = b.getByteArray("newAlbumKey");
-        int breaks = b.getInt("newAlbumBreaks");
-
-        //Use key to get the album and song information
+        arrSongs = b.getString("songs").split(",");
+        artistName = b.getString("artist");
+        albumName = b.getString("album");
 
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);
 
-//        //Initialize the songList
-//        ArrayList<Song> songList = new ArrayList<Song>();
-//
-//        //Fill the list
-//        for (int i = 0; i < breaks; i++) {
-//            songList.add(new Song("Mercury", i));
-//        }
-//
-//        //Use the list_Item to display the song info
-//        listAdapter = new ArrayAdapter<Song>(this, R.layout.list_item, songList);
-//
-//        //Set the list's adapter
-//        mainListView.setAdapter(listAdapter);
-//
-//        //Set up the item on click event
-//        //TODO: Bring up a popup to play or.....
-//        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-//                Song selItem = (Song) adapter.getAdapter().getItem(position);
-//                SelectedSong = selItem;
-//                view.setSelected(true);
-//            }
-//        });
+        //Initialize the songList
+        ArrayList<String> songList = new ArrayList<>();
+
+        //Fill the list
+        for (int i = 0; i < arrSongs.length; i++) {
+            songList.add(arrSongs[i]);
+        }
+
+        //Setup the adapter
+        SongListAdapter adapter = new SongListAdapter(this, songList);
+        mainListView.setAdapter(adapter);
+
+        //Set up the item on click event
+        //TODO: Bring up a popup to play or.....
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                view.setSelected(true);
+            }
+        });
 
         //Set the Album Text
         AlbumText = (TextView) findViewById(R.id.albumText);
-        AlbumText.setText("albumText");
+        AlbumText.setText(albumName);
 
         //Set the Artist Text
         ArtistText = (TextView) findViewById(R.id.artistText);
-        ArtistText.setText("artistText");
+        ArtistText.setText(artistName);
 
         //Set the Song Text (SHOW AS EMPTY)
-        ArtistText = (TextView) findViewById(R.id.songText);
-        ArtistText.setText("");
+        SongText = (TextView) findViewById(R.id.songText);
+        SongText.setText("");
 
         //Set the album art
         imgAlbumArt = (ImageView) findViewById(R.id.imgAlbumArt);
-        imgAlbumArt.setImageResource(R.drawable.abc_btn_radio_to_on_mtrl_015);
+        imgAlbumArt.setImageBitmap((Bitmap) b.getParcelable("image"));
 
         /* Media Control Images */
         imgbtnPlay = (ImageButton) findViewById(R.id.imgbtnPlay);

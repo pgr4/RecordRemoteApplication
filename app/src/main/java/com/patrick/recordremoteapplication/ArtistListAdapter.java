@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by pat on 12/30/2014.
  */
-public class ArtistListAdapter extends ArrayAdapter<LastFmArtist>{
+public class ArtistListAdapter extends ArrayAdapter<LastFmArtist> {
     private final Activity context;
     private ArrayList<LastFmArtist> list;
 

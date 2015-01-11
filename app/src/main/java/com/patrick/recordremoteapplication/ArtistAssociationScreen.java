@@ -53,7 +53,7 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
     }
 
-    private void goToAlbumAssociationScreen(String artistName,Bitmap bitmap){
+    private void goToAlbumAssociationScreen(String artistName, Bitmap bitmap) {
         Intent intent = new Intent(this, AlbumAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", breaks);
         intent.putExtra("newAlbumKey", key);
@@ -92,12 +92,12 @@ public class ArtistAssociationScreen extends ActionBarActivity {
             @Override
             protected void onPostExecute(ArrayList<LastFmArtist> result) {
                 //GET START TIME
-                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
 
                 setAdapter(result);
 
                 //GET START TIME
-                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
             }
 
         }.execute(et.getText().toString());

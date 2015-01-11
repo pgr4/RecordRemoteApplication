@@ -11,17 +11,19 @@ public class LastFmAlbum {
     public Bitmap Bitmap;
     public String AlbumName;
     public String ArtistName;
+    public String ImageUrl;
 
     @Override
-    public String toString(){
+    public String toString() {
         return AlbumName;
     }
 
 
-    public LastFmAlbum(String albumName,String artistName, Bitmap bitmap) {
+    public LastFmAlbum(String albumName, String artistName, Bitmap bitmap, String imgUrl) {
         AlbumName = albumName;
         ArtistName = artistName;
         Bitmap = bitmap;
+        ImageUrl = imgUrl;
     }
 
     public static Comparator<LastFmAlbum> StuNameComparator = new Comparator<LastFmAlbum>() {
@@ -35,5 +37,6 @@ public class LastFmAlbum {
 
             //descending order
             //return StudentName2.compareTo(StudentName1);
-        }};
+        }
+    };
 }

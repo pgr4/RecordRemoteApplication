@@ -42,7 +42,7 @@ public class LastFmBaseLookup {
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
             //GET START TIME
-            Log.d("BitmapTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("BitmapTiming", String.valueOf(System.currentTimeMillis()));
             return myBitmap;
         } catch (IOException e) {
             //TODO:LOG EXCEPTION
@@ -53,13 +53,13 @@ public class LastFmBaseLookup {
     //TODO:PUT GARBAGE HERE
     public static JSONObject getFoundResultCount(JSONArray jsa, String type) throws JSONException {
         //GET START TIME
-        Log.d("getFoundResultCountTiming",  String.valueOf(System.currentTimeMillis()));
+        Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
         switch (type) {
             case "Artist":
                 if (jsa.length() == 1) {
                     JSONObject value = jsa.getJSONObject(0);
                     //GET START TIME
-                    Log.d("getFoundResultCountTiming",  String.valueOf(System.currentTimeMillis()));
+                    Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
                     return value.getJSONObject("artistmatches");
                 }
                 break;
@@ -67,7 +67,7 @@ public class LastFmBaseLookup {
                 if (jsa.length() == 1) {
                     JSONObject value = jsa.getJSONObject(0);
                     //GET START TIME
-                    Log.d("getFoundResultCountTiming",  String.valueOf(System.currentTimeMillis()));
+                    Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
                     return value.getJSONObject("tracks");
                 }
                 break;
@@ -79,7 +79,7 @@ public class LastFmBaseLookup {
 
     public static String ConvertStreamToString(InputStream inputStream) throws IOException {
         //GET START TIME
-        Log.d("ConvertStreamToStringTiming",  String.valueOf(System.currentTimeMillis()));
+        Log.d("ConvertStreamToStringTiming", String.valueOf(System.currentTimeMillis()));
         if (inputStream != null) {
             Writer writer = new StringWriter();
 
@@ -94,7 +94,7 @@ public class LastFmBaseLookup {
                 inputStream.close();
             }
             //GET START TIME
-            Log.d("ConvertStreamToStringTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("ConvertStreamToStringTiming", String.valueOf(System.currentTimeMillis()));
             return writer.toString();
         } else {
             return "";

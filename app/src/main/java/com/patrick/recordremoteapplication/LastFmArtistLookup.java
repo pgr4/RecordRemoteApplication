@@ -23,12 +23,12 @@ import java.util.Collections;
  * Created by pat on 12/30/2014.
  */
 
-public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFmArtist>>{
+public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFmArtist>> {
 
     //TODO:CLEAN THIS GARBAGE UP
     protected ArrayList doInBackground(String... strings) {
         //GET START TIME
-        Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+        Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
         ArrayList<LastFmArtist> artistList = new ArrayList<LastFmArtist>();
 
         try {
@@ -46,7 +46,7 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
             //Convert the Stream to a String
             String res = LastFmBaseLookup.ConvertStreamToString(s);
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             //Create the JSONObject from the string
             JSONObject jso = new JSONObject(res);
             //Get the names from the JSONObject
@@ -57,7 +57,7 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
             JSONObject artists = LastFmBaseLookup.getFoundResultCount(jsonArray, "Artist");
             JSONArray lst = artists.getJSONArray("artist");
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             for (int i = 0; i < lst.length(); i++) {
                 JSONObject obj = lst.getJSONObject(i);
                 //TODO:USE DEFAULT IMAGE
@@ -72,9 +72,9 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
             }
             //GET START TIME
             Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
-            Collections.sort(artistList,LastFmArtist.StuNameComparator);
+            Collections.sort(artistList, LastFmArtist.StuNameComparator);
             //GET START TIME
-            Log.d("LastFmLookupTiming",  String.valueOf(System.currentTimeMillis()));
+            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             return artistList;
         } catch (URISyntaxException | IOException | JSONException e) {
             e.printStackTrace();

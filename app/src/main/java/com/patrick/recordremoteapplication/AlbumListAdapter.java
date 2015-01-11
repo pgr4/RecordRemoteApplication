@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by pat on 12/31/2014.
  */
-public class AlbumListAdapter extends ArrayAdapter<LastFmAlbum>{
+public class AlbumListAdapter extends ArrayAdapter<LastFmAlbum> {
     private final Activity context;
     private ArrayList<LastFmAlbum> list;
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by pat on 12/31/2014.
  */
-public class SongListAdapter  extends ArrayAdapter<String> {
+public class SongListAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private ArrayList<String> list;
 

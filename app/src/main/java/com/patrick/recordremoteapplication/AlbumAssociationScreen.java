@@ -53,7 +53,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
                 SelectedAlbum = (LastFmAlbum) adapter.getAdapter().getItem(position);
                 //TextView tv = (TextView) findViewById(R.id.artistText);
                 //tv.setText(SelectedAlbum.AlbumName.toString());
-                goToSongAssociationScreen(SelectedAlbum.AlbumName, SelectedAlbum.Bitmap);
+                goToSongAssociationScreen(SelectedAlbum.AlbumName, SelectedAlbum.ImageUrl);
             }
         });
     }
@@ -90,12 +90,12 @@ public class AlbumAssociationScreen extends ActionBarActivity {
             @Override
             protected void onPostExecute(ArrayList<LastFmAlbum> result) {
                 //GET START TIME
-                Log.d("getAlbumsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
                 setAdapter(result);
 
                 //GET START TIME
-                Log.d("getArtistsTiming",  String.valueOf(System.currentTimeMillis()));
+                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
             }
 
         }.execute(artistName);
@@ -106,13 +106,13 @@ public class AlbumAssociationScreen extends ActionBarActivity {
         mainListView.setAdapter(adapter);
     }
 
-    private void goToSongAssociationScreen(String albumName, Bitmap bitmap){
+    private void goToSongAssociationScreen(String albumName, String imgUrl) {
         Intent intent = new Intent(this, SongAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", breaks);
         intent.putExtra("newAlbumKey", key);
         intent.putExtra("artistName", artistName);
         intent.putExtra("albumName", albumName);
-        //intent.putExtra("artistBitmap",bitmap);
+        intent.putExtra("albumImgUrl", imgUrl);
         startActivity(intent);
     }
 }
