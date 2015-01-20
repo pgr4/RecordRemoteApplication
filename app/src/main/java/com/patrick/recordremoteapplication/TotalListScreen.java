@@ -22,14 +22,14 @@ public class TotalListScreen extends ActionBarActivity {
 
         Bundle b = getIntent().getExtras();
 
-        ArrayList<TotalListSong> list = b.getParcelableArrayList("list");
+        ArrayList<JsonArtist> list = b.getParcelableArrayList("list");
 
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);
 
         //Setup the adapter
-        TotalListAdapter adapter = new TotalListAdapter(this, list);
-        mainListView.setAdapter(adapter);
+        //TotalListAdapter adapter = new TotalListAdapter(this, list);
+        //mainListView.setAdapter(adapter);
 
         View v = getWindow().getDecorView().findViewById(android.R.id.content);
 

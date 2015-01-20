@@ -179,25 +179,40 @@ public class DatabaseService extends IntentService {
         startActivity(intent);
     }
 
-    private void goToTotalSongListScreen(ArrayList<TotalListSong> list) {
+    private void goToTotalSongListScreen(ArrayList<JsonArtist> list) {
         Intent intent = new Intent(this, TotalListScreen.class);
-        intent.putExtra("list", list);
+        intent.putParcelableArrayListExtra("list", list);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
-    private ArrayList<TotalListSong> StringToSongArr(String s) throws JSONException {
-        ArrayList<TotalListSong> ret = new ArrayList<>();
+    private ArrayList<JsonArtist> StringToSongArr(String s) throws JSONException {
+        ArrayList<JsonArtist> ret = new ArrayList<>();
+
         JSONArray jsonArray = new JSONArray(s);
+        String artistName;
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject obj = jsonArray.getJSONObject(i);
-            ArrayList<String> songArr = new ArrayList<>();
-            JSONArray songs = obj.getJSONArray("Titles");
-            for (int j=0;j<songs.length();j++){
-                songArr.add(songs.get(j).toString());
+            JSONObject jsonArtist = jsonArray.getJSONObject(i);
+            JSONArray jsonAlbums = jsonArtist.getJSONArray("Albums");
+            artistName = jsonArtist.getString("Name");
+
+            String albumName;
+            String image;
+            ArrayList<JsonAlbum> albumArr = new ArrayList<>();
+            for (int j = 0; j < jsonAlbums.length(); j++) {
+                ArrayList<String> songArr = new ArrayList<>();
+                JSONObject jsonAlbum = jsonAlbums.getJSONObject(j);
+                albumName = jsonAlbum.getString("Name");
+                image = jsonAlbum.getString("Image");
+                JSONArray jsonSong = jsonAlbum.getJSONArray("Songs");
+                for (int w = 0; w < jsonSong.length(); w++) {
+                    songArr.add(jsonSong.get(w).toString());
+                }
+
+                albumArr.add(new JsonAlbum(albumName,image,songArr));
             }
-            ret.add(new TotalListSong(songArr, obj.getString("Album"), obj.getString("Artist")));
+            ret.add(new JsonArtist(artistName,albumArr));
         }
         return ret;
     }
