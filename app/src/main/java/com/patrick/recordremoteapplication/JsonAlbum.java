@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class JsonAlbum implements Parcelable {
     String Name;
     String Image;
-    ArrayList Songs;
+    ArrayList<String> Songs;
 
     JsonAlbum() {
 
@@ -26,13 +26,21 @@ public class JsonAlbum implements Parcelable {
     }
 
     JsonAlbum(Parcel in) {
+        readFromParcel(in);
+    }
+
+    private void readFromParcel(Parcel in) {
         Name = in.readString();
         Image = in.readString();
-        Songs = in.readArrayList(String.class.getClassLoader());
+        if(Songs == null){
+            Songs = new ArrayList<>();
+        }
+        in.readStringList(Songs);
     }
 
     @Override
     public int describeContents() {
+        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -40,19 +48,44 @@ public class JsonAlbum implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(Name);
         dest.writeString(Image);
-        dest.writeList(Songs);
+        dest.writeStringList(Songs);
     }
 
-    public static final Parcelable.Creator<JsonAlbum> CREATOR
-            = new Parcelable.Creator<JsonAlbum>() {
+    public static final Parcelable.Creator<JsonAlbum> CREATOR = new Parcelable.Creator<JsonAlbum>() {
+
+        @Override
         public JsonAlbum createFromParcel(Parcel in) {
             return new JsonAlbum(in);
         }
 
+        @Override
         public JsonAlbum[] newArray(int size) {
             return new JsonAlbum[size];
         }
     };
+
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(Name);
+//        dest.writeString(Image);
+//        dest.writeList(Songs);
+//    }
+//
+//    public static final Parcelable.Creator<JsonAlbum> CREATOR
+//            = new Parcelable.Creator<JsonAlbum>() {
+//        public JsonAlbum createFromParcel(Parcel in) {
+//            return new JsonAlbum(in);
+//        }
+//
+//        public JsonAlbum[] newArray(int size) {
+//            return new JsonAlbum[size];
+//        }
+//    };
 
 //    @Override
 //    public int describeContents() {

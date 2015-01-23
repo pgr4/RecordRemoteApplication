@@ -28,10 +28,10 @@ public class TotalListScreen extends ActionBarActivity {
         mainListView = (ListView) findViewById(R.id.currentListView);
 
         //Setup the adapter
-        //TotalListAdapter adapter = new TotalListAdapter(this, list);
-        //mainListView.setAdapter(adapter);
+        TotalListAdapter adapter = new TotalListAdapter(this, list);
+        mainListView.setAdapter(adapter);
 
-        View v = getWindow().getDecorView().findViewById(android.R.id.content);
+        // View v = getWindow().getDecorView().findViewById(android.R.id.content);
 
     }
 

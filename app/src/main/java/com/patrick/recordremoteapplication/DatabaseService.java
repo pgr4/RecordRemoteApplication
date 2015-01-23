@@ -72,7 +72,8 @@ public class DatabaseService extends IntentService {
     //Create a HTTP GET Request to get all Songs
     private void getAllSongs() throws IOException, JSONException {
         //Form the query String
-        String query = "http://192.168.1.247/api/Song";
+        String ip = "10.240.3.188";//192.168.1.247
+        String query = "http://" + ip + "/api/Song";
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -181,7 +182,7 @@ public class DatabaseService extends IntentService {
 
     private void goToTotalSongListScreen(ArrayList<JsonArtist> list) {
         Intent intent = new Intent(this, TotalListScreen.class);
-        intent.putParcelableArrayListExtra("list", list);
+        intent.putExtra("list", list);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -192,7 +193,8 @@ public class DatabaseService extends IntentService {
 
         JSONArray jsonArray = new JSONArray(s);
         String artistName;
-        for (int i = 0; i < jsonArray.length(); i++) {
+        int loopCount = 1; //jsonArray.length()
+        for (int i = 0; i < loopCount; i++) {
             JSONObject jsonArtist = jsonArray.getJSONObject(i);
             JSONArray jsonAlbums = jsonArtist.getJSONArray("Albums");
             artistName = jsonArtist.getString("Name");
@@ -210,9 +212,9 @@ public class DatabaseService extends IntentService {
                     songArr.add(jsonSong.get(w).toString());
                 }
 
-                albumArr.add(new JsonAlbum(albumName,image,songArr));
+                albumArr.add(new JsonAlbum(albumName, image, songArr));
             }
-            ret.add(new JsonArtist(artistName,albumArr));
+            ret.add(new JsonArtist(artistName, albumArr));
         }
         return ret;
     }

@@ -24,12 +24,20 @@ public class JsonArtist implements Parcelable {
     }
 
     JsonArtist(Parcel in) {
+        readFromParcel(in);
+    }
+
+    private void readFromParcel(Parcel in) {
         Name = in.readString();
-        in.readTypedList(Albums,JsonAlbum.CREATOR);
+        if (Albums == null){
+            Albums = new ArrayList<>();
+        }
+       in.readTypedList(Albums, JsonAlbum.CREATOR);
     }
 
     @Override
     public int describeContents() {
+        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -39,16 +47,62 @@ public class JsonArtist implements Parcelable {
         dest.writeTypedList(Albums);
     }
 
-    public static final Parcelable.Creator<JsonArtist> CREATOR
-            = new Parcelable.Creator<JsonArtist>() {
+    public static final Parcelable.Creator<JsonArtist> CREATOR = new Parcelable.Creator<JsonArtist>() {
+
+        @Override
         public JsonArtist createFromParcel(Parcel in) {
             return new JsonArtist(in);
         }
 
+        @Override
         public JsonArtist[] newArray(int size) {
             return new JsonArtist[size];
         }
     };
+
+
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(Name);
+//        dest.writeTypedList(Albums);
+//    }
+//
+//    public static final Parcelable.Creator<JsonArtist> CREATOR
+//            = new Parcelable.Creator<JsonArtist>() {
+//        public JsonArtist createFromParcel(Parcel in) {
+//            return new JsonArtist(in);
+//        }
+//
+//        public JsonArtist[] newArray(int size) {
+//            return new JsonArtist[size];
+//        }
+//    };
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(Name);
+//        dest.writeTypedList(Albums);
+//    }
+//
+//    public static final Parcelable.Creator<JsonArtist> CREATOR
+//            = new Parcelable.Creator<JsonArtist>() {
+//        public JsonArtist createFromParcel(Parcel in) {
+//            return new JsonArtist(in);
+//        }
+//
+//        public JsonArtist[] newArray(int size) {
+//            return new JsonArtist[size];
+//        }
+//    };
 
 //    @Override
 //    public int describeContents() {
