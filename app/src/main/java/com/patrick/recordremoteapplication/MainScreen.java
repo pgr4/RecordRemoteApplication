@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 
 public class MainScreen extends ActionBarActivity {
 
@@ -14,6 +18,14 @@ public class MainScreen extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+
+        //Get the IP address
+        try {
+            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
     }

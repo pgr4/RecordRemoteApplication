@@ -4,13 +4,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-//todo:Whenever we come back to this screen we need to check for updates.
+//TODO:Whenever we come back to this screen we need to check for updates.
+//TODO: Need to clear the Global Variable Artists on close
 public class TotalListScreen extends ActionBarActivity {
 
     private ListView mainListView;
@@ -20,18 +22,39 @@ public class TotalListScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_total_list_screen);
 
-        Bundle b = getIntent().getExtras();
+        //Bundle b = getIntent().getExtras();
+        //b.getParcelableArrayList("list");
 
-        ArrayList<JsonArtist> list = b.getParcelableArrayList("list");
+        ArrayList<JsonArtist> list = ((MyGlobalVariables) this.getApplication()).Artists;
 
-        //Get the List
-        mainListView = (ListView) findViewById(R.id.currentListView);
+        //Get the layout
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
+        LinearLayout linearLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(lp);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        //Setup the adapter
-        TotalListAdapter adapter = new TotalListAdapter(this, list);
-        mainListView.setAdapter(adapter);
+        for(int i = 0;i<list.size();i++){
+            //Add the Artist Name
+            TextView artistText = new TextView(this);
+            artistText.setText(list.get(i).Name);
+            linearLayout.addView(artistText);
 
-        // View v = getWindow().getDecorView().findViewById(android.R.id.content);
+            for(int j=0; j<list.get(i).Albums.size();j++) {
+                //Add the Album Name
+                TextView albumText = new TextView(this);
+                albumText.setText(list.get(i).Albums.get(j).Name);
+                linearLayout.addView(albumText);
+
+                //Add the Songs
+                for(int k=0;k<list.get(i).Albums.get(j).Songs.size();k++){
+                    TextView songText = new TextView(this);
+                    songText.setText(list.get(i).Albums.get(j).Songs.get(k));
+                    linearLayout.addView(songText);
+                }
+            }
+        }
+        scrollView.addView(linearLayout);
 
     }
 

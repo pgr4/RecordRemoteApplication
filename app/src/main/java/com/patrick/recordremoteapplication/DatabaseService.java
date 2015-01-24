@@ -72,7 +72,7 @@ public class DatabaseService extends IntentService {
     //Create a HTTP GET Request to get all Songs
     private void getAllSongs() throws IOException, JSONException {
         //Form the query String
-        String ip = "10.240.3.188";//192.168.1.247
+        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
         String query = "http://" + ip + "/api/Song";
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
@@ -85,7 +85,8 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
-        goToTotalSongListScreen(StringToSongArr(res));
+        StringToSongArr(res);
+        goToTotalSongListScreen();
     }
 
     //Create a HTTP GET Request to get an album
@@ -180,9 +181,9 @@ public class DatabaseService extends IntentService {
         startActivity(intent);
     }
 
-    private void goToTotalSongListScreen(ArrayList<JsonArtist> list) {
+    private void goToTotalSongListScreen(){//ArrayList<JsonArtist> list) {
         Intent intent = new Intent(this, TotalListScreen.class);
-        intent.putExtra("list", list);
+        //intent.putExtra("list", list);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -193,7 +194,8 @@ public class DatabaseService extends IntentService {
 
         JSONArray jsonArray = new JSONArray(s);
         String artistName;
-        int loopCount = 1; //jsonArray.length()
+        int loopCount = jsonArray.length();
+
         for (int i = 0; i < loopCount; i++) {
             JSONObject jsonArtist = jsonArray.getJSONObject(i);
             JSONArray jsonAlbums = jsonArtist.getJSONArray("Albums");
@@ -202,6 +204,7 @@ public class DatabaseService extends IntentService {
             String albumName;
             String image;
             ArrayList<JsonAlbum> albumArr = new ArrayList<>();
+
             for (int j = 0; j < jsonAlbums.length(); j++) {
                 ArrayList<String> songArr = new ArrayList<>();
                 JSONObject jsonAlbum = jsonAlbums.getJSONObject(j);
@@ -216,6 +219,8 @@ public class DatabaseService extends IntentService {
             }
             ret.add(new JsonArtist(artistName, albumArr));
         }
+        ((MyGlobalVariables) this.getApplication()).Artists = ret;
+
         return ret;
     }
 }
