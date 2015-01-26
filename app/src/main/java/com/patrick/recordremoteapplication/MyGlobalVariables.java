@@ -11,5 +11,6 @@ import java.util.ArrayList;
 public class MyGlobalVariables extends Application {
 
     public InetAddress MyIp;
-    public ArrayList<JsonArtist> Artists;
+    public ArrayList<String> Artists;
+    public ArrayList<JsonAlbum> Albums;
 }

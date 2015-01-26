@@ -74,7 +74,7 @@ public class MainScreen extends ActionBarActivity {
 
     public void launchWebService(View view) {
         Intent intent = new Intent(this, DatabaseService.class);
-        intent.putExtra("type", "getAllSongs");
+        intent.putExtra("type", "getAllArtists");
         startService(intent);
     }
 }

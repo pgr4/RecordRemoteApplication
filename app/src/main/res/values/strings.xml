@@ -9,5 +9,8 @@
     <string name="title_activity_album_association_screen">AlbumAssociationScreen</string>
     <string name="title_activity_artist_association_screen">ArtistAssociationScreen</string>
     <string name="title_activity_song_association_screen">SongAssociationScreen</string>
+    <string name="title_activity_total_artist_screen">TotalArtistScreen</string>
+    <string name="title_activity_total_album_screen">TotalAlbumScreen</string>
+    <string name="title_activity_total_songs_screen">TotalSongsScreen</string>
 
 </resources>

@@ -11,11 +11,13 @@
         android:layout_alignParentStart="true"/>
 
     <TextView
+        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/textView"
+        android:gravity="center"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/imageView" />
 

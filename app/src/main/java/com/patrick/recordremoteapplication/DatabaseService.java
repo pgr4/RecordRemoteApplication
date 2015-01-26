@@ -43,8 +43,13 @@ public class DatabaseService extends IntentService {
                 Bundle b = intent.getExtras();
 
                 switch (b.getString("type")) {
-                    case "getAllSongs":
-                        getAllSongs();
+                    case "getAllArtists":
+                        getTotalArtists();
+                        break;
+                    case "getAlbums":
+                        getTotalAlbums(b.getString("artist"));
+                    case "getSongs":
+                        getTotalSongs(b.getString("key"));
                         break;
                     case "getAlbum":
                         getAlbum(b.getByteArray("key"));
@@ -69,11 +74,11 @@ public class DatabaseService extends IntentService {
         }
     }
 
-    //Create a HTTP GET Request to get all Songs
-    private void getAllSongs() throws IOException, JSONException {
+    //Create an HTTP Get Request to get all Artists
+    private void getTotalArtists() throws IOException, JSONException {
         //Form the query String
         String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
-        String query = "http://" + ip + "/api/Song";
+        String query = "http://" + ip + "/api/Artist";
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -85,11 +90,75 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
-        StringToSongArr(res);
-        goToTotalSongListScreen();
+        JSONArray jsonArray = new JSONArray(res);
+        ArrayList<String> artists = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            artists.add(jsonArray.get(i).toString());
+        }
+        ((MyGlobalVariables) this.getApplication()).Artists = artists;
+        goToTotalArtistScreen();
     }
 
-    //Create a HTTP GET Request to get an album
+    //Create an HTTP Get Request to get albums associated with the Artist
+    private void getTotalAlbums(String artist) throws IOException, JSONException {
+        //Form the query String
+        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
+        String query = "http://" + ip + "/api/Album?artist=" + URLEncoder.encode(artist, "UTF-8");
+        HttpResponse response;
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(query);
+        //Set URI
+        //request.setURI(new URI(query));
+        //Execute the request
+        response = client.execute(request);
+        //Get the InputStream from the response
+        InputStream s = response.getEntity().getContent();
+        //Convert the Stream to a String
+        String res = LastFmBaseLookup.ConvertStreamToString(s);
+        JSONArray jsonArray = new JSONArray(res);
+        ArrayList<JsonAlbum> albums = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsAlbum = jsonArray.getJSONObject(i);
+            albums.add(new JsonAlbum(jsAlbum.getString("Name"), jsAlbum.getString("Image"), jsAlbum.getString("Key")));
+        }
+
+        ((MyGlobalVariables) this.getApplication()).Albums = albums;
+
+        goToTotalAlbumScreen();
+    }
+
+    //Create an HTTP Get Request to get albums associated with the Artist
+    private void getTotalSongs(String key) throws IOException, JSONException {
+        //Form the query String
+        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
+        String query = "http://" + ip + "/api/Song?key=" + URLEncoder.encode(key, "UTF-8");
+        HttpResponse response;
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(query);
+        //Set URI
+        //request.setURI(new URI(query));
+        //Execute the request
+        response = client.execute(request);
+        //Get the InputStream from the response
+        InputStream s = response.getEntity().getContent();
+        //Convert the Stream to a String
+        String res = LastFmBaseLookup.ConvertStreamToString(s);
+
+        ArrayList<String> songs = new ArrayList<>();
+
+        JSONObject js = new JSONObject(res);
+
+        JSONArray jsSongs = js.getJSONArray("Songs");
+        for (int i = 0; i < jsSongs.length(); i++) {
+            songs.add((String)jsSongs.get(i));
+        }
+
+        JSONObject jsAlbum =  js.getJSONObject("Album");
+
+        goToTotalSongScreen(jsAlbum.getString("Artist"), jsAlbum.getString("Album"), jsAlbum.getString("Image"), songs);
+    }
+
+    //Create an HTTP GET Request to get an album
     private void getAlbum(byte[] by) throws IOException {
         byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
@@ -111,7 +180,7 @@ public class DatabaseService extends IntentService {
         String res = LastFmBaseLookup.ConvertStreamToString(s);
     }
 
-    //Create a HTTP GET Request to get all Songs associated with the album
+    //Create an HTTP GET Request to get all Songs associated with the album
     private void getAlbumSongs(byte[] by) throws IOException {
         byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
@@ -133,7 +202,7 @@ public class DatabaseService extends IntentService {
         String res = LastFmBaseLookup.ConvertStreamToString(s);
     }
 
-    //Create a HTTP POST Request with album and song data from a new album
+    //Create an HTTP POST Request with album and song data from a new album
     private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
         Bitmap bitmap = LastFmBaseLookup.getBitmapFromURL(image);
         StringBuilder sb = new StringBuilder();
@@ -181,46 +250,29 @@ public class DatabaseService extends IntentService {
         startActivity(intent);
     }
 
-    private void goToTotalSongListScreen(){//ArrayList<JsonArtist> list) {
-        Intent intent = new Intent(this, TotalListScreen.class);
-        //intent.putExtra("list", list);
+    private void goToTotalArtistScreen() {
+        Intent intent = new Intent(this, TotalArtistScreen.class);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
-    private ArrayList<JsonArtist> StringToSongArr(String s) throws JSONException {
-        ArrayList<JsonArtist> ret = new ArrayList<>();
-
-        JSONArray jsonArray = new JSONArray(s);
-        String artistName;
-        int loopCount = jsonArray.length();
-
-        for (int i = 0; i < loopCount; i++) {
-            JSONObject jsonArtist = jsonArray.getJSONObject(i);
-            JSONArray jsonAlbums = jsonArtist.getJSONArray("Albums");
-            artistName = jsonArtist.getString("Name");
-
-            String albumName;
-            String image;
-            ArrayList<JsonAlbum> albumArr = new ArrayList<>();
-
-            for (int j = 0; j < jsonAlbums.length(); j++) {
-                ArrayList<String> songArr = new ArrayList<>();
-                JSONObject jsonAlbum = jsonAlbums.getJSONObject(j);
-                albumName = jsonAlbum.getString("Name");
-                image = jsonAlbum.getString("Image");
-                JSONArray jsonSong = jsonAlbum.getJSONArray("Songs");
-                for (int w = 0; w < jsonSong.length(); w++) {
-                    songArr.add(jsonSong.get(w).toString());
-                }
-
-                albumArr.add(new JsonAlbum(albumName, image, songArr));
-            }
-            ret.add(new JsonArtist(artistName, albumArr));
-        }
-        ((MyGlobalVariables) this.getApplication()).Artists = ret;
-
-        return ret;
+    private void goToTotalAlbumScreen() {
+        Intent intent = new Intent(this, TotalAlbumScreen.class);
+        //This is necessary
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
+
+    private void goToTotalSongScreen(String artist, String album, String image, ArrayList<String> songs) {
+        Intent intent = new Intent(this, TotalSongScreen.class);
+        intent.putExtra("Artist",artist);
+        intent.putExtra("Album",album);
+        intent.putExtra("Image",image);
+        intent.putExtra("Songs",songs);
+        //This is necessary
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
 }
