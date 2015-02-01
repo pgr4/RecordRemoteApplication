@@ -12,5 +12,7 @@
     <string name="title_activity_total_artist_screen">TotalArtistScreen</string>
     <string name="title_activity_total_album_screen">TotalAlbumScreen</string>
     <string name="title_activity_total_songs_screen">TotalSongsScreen</string>
+    <string name="title_activity_ipassociation_screen">IPAssociationScreen</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 
 </resources>

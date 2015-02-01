@@ -14,19 +14,6 @@
         <activity
             android:name=".MainScreen"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TotalListScreen"
-            android:label="@string/title_activity_total_list_screen"
-            android:parentActivityName=".MainScreen" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.patrick.recordremoteapplication.MainScreen" />
         </activity>
         <activity
             android:name=".CurrentListScreen"
@@ -36,16 +23,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.MainScreen" />
         </activity>
-
-        <service
-            android:name=".ListenerService"
-            android:exported="false" >
-        </service>
-        <service
-            android:name=".DatabaseService"
-            android:exported="false" >
-        </service>
-
         <activity
             android:name=".SongAssociationScreen"
             android:label="@string/title_activity_song_association_screen"
@@ -86,6 +63,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.TotalAlbumScreen" />
         </activity>
+        <activity
+            android:name=".IPAssociationScreen"
+            android:label="@string/title_activity_ipassociation_screen" >
+        </activity>
+        <activity
+            android:name=".SplashScreen"
+            android:label="@string/title_activity_splash_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".ListenerService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name=".DatabaseService"
+            android:exported="false" >
+        </service>
+
+
     </application>
 
 </manifest>

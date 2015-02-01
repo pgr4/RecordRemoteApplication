@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class MyGlobalVariables extends Application {
 
-    public InetAddress MyIp;
+    public InetAddress DatabaseIp;
     public ArrayList<String> Artists;
     public ArrayList<JsonAlbum> Albums;
 }

@@ -233,7 +233,7 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
-
+        //TODO:Look at Response Code
         //Bring up the CurrentListScreen
         goToCurrentSongListScreen(songs, artist, album, bitmap);
     }

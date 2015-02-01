@@ -20,11 +20,11 @@ public class MainScreen extends ActionBarActivity {
         setContentView(R.layout.activity_main_screen);
 
         //Get the IP address
-        try {
-            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
@@ -61,7 +61,7 @@ public class MainScreen extends ActionBarActivity {
 
     public void goToTotalList(View view) {
         Intent intent = new Intent(this, DatabaseService.class);
-        intent.putExtra("type", "getAllSongs");
+        intent.putExtra("type", "getAllArtists");
         startService(intent);
     }
 

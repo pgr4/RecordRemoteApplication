@@ -3,6 +3,7 @@ package com.patrick.recordremoteapplication;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 import org.apache.http.conn.util.InetAddressUtils;
 
 public class Utils {
@@ -22,13 +23,14 @@ public class Utils {
                         } else {
                             if (!isIPv4) {
                                 int delim = sAddr.indexOf('%'); // drop ip6 port suffix
-                                return delim<0 ? sAddr : sAddr.substring(0, delim);
+                                return delim < 0 ? sAddr : sAddr.substring(0, delim);
                             }
                         }
                     }
                 }
             }
-        } catch (Exception ex) { } // for now eat exceptions
+        } catch (Exception ex) {
+        } // for now eat exceptions
         return "";
     }
 
