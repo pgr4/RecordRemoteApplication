@@ -1,11 +1,17 @@
 package com.patrick.recordremoteapplication;
 
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -13,6 +19,9 @@ import java.net.UnknownHostException;
 
 
 public class MainScreen extends ActionBarActivity {
+    private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +34,17 @@ public class MainScreen extends ActionBarActivity {
 //        } catch (UnknownHostException e) {
 //            e.printStackTrace();
 //        }
+
+        mPlanetTitles = getResources().getStringArray(R.array.drawerActivities);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.list_item, mPlanetTitles));
+
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
@@ -76,5 +96,12 @@ public class MainScreen extends ActionBarActivity {
         Intent intent = new Intent(this, DatabaseService.class);
         intent.putExtra("type", "getAllArtists");
         startService(intent);
+    }
+
+    private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+
+        }
     }
 }

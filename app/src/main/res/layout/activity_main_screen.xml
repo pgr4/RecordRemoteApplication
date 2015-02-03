@@ -1,49 +1,80 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainScreen">
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainScreen">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView" />
+    <!-- drawer view -->
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current List"
-        android:id="@+id/currentButton"
-        android:layout_marginTop="121dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignStart="@+id/totalButton"
-        android:onClick="goToCurrentList"/>
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#111"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total List"
-        android:id="@+id/totalButton"
-        android:layout_below="@+id/currentButton"
-        android:layout_centerHorizontal="true"
-        android:onClick="goToTotalList"/>
+        <TextView
+            android:layout_gravity="start"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/hello_world"
+            android:textColor="@color/red"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Association View"
-        android:id="@+id/albumAssociation"
-        android:layout_below="@+id/totalButton"
-        android:layout_centerHorizontal="true"
-        android:onClick="goToArtistAssociation"/>
+    <!-- normal content view -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Launch Service"
-        android:id="@+id/webService"
-        android:onClick="launchWebService"
-        android:layout_below="@+id/albumAssociation"
-        android:layout_centerHorizontal="true" />
+        <Button
+            android:id="@+id/currentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/totalButton"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="121dp"
+            android:onClick="goToCurrentList"
+            android:text="Current List" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/totalButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentButton"
+            android:layout_centerHorizontal="true"
+            android:onClick="goToTotalList"
+            android:text="Total List" />
+
+        <Button
+            android:id="@+id/albumAssociation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/totalButton"
+            android:layout_centerHorizontal="true"
+            android:onClick="goToArtistAssociation"
+            android:text="Association View" />
+
+        <Button
+            android:id="@+id/webService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/albumAssociation"
+            android:layout_centerHorizontal="true"
+            android:onClick="launchWebService"
+            android:text="Launch Service" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>
+

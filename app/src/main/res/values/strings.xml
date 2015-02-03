@@ -14,5 +14,11 @@
     <string name="title_activity_total_songs_screen">TotalSongsScreen</string>
     <string name="title_activity_ipassociation_screen">IPAssociationScreen</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
-
+    <array name="drawerActivities">
+        <item>Total List</item>
+        <item>Current List</item>
+        <item>Settings</item>
+    </array>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

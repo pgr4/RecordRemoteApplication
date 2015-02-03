@@ -7,22 +7,37 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 
 public class IPAssociationScreen extends ActionBarActivity {
 
+    ArrayList<String> settingArr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ipassociation_screen);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_ipassociation_screen);
+            settingArr = readSettings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -55,32 +70,52 @@ public class IPAssociationScreen extends ActionBarActivity {
             writeIpToFile(inetAddress.toString());
 
         } catch (Exception e) {
+            showError();
             e.printStackTrace();
         }
     }
 
-    //TODO:LOOP THROUGH FILE TO FIND EXISTING ENTRY AND REMOVE IT
-    //TODO:SHOW TOOLTIP WHEN INCORRECT
+    private ArrayList<String> readSettings() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "settings.txt"));
+
+        final ArrayList<String> settingArr = new ArrayList<String>();
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.contains("IPAddress:") == false) {
+                settingArr.add(line);
+            }
+        }
+
+        br.close();
+
+        return settingArr;
+    }
+
     //TODO:SHOW NUMBER KEYBOARD
     private void writeIpToFile(String ipText) {
         try {
-            final FileWriter fw = new FileWriter(getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "settings.txt", false);
-
             new IpLookup() {
 
                 @Override
                 protected void onPostExecute(InetAddress result) {
                     try {
+
                         if (result != null) {
-                            try {
-                                fw.write("IPAddress: " + result);
-                                fw.close();
-                                goToMainScreen();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+
+                            BufferedWriter bw = new BufferedWriter(new FileWriter(getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "settings.txt", false));
+
+                            for (int i = 0; i < settingArr.size(); i++) {
+                                bw.write(settingArr.get(i));
                             }
+
+                            bw.write("IPAddress: " + result);
+                            bw.close();
+                            goToMainScreen();
+
+                        } else {
+                            showError();
                         }
-                        fw.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -96,4 +131,10 @@ public class IPAssociationScreen extends ActionBarActivity {
         Intent intent = new Intent(this, MainScreen.class);
         startActivity(intent);
     }
+
+    public void showError() {
+        TextView textView = ((TextView) findViewById(R.id.errorText));
+        textView.setVisibility(View.VISIBLE);
+    }
+
 }
