@@ -13,4 +13,5 @@ public class MyGlobalVariables extends Application {
     public InetAddress DatabaseIp;
     public ArrayList<String> Artists;
     public ArrayList<JsonAlbum> Albums;
+    public String TotalAlbumImage;
 }

@@ -50,7 +50,7 @@ public class SplashScreen extends Activity {
                         //  IF invalid go associate
                         //  ELSE go to main screen
                         //ELSE go associate
-                        if(ipText != "") {
+                        if (ipText != "") {
                             new IpLookup() {
 
                                 @Override
@@ -63,8 +63,7 @@ public class SplashScreen extends Activity {
                                     }
                                 }
                             }.execute(ipText);
-                        }
-                        else {
+                        } else {
                             goToIPAssociationScreen();
                         }
                     } else {

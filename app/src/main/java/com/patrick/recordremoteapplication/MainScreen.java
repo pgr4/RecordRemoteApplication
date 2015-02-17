@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 
 
 public class MainScreen extends ActionBarActivity {
-    private String[] mPlanetTitles;
+    private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
@@ -35,13 +35,12 @@ public class MainScreen extends ActionBarActivity {
 //            e.printStackTrace();
 //        }
 
-        mPlanetTitles = getResources().getStringArray(R.array.drawerActivities);
+        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.list_item, mPlanetTitles));
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.drawer_item, mNavigationDrawerItemTitles);
+        mDrawerList.setAdapter(adapter);
 
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -101,7 +100,19 @@ public class MainScreen extends ActionBarActivity {
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-
+            switch (position) {
+                case 0:
+                    //Total List
+                    goToTotalList(view);
+                    break;
+                case 1:
+                    //Current List
+                    goToCurrentList(view);
+                    break;
+                case 2:
+                    //Settings
+                    break;
+            }
         }
     }
 }

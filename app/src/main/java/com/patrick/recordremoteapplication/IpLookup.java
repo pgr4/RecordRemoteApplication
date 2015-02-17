@@ -15,7 +15,7 @@ public class IpLookup extends AsyncTask<String, Void, InetAddress> {
     @Override
     protected InetAddress doInBackground(String... params) {
         try {
-            return InetAddress.getByName((params[0]).replace("/",""));
+            return InetAddress.getByName((params[0]).replace("/", ""));
         } catch (Exception e) {
             return null;
         }

@@ -1,14 +1,20 @@
 package com.patrick.recordremoteapplication;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,7 +32,7 @@ public class TotalSongScreen extends ActionBarActivity {
         ListView lv = (ListView) findViewById(R.id.listView);
         TextView artistText = (TextView) findViewById(R.id.artistText);
         TextView albumText = (TextView) findViewById(R.id.albumText);
-        ImageView img = (ImageView) findViewById(R.id.imgAlbumArt);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.mainBlock);
 
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, b.getStringArrayList("Songs"));
@@ -36,10 +42,18 @@ public class TotalSongScreen extends ActionBarActivity {
         artistText.setText(b.getString("Artist"));
         albumText.setText(b.getString("Album"));
 
-        byte[] decodedString = Base64.decode(b.getString("Image"), Base64.DEFAULT);
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels);
+        layoutParams.weight = 1;
+        imageView.setLayoutParams(layoutParams);
+        byte[] decodedString = Base64.decode(((MyGlobalVariables) this.getApplication()).TotalAlbumImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-        img.setImageBitmap(decodedByte);
+        imageView.setImageBitmap(decodedByte);
+        ll.addView(imageView, 0);
     }
 
 

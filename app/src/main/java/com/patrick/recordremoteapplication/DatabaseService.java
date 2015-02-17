@@ -48,6 +48,7 @@ public class DatabaseService extends IntentService {
                         break;
                     case "getAlbums":
                         getTotalAlbums(b.getString("artist"));
+                        break;
                     case "getSongs":
                         getTotalSongs(b.getString("key"));
                         break;
@@ -150,12 +151,13 @@ public class DatabaseService extends IntentService {
 
         JSONArray jsSongs = js.getJSONArray("Songs");
         for (int i = 0; i < jsSongs.length(); i++) {
-            songs.add((String)jsSongs.get(i));
+            songs.add((String) jsSongs.get(i));
         }
 
-        JSONObject jsAlbum =  js.getJSONObject("Album");
+        JSONObject jsAlbum = js.getJSONObject("Album");
+        ((MyGlobalVariables) this.getApplication()).TotalAlbumImage = jsAlbum.getString("Image");
 
-        goToTotalSongScreen(jsAlbum.getString("Artist"), jsAlbum.getString("Album"), jsAlbum.getString("Image"), songs);
+        goToTotalSongScreen(jsAlbum.getString("Artist"), jsAlbum.getString("Album"), songs);
     }
 
     //Create an HTTP GET Request to get an album
@@ -264,12 +266,11 @@ public class DatabaseService extends IntentService {
         startActivity(intent);
     }
 
-    private void goToTotalSongScreen(String artist, String album, String image, ArrayList<String> songs) {
+    private void goToTotalSongScreen(String artist, String album, ArrayList<String> songs) {
         Intent intent = new Intent(this, TotalSongScreen.class);
-        intent.putExtra("Artist",artist);
-        intent.putExtra("Album",album);
-        intent.putExtra("Image",image);
-        intent.putExtra("Songs",songs);
+        intent.putExtra("Artist", artist);
+        intent.putExtra("Album", album);
+        intent.putExtra("Songs", songs);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

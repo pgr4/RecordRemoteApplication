@@ -13,7 +13,7 @@ public class JsonAlbum {
     String Image;
     String Key;
 
-    JsonAlbum(String name, String image,String key) {
+    JsonAlbum(String name, String image, String key) {
         Name = name;
         Image = image;
         Key = key;

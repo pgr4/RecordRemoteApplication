@@ -71,7 +71,7 @@ public class LastFmAlbumLookup extends AsyncTask<String, Void, ArrayList<LastFmA
                     imageUrl = imgObj.getString("#text");
                 }
 
-                albumList.add(new LastFmAlbum(obj.getString("name"), strings[0], LastFmBaseLookup.getBitmapFromURL(imageUrl),imageUrl));
+                albumList.add(new LastFmAlbum(obj.getString("name"), strings[0], LastFmBaseLookup.getBitmapFromURL(imageUrl), imageUrl));
             }
             //GET START TIME
             Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));

@@ -33,7 +33,7 @@ public class TotalArtistScreen extends ActionBarActivity {
     }
 
     //Start the Database service to get a list of Albums associated with the selected item
-    private void startDatabaseService(String s){
+    private void startDatabaseService(String s) {
         Intent intent = new Intent(this, DatabaseService.class);
         intent.putExtra("type", "getAlbums");
         intent.putExtra("artist", s);
