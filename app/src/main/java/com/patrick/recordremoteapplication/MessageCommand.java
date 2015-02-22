@@ -4,9 +4,18 @@ package com.patrick.recordremoteapplication;
  * Created by pat on 12/28/2014.
  */
 public enum MessageCommand {
-    None,
-    NewAlbum,
-    CurrentAlbum
+    None(0),
+    NewAlbum(1),
+    CurrentAlbum(2),
+    Status(3),
+    Busy(20),
+    Ready(21);
+
+    private int value;
+
+    private MessageCommand(int value) {
+        this.value = value;
+    }
 }
 
 

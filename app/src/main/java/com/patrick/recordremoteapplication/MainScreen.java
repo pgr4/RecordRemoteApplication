@@ -29,11 +29,14 @@ public class MainScreen extends ActionBarActivity {
         setContentView(R.layout.activity_main_screen);
 
         //Get the IP address
-//        try {
-//            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        ((MyGlobalVariables)this.getApplication()).Status =  StatusType.Unknown;
+        ((MyGlobalVariables)this.getApplication()).StatusExtra =  "Getting Status";
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -47,6 +50,8 @@ public class MainScreen extends ActionBarActivity {
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
+
+
     }
 
     @Override
