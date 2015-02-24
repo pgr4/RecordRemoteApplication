@@ -15,6 +15,6 @@ public class MyGlobalVariables extends Application {
     public ArrayList<JsonAlbum> Albums;
     public String TotalAlbumImage;
     public InetAddress MyIp;
-    public StatusType Status;
-    public String StatusExtra;
+    public StatusType StatusExtra;
+    public boolean IsSystemBusy ;
 }
