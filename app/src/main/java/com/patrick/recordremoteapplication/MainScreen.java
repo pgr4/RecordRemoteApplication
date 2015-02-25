@@ -1,19 +1,15 @@
 package com.patrick.recordremoteapplication;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -36,7 +32,7 @@ public class MainScreen extends ActionBarActivity {
         }
 
         ((MyGlobalVariables)this.getApplication()).Status =  StatusType.Unknown;
-        ((MyGlobalVariables)this.getApplication()).StatusExtra =  "Getting Status";
+        ((MyGlobalVariables)this.getApplication()).BusyStatusExtra =  "Getting Status";
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
