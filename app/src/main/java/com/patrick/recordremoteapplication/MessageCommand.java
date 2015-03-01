@@ -8,8 +8,18 @@ public enum MessageCommand {
     NewAlbum(1),
     CurrentAlbum(2),
     Status(3),
+
+    GoToTrack(10),
+    Play(11),
+    Pause(12),
+    StopPause(13),
+
     Busy(20),
     Ready(21);
+
+    public int getValue() {
+        return value;
+    }
 
     private int value;
 

@@ -32,7 +32,7 @@ public class MainScreen extends ActionBarActivity {
         }
 
         ((MyGlobalVariables)this.getApplication()).Status =  StatusType.Unknown;
-        ((MyGlobalVariables)this.getApplication()).StatusExtra =  "Getting Status";
+        ((MyGlobalVariables)this.getApplication()).BusyStatusExtra =  "Getting Status";
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
