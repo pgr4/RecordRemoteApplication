@@ -1,19 +1,15 @@
 package com.patrick.recordremoteapplication;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -50,8 +46,12 @@ public class MainScreen extends ActionBarActivity {
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
+    }
 
-
+    public void requestScan(View view){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "scan");
+        startService(intent);
     }
 
     @Override
