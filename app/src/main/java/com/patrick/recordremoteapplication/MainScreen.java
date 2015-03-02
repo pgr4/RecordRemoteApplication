@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +31,7 @@ public class MainScreen extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        ((MyGlobalVariables) this.getApplication()).BusyStatusExtra = BusyStatus.Unknown;
-        ((MyGlobalVariables) this.getApplication()).IsSystemBusy = false;
+        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Unknown;
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

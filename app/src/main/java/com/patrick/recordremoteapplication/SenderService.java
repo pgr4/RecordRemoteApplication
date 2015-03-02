@@ -3,13 +3,11 @@ package com.patrick.recordremoteapplication;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Created by pat on 3/1/2015.
@@ -35,6 +33,8 @@ public class SenderService extends IntentService {
                     case "scan":
                         sendScan();
                         break;
+                    case "sync":
+                        sendSync(b.getByteArray("key"));
                     case "getStatus":
                         getStatus();
                         break;
@@ -50,10 +50,11 @@ public class SenderService extends IntentService {
         }
     }
 
+    //Send Sync
     private void sendSync(byte[] key) throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[256];
+        byte[] buf = new byte[15];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
@@ -88,7 +89,7 @@ public class SenderService extends IntentService {
     private void sendStatus() throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[256];
+        byte[] buf = new byte[15];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
@@ -101,25 +102,10 @@ public class SenderService extends IntentService {
         }
         pointer = 8;
 
-        if (((MyGlobalVariables) this.getApplication()).IsSystemBusy) {
-            buf[pointer++] = 20;
-        } else {
-            if (((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
-                buf[pointer++] = 20;
-            } else {
-                buf[pointer++] = 21;
-            }
-        }
+        buf[pointer++] = (byte) (((MyGlobalVariables) this.getApplication()).Status.getValue() + 20);
 
         for (int i = pointer; i < pointer + 6; i++) {
             buf[i] = 111;
-        }
-
-        pointer = 15;
-
-        if (((MyGlobalVariables) this.getApplication()).IsSystemBusy ||
-                ((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
-            buf[pointer++] = ((MyGlobalVariables) this.getApplication()).BusyStatusExtra.getValue();
         }
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
@@ -131,7 +117,7 @@ public class SenderService extends IntentService {
     private void getStatus() throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[256];
+        byte[] buf = new byte[15];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
@@ -155,10 +141,10 @@ public class SenderService extends IntentService {
         socket.close();
     }
 
-    void sendScan() throws IOException {
+    private void sendScan() throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[256];
+        byte[] buf = new byte[15];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];

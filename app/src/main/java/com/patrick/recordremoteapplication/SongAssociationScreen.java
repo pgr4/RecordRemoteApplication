@@ -116,6 +116,7 @@ public class SongAssociationScreen extends ActionBarActivity {
     }
 
     //Create the Database Service
+    //Create the Sync
     public void onAccept(View view) {
         Intent intent = new Intent(this, DatabaseService.class);
         intent.putExtra("type", "addAlbumData");
@@ -125,6 +126,11 @@ public class SongAssociationScreen extends ActionBarActivity {
         intent.putExtra("artist", artistName);
         intent.putExtra("image", albumImageUrl);
         startService(intent);
+
+        Intent dIntent = new Intent(this, SenderService.class);
+        dIntent.putExtra("type", "sync");
+        dIntent.putExtra("key", key);
+        startService(dIntent);
     }
 
     private String listToString(ArrayList<String> arr) {

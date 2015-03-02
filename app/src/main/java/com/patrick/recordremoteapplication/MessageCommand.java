@@ -16,8 +16,13 @@ public enum MessageCommand {
     Pause(12),
     StopPause(13),
 
-    Busy(20),
-    Ready(21);
+    sUnknown(20),
+    sReady(21),
+    sPlay(22),
+    sGoToTrack(23),
+    sPause(24),
+    sStop(25),
+    sScan(26);
 
     public int getValue() {
         return value;

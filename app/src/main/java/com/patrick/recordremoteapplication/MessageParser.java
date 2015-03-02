@@ -10,12 +10,20 @@ import java.util.ArrayList;
  */
 public class MessageParser {
     public static NewAlbum ParseNewAlbum(byte[] message, int startingPoint) {
-        byte[] arr = new byte[2];
+        int endingPoint = 0;
+        for (int i = startingPoint; i < message.length; i++) {
+            if (message[i] == 111 && message[i + 1] == 111 && message[i + 2] == 111 &&
+                    message[i + 3] == 111 && message[i + 4] == 111 && message[i + 5] == 111) {
+                endingPoint = i - startingPoint;
+            }
+        }
+        byte[] arr = new byte[endingPoint];
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < endingPoint; i++) {
             arr[i] = message[startingPoint + i];
         }
-        int breaks = message[startingPoint + 2];
+
+        int breaks = endingPoint;
 
         return new NewAlbum(breaks, arr);
     }
@@ -32,9 +40,9 @@ public class MessageParser {
         }
     }
 
-    public static byte[] GetKey(byte[] message, int startPoint){
+    public static byte[] GetKey(byte[] message, int startPoint) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byteArrayOutputStream.write(message,startPoint,message.length - startPoint);
+        byteArrayOutputStream.write(message, startPoint, message.length - startPoint);
         return byteArrayOutputStream.toByteArray();
     }
 
@@ -72,10 +80,22 @@ public class MessageParser {
                 return MessageCommand.CurrentAlbum;
             case 3:
                 return MessageCommand.Status;
+            case 5:
+                return MessageCommand.Sync;
             case 20:
-                return MessageCommand.Busy;
+                return MessageCommand.sUnknown;
             case 21:
-                return MessageCommand.Ready;
+                return MessageCommand.sReady;
+            case 22:
+                return MessageCommand.sPlay;
+            case 23:
+                return MessageCommand.sGoToTrack;
+            case 24:
+                return MessageCommand.sPause;
+            case 25:
+                return MessageCommand.sStop;
+            case 26:
+                return MessageCommand.sScan;
             default:
                 return MessageCommand.None;
         }

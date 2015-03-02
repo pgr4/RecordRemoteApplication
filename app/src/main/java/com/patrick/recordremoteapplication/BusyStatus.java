@@ -5,30 +5,35 @@ package com.patrick.recordremoteapplication;
  */
 public enum BusyStatus {
     Unknown(0),
-    Play(1),
-    GoToTrack(2),
-    Pause(3),
-    Stop(4);
-
+    Ready(1),
+    Play(2),
+    GoToTrack(3),
+    Pause(4),
+    Stop(5),
+    Scan(6);
 
     public static BusyStatus fromInteger(int x) {
-        switch(x) {
+        switch (x) {
             case 0:
                 return Unknown;
             case 1:
-                return Play;
+                return Ready;
             case 2:
-                return GoToTrack;
+                return Play;
             case 3:
-                return Pause;
+                return GoToTrack;
             case 4:
+                return Pause;
+            case 5:
                 return Stop;
+            case 6:
+                return Scan;
         }
         return null;
     }
 
     public byte getValue() {
-        return (byte)value;
+        return (byte) value;
     }
 
     private int value;

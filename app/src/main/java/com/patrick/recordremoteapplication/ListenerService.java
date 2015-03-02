@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -34,13 +33,13 @@ public class ListenerService extends IntentService {
     }
 
     //Send Status
-    private void SendStatus(){
+    private void SendStatus() {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "status");
         startService(intent);
     }
 
-    private void GetStatus(){
+    private void GetStatus() {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "getStatus");
         startService(intent);
@@ -76,20 +75,20 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
-                        if(!mh.DestinationAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
+                        if (!mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
-                            showCurrentListScreen(na);
+                            showArtistAssociationScreen(na);
                         }
                         break;
                     case CurrentAlbum:
                         break;
                     case Status:
-                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)){
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             SendStatus();
                         }
                         break;
                     case Sync:
-                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             byte[] key = MessageParser.GetKey(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
@@ -98,17 +97,8 @@ public class ListenerService extends IntentService {
                             startService(intent);
                         }
                         break;
-                    case Busy:
-                        ((MyGlobalVariables)this.getApplication()).BusyStatusExtra = BusyStatus.fromInteger((int)message[startingPoint]);
-                        if(((MyGlobalVariables)this.getApplication()).BusyStatusExtra == BusyStatus.Unknown){
-                            ((MyGlobalVariables)this.getApplication()).IsSystemBusy = false;
-                        }else{
-                            ((MyGlobalVariables)this.getApplication()).IsSystemBusy = true;
-                        }
-                        break;
-                    case Ready:
-                        ((MyGlobalVariables)this.getApplication()).IsSystemBusy = false;
-                        ((MyGlobalVariables)this.getApplication()).BusyStatusExtra = null;
+                    default:
+                        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
                         break;
                 }
             }
