@@ -41,7 +41,6 @@ public class MessageParser {
     }
 
     public static MessageCommand GetCommand(byte[] message, int startPoint) {
-
         return fromValue(message[startPoint]);
     }
 
@@ -63,8 +62,14 @@ public class MessageParser {
                 return MessageCommand.NewAlbum;
             case 2:
                 return MessageCommand.CurrentAlbum;
+            case 3:
+                return MessageCommand.Status;
+            case 20:
+                return MessageCommand.Busy;
+            case 21:
+                return MessageCommand.Ready;
             default:
-                throw new IllegalArgumentException();
+                return MessageCommand.None;
         }
     }
 }

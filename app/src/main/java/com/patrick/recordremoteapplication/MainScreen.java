@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,13 +27,13 @@ public class MainScreen extends ActionBarActivity {
 
         //Get the IP address
         try {
-            ((MyGlobalVariables)this.getApplication()).MyIp =  InetAddress.getByName(Utils.getIPAddress(true));
+            ((MyGlobalVariables) this.getApplication()).MyIp = InetAddress.getByName(Utils.getIPAddress(true));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-        ((MyGlobalVariables)this.getApplication()).Status =  StatusType.Unknown;
-        ((MyGlobalVariables)this.getApplication()).BusyStatusExtra =  "Getting Status";
+        ((MyGlobalVariables) this.getApplication()).BusyStatusExtra = BusyStatus.Unknown;
+        ((MyGlobalVariables) this.getApplication()).IsSystemBusy = false;
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -48,7 +49,7 @@ public class MainScreen extends ActionBarActivity {
         startService(new Intent(this, ListenerService.class));
     }
 
-    public void requestScan(View view){
+    public void requestScan(View view) {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "scan");
         startService(intent);

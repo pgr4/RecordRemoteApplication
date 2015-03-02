@@ -25,7 +25,7 @@ public class ListenerService extends IntentService {
         try {
             InetAddress broadcastIP = InetAddress.getByName("192.168.1.255");
             Integer port = 30003;
-            GetStatus(broadcastIP, port);
+            GetStatus();
             ListenAndWait(broadcastIP, port);
 
         } catch (Exception e) {
@@ -34,74 +34,16 @@ public class ListenerService extends IntentService {
     }
 
     //Send Status
-    private void SendStatus(InetAddress ip, Integer port) throws IOException {
-        final DatagramSocket socket = new DatagramSocket();
-        int pointer = 0;
-        byte[] buf = new byte[256];
-
-        for (int i = 0; i < 4; i++) {
-            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
-        }
-
-        pointer = 4;
-
-        for (int i = pointer; i < pointer + 4; i++) {
-            buf[i] = 12;
-        }
-        pointer = 8;
-
-        if(((MyGlobalVariables) this.getApplication()).IsSystemBusy) {
-            buf[pointer++] = 20;
-        }else{
-            if(((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
-                buf[pointer++] = 20;
-            }else{
-                buf[pointer++] = 21;
-            }
-        }
-
-        for (int i = pointer; i < pointer + 6; i++) {
-            buf[i] = 111;
-        }
-
-        pointer = 15;
-
-        if(((MyGlobalVariables) this.getApplication()).IsSystemBusy ||
-                ((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown ) {
-            buf[pointer++] = ((MyGlobalVariables) this.getApplication()).BusyStatusExtra.getValue();
-        }
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-        socket.send(packet);
-        socket.close();
+    private void SendStatus(){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "status");
+        startService(intent);
     }
 
-    //Request Status
-    private void GetStatus(InetAddress ip, Integer port) throws IOException {
-        final DatagramSocket socket = new DatagramSocket();
-        int pointer = 0;
-        byte[] buf = new byte[256];
-
-        for (int i = 0; i < 4; i++) {
-            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
-        }
-
-        pointer = 4;
-
-        for (int i = pointer; i < pointer + 4; i++) {
-            buf[i] = 12;
-        }
-        pointer = 8;
-
-        buf[pointer++] = (byte)MessageCommand.Status.getValue();
-
-        for (int i = pointer; i < pointer + 6; i++) {
-            buf[i] = 111;
-        }
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-        socket.send(packet);
-        socket.close();
+    private void GetStatus(){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "getStatus");
+        startService(intent);
     }
 
     //Main Listening function
@@ -140,7 +82,11 @@ public class ListenerService extends IntentService {
                     case CurrentAlbum:
                         break;
                     case Status:
-                        SendStatus(broadcastIP, port);//TODO:SEND UDP MESSAGE WHETHER WE ARE READY OR NOT
+                        String sA = mh.SourceAddress.toString();
+                        String mA = ((MyGlobalVariables)this.getApplication()).MyIp.toString();
+                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)){
+                            SendStatus();
+                        }
                         break;
                     case Busy:
                         ((MyGlobalVariables)this.getApplication()).BusyStatusExtra = BusyStatus.fromInteger((int)message[startingPoint]);

@@ -85,6 +85,11 @@
             android:name=".DatabaseService"
             android:exported="false" >
         </service>
+        <service
+            android:name=".SenderService"
+            android:exported="false" >
+        </service>
+
 
 
     </application>
