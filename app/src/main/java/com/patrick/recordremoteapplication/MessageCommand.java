@@ -9,6 +9,7 @@ public enum MessageCommand {
     CurrentAlbum(2),
     Status(3),
     Scan(4),
+    Sync(5),
 
     GoToTrack(10),
     Play(11),

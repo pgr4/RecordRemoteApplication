@@ -76,16 +76,26 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
-                        NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
-                        showCurrentListScreen(na);
+                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
+                            NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
+                            showCurrentListScreen(na);
+                        }
                         break;
                     case CurrentAlbum:
                         break;
                     case Status:
-                        String sA = mh.SourceAddress.toString();
-                        String mA = ((MyGlobalVariables)this.getApplication()).MyIp.toString();
                         if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)){
                             SendStatus();
+                        }
+                        break;
+                    case Sync:
+                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
+                            byte[] key = MessageParser.GetKey(message, startingPoint);
+
+                            Intent intent = new Intent(this, DatabaseService.class);
+                            intent.putExtra("type", "getAlbum");
+                            intent.putExtra("key", key);
+                            startService(intent);
                         }
                         break;
                     case Busy:
@@ -100,7 +110,6 @@ public class ListenerService extends IntentService {
                         ((MyGlobalVariables)this.getApplication()).IsSystemBusy = false;
                         ((MyGlobalVariables)this.getApplication()).BusyStatusExtra = null;
                         break;
-
                 }
             }
         }

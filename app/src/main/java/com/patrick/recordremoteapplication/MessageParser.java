@@ -1,7 +1,9 @@
 package com.patrick.recordremoteapplication;
 
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * Created by pat on 12/28/2014.
@@ -28,6 +30,12 @@ public class MessageParser {
         } else {
             return new MessageHeader(sourceIP, destinationIP, command);
         }
+    }
+
+    public static byte[] GetKey(byte[] message, int startPoint){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byteArrayOutputStream.write(message,startPoint,message.length - startPoint);
+        return byteArrayOutputStream.toByteArray();
     }
 
     public static InetAddress GetIP(byte[] message, int startPoint) throws UnknownHostException {

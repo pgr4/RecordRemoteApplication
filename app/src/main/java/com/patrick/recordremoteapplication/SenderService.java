@@ -50,6 +50,40 @@ public class SenderService extends IntentService {
         }
     }
 
+    private void sendSync(byte[] key) throws IOException {
+        final DatagramSocket socket = new DatagramSocket();
+        int pointer = 0;
+        byte[] buf = new byte[256];
+
+        for (int i = 0; i < 4; i++) {
+            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
+        }
+
+        pointer = 4;
+
+        for (int i = pointer; i < pointer + 4; i++) {
+            buf[i] = 12;
+        }
+
+        pointer = 8;
+
+        buf[pointer++] = 5;
+
+        for (int i = pointer; i < pointer + 6; i++) {
+            buf[i] = 111;
+        }
+
+        pointer = 15;
+
+        for (int i = 0; i < key.length; i++) {
+            buf[pointer++] = key[i];
+        }
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+        socket.send(packet);
+        socket.close();
+    }
+
     //Send Status
     private void sendStatus() throws IOException {
         final DatagramSocket socket = new DatagramSocket();
@@ -67,12 +101,12 @@ public class SenderService extends IntentService {
         }
         pointer = 8;
 
-        if(((MyGlobalVariables) this.getApplication()).IsSystemBusy) {
+        if (((MyGlobalVariables) this.getApplication()).IsSystemBusy) {
             buf[pointer++] = 20;
-        }else{
-            if(((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
+        } else {
+            if (((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
                 buf[pointer++] = 20;
-            }else{
+            } else {
                 buf[pointer++] = 21;
             }
         }
@@ -83,8 +117,8 @@ public class SenderService extends IntentService {
 
         pointer = 15;
 
-        if(((MyGlobalVariables) this.getApplication()).IsSystemBusy ||
-                ((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown ) {
+        if (((MyGlobalVariables) this.getApplication()).IsSystemBusy ||
+                ((MyGlobalVariables) this.getApplication()).BusyStatusExtra == BusyStatus.Unknown) {
             buf[pointer++] = ((MyGlobalVariables) this.getApplication()).BusyStatusExtra.getValue();
         }
 
@@ -110,7 +144,7 @@ public class SenderService extends IntentService {
         }
         pointer = 8;
 
-        buf[pointer++] = (byte)MessageCommand.Status.getValue();
+        buf[pointer++] = (byte) MessageCommand.Status.getValue();
 
         for (int i = pointer; i < pointer + 6; i++) {
             buf[i] = 111;
