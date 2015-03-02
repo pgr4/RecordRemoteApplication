@@ -76,7 +76,7 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
-                        if(!mh.SourceAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
+                        if(!mh.DestinationAddress.equals(((MyGlobalVariables)this.getApplication()).MyIp)) {
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
                             showCurrentListScreen(na);
                         }
