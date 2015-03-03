@@ -32,13 +32,14 @@ public class ListenerService extends IntentService {
         }
     }
 
-    //Send Status
+    //Send our Status
     private void SendStatus() {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "status");
         startService(intent);
     }
 
+    //Request Status
     private void GetStatus() {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "getStatus");
@@ -75,7 +76,7 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
-                        if (!mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
+                        if (mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
                             showArtistAssociationScreen(na);
                         }

@@ -3,7 +3,9 @@ package com.patrick.recordremoteapplication;
 import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -161,7 +163,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP GET Request to get an album
-    private void getAlbum(byte[] by) throws IOException {
+    private void getAlbum(byte[] by) throws IOException, JSONException {
         byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -180,6 +182,21 @@ public class DatabaseService extends IntentService {
         InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(s);
+
+        JSONObject jsAlbum = new JSONObject(res);
+
+       String songs = "";
+
+
+        JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
+        for (int i = 0; i < jsSongs.length(); i++) {
+            songs += (String) jsSongs.get(i) + ",";
+        }
+
+        byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        goToCurrentSongListScreen(songs,jsAlbum.getString("Artist"),jsAlbum.getString("Name"),decodedByte);
     }
 
     //Create an HTTP GET Request to get all Songs associated with the album
