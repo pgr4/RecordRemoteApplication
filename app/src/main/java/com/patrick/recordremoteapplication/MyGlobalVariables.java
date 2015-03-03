@@ -1,6 +1,7 @@
 package com.patrick.recordremoteapplication;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -16,4 +17,5 @@ public class MyGlobalVariables extends Application {
     public String TotalAlbumImage;
     public InetAddress MyIp;
     public BusyStatus Status;
+    public Bitmap CurrentBitmap;
 }

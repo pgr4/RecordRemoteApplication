@@ -83,7 +83,7 @@ public class CurrentListScreen extends ActionBarActivity {
 
         //Set the album art
         imgAlbumArt = (ImageView) findViewById(R.id.imgAlbumArt);
-        imgAlbumArt.setImageBitmap((Bitmap) b.getParcelable("image"));
+        imgAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
 
         /* Media Control Images */
         imgbtnPlay = (ImageButton) findViewById(R.id.imgbtnPlay);

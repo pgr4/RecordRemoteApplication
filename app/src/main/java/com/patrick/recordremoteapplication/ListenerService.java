@@ -107,16 +107,6 @@ public class ListenerService extends IntentService {
     }
 
     //Bring up the currentListScreen with the NewAlbum information
-    private void showCurrentListScreen(NewAlbum na) {
-        Intent intent = new Intent(this, CurrentListScreen.class);
-        intent.putExtra("newAlbumBreaks", na.Breaks);
-        intent.putExtra("newAlbumKey", na.Key);
-        //This is necessary
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    //Bring up the currentListScreen with the NewAlbum information
     private void showArtistAssociationScreen(NewAlbum na) {
         Intent intent = new Intent(this, ArtistAssociationScreen.class);
         intent.putExtra("newAlbumBreaks", na.Breaks);

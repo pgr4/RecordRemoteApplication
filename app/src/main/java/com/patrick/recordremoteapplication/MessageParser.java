@@ -1,5 +1,7 @@
 package com.patrick.recordremoteapplication;
 
+import org.apache.http.util.ByteArrayBuffer;
+
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -41,9 +43,16 @@ public class MessageParser {
     }
 
     public static byte[] GetKey(byte[] message, int startPoint) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byteArrayOutputStream.write(message, startPoint, message.length - startPoint);
-        return byteArrayOutputStream.toByteArray();
+        ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(100);
+        for (int i = startPoint; i < message.length; i++) {
+            if (message[i] == 111 && message[i + 1] == 111 && message[i + 2] == 111 &&
+                    message[i + 3] == 111 && message[i + 4] == 111 && message[i + 5] == 111) {
+                break;
+            } else {
+                byteArrayBuffer.append(message[i]);
+            }
+        }
+        return byteArrayBuffer.toByteArray();
     }
 
     public static InetAddress GetIP(byte[] message, int startPoint) throws UnknownHostException {

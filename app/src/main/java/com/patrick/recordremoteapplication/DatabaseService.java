@@ -163,8 +163,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP GET Request to get an album
-    private void getAlbum(byte[] by) throws IOException, JSONException {
-        byte[] bytes = {(byte) 0x54, (byte) 0x54};
+    private void getAlbum(byte[] bytes) throws IOException, JSONException {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
@@ -185,7 +184,7 @@ public class DatabaseService extends IntentService {
 
         JSONObject jsAlbum = new JSONObject(res);
 
-       String songs = "";
+        String songs = "";
 
 
         JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
@@ -193,10 +192,15 @@ public class DatabaseService extends IntentService {
             songs += (String) jsSongs.get(i) + ",";
         }
 
+        //TODO: THIS IS BAD PRACTICE YOU SHOULD BE ASHAMED!
+        songs += "REMOVETHIS";
+
+        songs = songs.replace(",REMOVETHIS", "");
+
         byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-        goToCurrentSongListScreen(songs,jsAlbum.getString("Artist"),jsAlbum.getString("Name"),decodedByte);
+        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte);
     }
 
     //Create an HTTP GET Request to get all Songs associated with the album
@@ -260,7 +264,7 @@ public class DatabaseService extends IntentService {
     private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         //intent.putExtra("newAlbumKey", key);
-        intent.putExtra("image", bitmap);
+        ((MyGlobalVariables) this.getApplication()).CurrentBitmap = bitmap;
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);

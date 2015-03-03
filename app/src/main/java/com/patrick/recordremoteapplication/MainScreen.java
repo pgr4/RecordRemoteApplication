@@ -76,10 +76,10 @@ public class MainScreen extends ActionBarActivity {
     }
 
     public void goToCurrentList(View view) {
-        Intent intent = new Intent(this, CurrentListScreen.class);
-        intent.putExtra("newAlbumBreaks", 5);
-        intent.putExtra("newAlbumKey", new byte[]{24, 43});
-        startActivity(intent);
+//        Intent intent = new Intent(this, CurrentListScreen.class);
+//        intent.putExtra("newAlbumBreaks", 5);
+//        intent.putExtra("newAlbumKey", new byte[]{24, 43});
+//        startActivity(intent);
     }
 
     public void goToTotalList(View view) {
