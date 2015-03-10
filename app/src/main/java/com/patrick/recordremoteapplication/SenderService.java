@@ -24,22 +24,28 @@ public class SenderService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            ip = InetAddress.getByName("192.168.1.255");
+            ip = InetAddress.getByName ("192.168.1.255");
 
             if (intent != null) {
                 Bundle b = intent.getExtras();
 
                 switch (b.getString("type")) {
                     case "scan":
-                        sendScan();
+                        sendHeader(MessageCommand.Scan.getValue());
                         break;
                     case "sync":
                         sendSync(b.getByteArray("key"));
                     case "getStatus":
-                        getStatus();
+                        sendHeader(MessageCommand.Status.getValue());
                         break;
                     case "status":
                         sendStatus();
+                        break;
+                    case "on":
+                        sendHeader(MessageCommand.On.getValue());
+                        break;
+                    case "off":
+                        sendHeader(MessageCommand.Off.getValue());
                         break;
                     default:
                         break;
@@ -48,6 +54,33 @@ public class SenderService extends IntentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendHeader(int t) throws IOException{
+        final DatagramSocket socket = new DatagramSocket();
+        int pointer = 0;
+        byte[] buf = new byte[15];
+
+        for (int i = 0; i < 4; i++) {
+            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
+        }
+
+        pointer = 4;
+
+        for (int i = pointer; i < pointer + 4; i++) {
+            buf[i] = 12;
+        }
+        pointer = 8;
+
+        buf[pointer++] = (byte)t;
+
+        for (int i = pointer; i < pointer + 6; i++) {
+            buf[i] = 111;
+        }
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+        socket.send(packet);
+        socket.close();
     }
 
     //Send Sync
@@ -103,61 +136,6 @@ public class SenderService extends IntentService {
         pointer = 8;
 
         buf[pointer++] = (byte) (((MyGlobalVariables) this.getApplication()).Status.getValue() + 20);
-
-        for (int i = pointer; i < pointer + 6; i++) {
-            buf[i] = 111;
-        }
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-        socket.send(packet);
-        socket.close();
-    }
-
-    //Request Status
-    private void getStatus() throws IOException {
-        final DatagramSocket socket = new DatagramSocket();
-        int pointer = 0;
-        byte[] buf = new byte[15];
-
-        for (int i = 0; i < 4; i++) {
-            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
-        }
-
-        pointer = 4;
-
-        for (int i = pointer; i < pointer + 4; i++) {
-            buf[i] = 12;
-        }
-        pointer = 8;
-
-        buf[pointer++] = (byte) MessageCommand.Status.getValue();
-
-        for (int i = pointer; i < pointer + 6; i++) {
-            buf[i] = 111;
-        }
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
-        socket.send(packet);
-        socket.close();
-    }
-
-    private void sendScan() throws IOException {
-        final DatagramSocket socket = new DatagramSocket();
-        int pointer = 0;
-        byte[] buf = new byte[15];
-
-        for (int i = 0; i < 4; i++) {
-            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
-        }
-
-        pointer = 4;
-
-        for (int i = pointer; i < pointer + 4; i++) {
-            buf[i] = 12;
-        }
-        pointer = 8;
-
-        buf[pointer++] = 4;
 
         for (int i = pointer; i < pointer + 6; i++) {
             buf[i] = 111;

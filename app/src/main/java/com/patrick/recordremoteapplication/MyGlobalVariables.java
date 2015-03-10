@@ -18,4 +18,7 @@ public class MyGlobalVariables extends Application {
     public InetAddress MyIp;
     public BusyStatus Status;
     public Bitmap CurrentBitmap;
+    public String CurrentAlbum;
+    public String CurrentArtist;
+    public boolean IsPowerOn;
 }

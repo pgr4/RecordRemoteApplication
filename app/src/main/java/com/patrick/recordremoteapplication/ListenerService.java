@@ -98,6 +98,16 @@ public class ListenerService extends IntentService {
                             startService(intent);
                         }
                         break;
+                    case On:
+                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                            ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
+                        }
+                        break;
+                    case Off:
+                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                            ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
+                        }
+                        break;
                     default:
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
                         break;

@@ -17,6 +17,7 @@
     <array name="drawerActivities">
         <item>Total List</item>
         <item>Current List</item>
+        <item>Touch Me!</item>
         <item>Settings</item>
     </array>
     <string name="drawer_open">Open</string>

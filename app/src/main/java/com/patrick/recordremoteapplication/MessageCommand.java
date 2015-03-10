@@ -15,6 +15,8 @@ public enum MessageCommand {
     Play(11),
     Pause(12),
     StopPause(13),
+    On(14),
+    Off(15),
 
     sUnknown(20),
     sReady(21),

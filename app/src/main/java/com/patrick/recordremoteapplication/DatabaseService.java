@@ -169,7 +169,7 @@ public class DatabaseService extends IntentService {
             sb.append(String.format("%02X", b));
         }
         //Form the query String
-        String query = "http://192.168.1.247/api/album?s=" + sb;
+        String query = "http://192.168.1.2/api/album?s=" + sb;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);

@@ -1,6 +1,8 @@
 package com.patrick.recordremoteapplication;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.opengl.Visibility;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,7 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -18,6 +25,8 @@ public class MainScreen extends ActionBarActivity {
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private TextView tvCurrentText;
+    private ImageView ivCurrentAlbumArt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +52,46 @@ public class MainScreen extends ActionBarActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        Switch mySwitch = (Switch) findViewById(R.id.swPower);
+
+        tvCurrentText = (TextView) findViewById(R.id.tvCurrentPlaying);
+        ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
+
+        //set the switch to ON
+        mySwitch.setChecked(false);
+        //attach a listener to check for changes in state
+        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    sendPowerUpdate("on");
+                }else{
+                    sendPowerUpdate("off");
+                }
+            }
+        });
+
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
+    }
+
+    public void sendPowerUpdate(String status){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", status);
+        startService(intent);
     }
 
     public void requestScan(View view) {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "scan");
         startService(intent);
+    }
+
+    private void setCurrentAlbum(String artist,String album,Bitmap bitmap){
+        tvCurrentText.setText("Playing " + artist + "'s " + album);
+        ivCurrentAlbumArt.setImageBitmap(bitmap);
+        findViewById(R.id.llCurrent).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -114,6 +155,9 @@ public class MainScreen extends ActionBarActivity {
                     goToCurrentList(view);
                     break;
                 case 2:
+                    goToArtistAssociation(view);
+                    break;
+                case 3:
                     //Settings
                     break;
             }

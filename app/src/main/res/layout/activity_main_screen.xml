@@ -1,7 +1,85 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true">
+
+            <Switch
+                android:id="@+id/swPower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:gravity="center"
+                android:checked="false"
+                android:text="Status"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llBusyStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llStatus"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/tvBusyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Currently: " />
+
+            <TextView
+                android:id="@+id/tvBusyStatusValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvBusyStatus"
+                android:text="" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llBusyStatus"
+            android:layout_centerHorizontal="true"
+            android:onClick="requestScan"
+            android:text="Scan" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/llCurrent"
+            android:layout_below="@+id/btnScan">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/ivCurrentAlbumArt"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCurrentPlaying"
+                android:text=""/>
+
+            </LinearLayout>
+
+    </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/content_frame"
@@ -18,11 +96,5 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnScan"
-        android:onClick="requestScan"
-        android:text="Scan"/>
 
 </android.support.v4.widget.DrawerLayout>
