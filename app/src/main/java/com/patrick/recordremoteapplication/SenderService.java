@@ -24,7 +24,7 @@ public class SenderService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            ip = InetAddress.getByName ("192.168.1.255");
+            ip = InetAddress.getByName("192.168.1.255");
 
             if (intent != null) {
                 Bundle b = intent.getExtras();
@@ -42,10 +42,17 @@ public class SenderService extends IntentService {
                         sendStatus();
                         break;
                     case "on":
-                        sendHeader(MessageCommand.On.getValue());
+                        sendHeader(MessageCommand.SwitchPowerOn.getValue());
                         break;
                     case "off":
-                        sendHeader(MessageCommand.Off.getValue());
+                        sendHeader(MessageCommand.SwitchPowerOff.getValue());
+                        break;
+                    case "getPower":
+                        if (b.getBoolean("power")) {
+                            sendHeader(MessageCommand.On.getValue());
+                        } else {
+                            sendHeader(MessageCommand.Off.getValue());
+                        }
                         break;
                     default:
                         break;
@@ -56,7 +63,7 @@ public class SenderService extends IntentService {
         }
     }
 
-    private void sendHeader(int t) throws IOException{
+    private void sendHeader(int t) throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
         byte[] buf = new byte[15];
@@ -72,7 +79,7 @@ public class SenderService extends IntentService {
         }
         pointer = 8;
 
-        buf[pointer++] = (byte)t;
+        buf[pointer++] = (byte) t;
 
         for (int i = pointer; i < pointer + 6; i++) {
             buf[i] = 111;

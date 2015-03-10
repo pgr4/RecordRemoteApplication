@@ -98,6 +98,11 @@ public class ListenerService extends IntentService {
                             startService(intent);
                         }
                         break;
+                    //TODO:UPDATE MAIN SCREEN SLIDER
+                    case PowerUnknown:
+                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                            ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
+                        }
                     case On:
                         if(mh.SourceAddress.equals(mh.DestinationAddress)){
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
@@ -105,8 +110,19 @@ public class ListenerService extends IntentService {
                         break;
                     case Off:
                         if(mh.SourceAddress.equals(mh.DestinationAddress)){
-                            ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
+                            ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
                         }
+                        break;
+                    case GetPower:
+                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                            Intent intent = new Intent(this, SenderService.class);
+                            intent.putExtra("type", "sendPower");
+                            intent.putExtra("power", ((MyGlobalVariables) this.getApplication()).IsPowerOn);
+                            startService(intent);
+                        }
+                        break;
+                    case SwitchPowerOn:
+                    case SwitchPowerOff:
                         break;
                     default:
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
