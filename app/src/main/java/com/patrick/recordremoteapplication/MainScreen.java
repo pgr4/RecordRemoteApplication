@@ -1,8 +1,12 @@
 package com.patrick.recordremoteapplication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.opengl.Visibility;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -27,6 +31,19 @@ public class MainScreen extends ActionBarActivity {
     private ListView mDrawerList;
     private TextView tvCurrentText;
     private ImageView ivCurrentAlbumArt;
+    private BroadcastReceiver receiver;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter("mainScreen"));
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +69,7 @@ public class MainScreen extends ActionBarActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        Switch mySwitch = (Switch) findViewById(R.id.swPower);
+        final Switch mySwitch = (Switch) findViewById(R.id.swPower);
 
         tvCurrentText = (TextView) findViewById(R.id.tvCurrentPlaying);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
@@ -64,19 +81,35 @@ public class MainScreen extends ActionBarActivity {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     sendPowerUpdate("on");
-                }else{
+                } else {
                     sendPowerUpdate("off");
                 }
             }
         });
 
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getStringExtra("Hello");
+                if (s == "on") {
+                    mySwitch.setChecked(true);
+                    mySwitch.setEnabled(true);
+                } else if (s == "off") {
+                    mySwitch.setChecked(false);
+                    mySwitch.setEnabled(true);
+                } else {
+                    mySwitch.setEnabled(false);
+                }
+            }
+        };
+
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
     }
 
-    public void sendPowerUpdate(String status){
+    public void sendPowerUpdate(String status) {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", status);
         startService(intent);
@@ -88,7 +121,7 @@ public class MainScreen extends ActionBarActivity {
         startService(intent);
     }
 
-    private void setCurrentAlbum(String artist,String album,Bitmap bitmap){
+    private void setCurrentAlbum(String artist, String album, Bitmap bitmap) {
         tvCurrentText.setText("Playing " + artist + "'s " + album);
         ivCurrentAlbumArt.setImageBitmap(bitmap);
         findViewById(R.id.llCurrent).setVisibility(View.VISIBLE);

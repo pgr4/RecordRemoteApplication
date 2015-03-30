@@ -2,6 +2,7 @@ package com.patrick.recordremoteapplication;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.net.DatagramPacket;
@@ -9,8 +10,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class ListenerService extends IntentService {
+    private LocalBroadcastManager broadcaster;
+
     public ListenerService() {
         super("ListenerService");
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -98,31 +102,45 @@ public class ListenerService extends IntentService {
                             startService(intent);
                         }
                         break;
-                    //TODO:UPDATE MAIN SCREEN SLIDER
                     case PowerUnknown:
-                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
+                            UpdateMainScreen("mainScreen", "unknown");
                         }
                     case On:
-                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
+                            UpdateMainScreen("mainScreen", "on");
                         }
                         break;
                     case Off:
-                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
+                            UpdateMainScreen("mainScreen", "off");
                         }
                         break;
                     case GetPower:
-                        if(mh.SourceAddress.equals(mh.DestinationAddress)){
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             Intent intent = new Intent(this, SenderService.class);
                             intent.putExtra("type", "sendPower");
                             intent.putExtra("power", ((MyGlobalVariables) this.getApplication()).IsPowerOn);
                             startService(intent);
                         }
                         break;
+                    case UpdatePosition:
+                        UpdateCurrentScreen(MessageParser.GetByte(message, startingPoint));
+                        break;
+                    case AtBeginning:
+                        UpdateCurrentScreen();
+                        break;
                     case SwitchPowerOn:
                     case SwitchPowerOff:
+                    case GoToTrack:
+                    case GoToBeginning:
+                    case MediaPlay:
+                    case MediaRewind:
+                    case MediaSkip:
+                    case MediaStop:
                         break;
                     default:
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
@@ -130,6 +148,26 @@ public class ListenerService extends IntentService {
                 }
             }
         }
+    }
+
+    //Update UI
+    private void UpdateMainScreen(String screen, String message) {
+        Intent intent = new Intent("mainScreen");
+        intent.putExtra("hello", message);
+        broadcaster.sendBroadcast(intent);
+    }
+
+    private void UpdateCurrentScreen() {
+        Intent intent = new Intent("currentListScreen");
+        intent.putExtra("type", "beginning");
+        broadcaster.sendBroadcast(intent);
+    }
+
+    private void UpdateCurrentScreen(byte message) {
+        Intent intent = new Intent("currentListScreen");
+        intent.putExtra("type", "location");
+        intent.putExtra("hello", message);
+        broadcaster.sendBroadcast(intent);
     }
 
     //Bring up the currentListScreen with the NewAlbum information

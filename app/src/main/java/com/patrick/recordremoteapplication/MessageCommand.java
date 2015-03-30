@@ -13,11 +13,9 @@ public enum MessageCommand {
     GetPower(6),
     SwitchPowerOn(7),
     SwitchPowerOff(8),
+    UpdatePosition(9),
+    AtBeginning(10),
 
-    GoToTrack(10),
-    Play(11),
-    Pause(12),
-    StopPause(13),
     PowerUnknown(14),
     On(15),
     Off(16),
@@ -28,7 +26,14 @@ public enum MessageCommand {
     sGoToTrack(23),
     sPause(24),
     sStop(25),
-    sScan(26);
+    sScan(26),
+
+    GoToTrack(30),
+    MediaPlay(31),
+    MediaStop(32),
+    MediaRewind(33),
+    MediaSkip(34),
+    GoToBeginning(35);
 
     public int getValue() {
         return value;

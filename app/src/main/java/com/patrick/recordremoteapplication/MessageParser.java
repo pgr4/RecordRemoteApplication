@@ -69,6 +69,10 @@ public class MessageParser {
         return fromValue(message[startPoint]);
     }
 
+    public static byte GetByte(byte[] message, int startPoint) {
+        return message[startPoint];
+    }
+
     public static boolean IsEndOfHeader(byte[] message, int startPoint) {
         for (int i = 0; i < 6; i++) {
             if (message[startPoint + i] != 111) {
@@ -89,8 +93,26 @@ public class MessageParser {
                 return MessageCommand.CurrentAlbum;
             case 3:
                 return MessageCommand.Status;
+            case 4:
+                return MessageCommand.Scan;
             case 5:
                 return MessageCommand.Sync;
+            case 6:
+                return MessageCommand.GetPower;
+            case 7:
+                return MessageCommand.SwitchPowerOn;
+            case 8:
+                return MessageCommand.SwitchPowerOff;
+            case 9:
+                return MessageCommand.UpdatePosition;
+            case 10:
+                return MessageCommand.AtBeginning;
+            case 14:
+                return MessageCommand.PowerUnknown;
+            case 15:
+                return MessageCommand.On;
+            case 16:
+                return MessageCommand.Off;
             case 20:
                 return MessageCommand.sUnknown;
             case 21:
@@ -105,6 +127,20 @@ public class MessageParser {
                 return MessageCommand.sStop;
             case 26:
                 return MessageCommand.sScan;
+
+            case 30:
+                return MessageCommand.GoToTrack;
+            case 31:
+                return MessageCommand.MediaPlay;
+            case 32:
+                return MessageCommand.MediaStop;
+            case 33:
+                return MessageCommand.MediaRewind;
+            case 34:
+                return MessageCommand.MediaSkip;
+            case 35:
+                return MessageCommand.GoToBeginning;
+
             default:
                 return MessageCommand.None;
         }
