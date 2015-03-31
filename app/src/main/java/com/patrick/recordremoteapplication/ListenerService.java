@@ -194,7 +194,7 @@ public class ListenerService extends IntentService {
     private void UpdateCurrentScreen(byte message) {
         Intent intent = new Intent("currentListScreen");
         intent.putExtra("type", "location");
-        intent.putExtra("hello", message);
+        intent.putExtra("location", message);
         broadcaster.sendBroadcast(intent);
     }
 

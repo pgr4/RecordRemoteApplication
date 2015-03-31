@@ -73,9 +73,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvCurrentPlaying"
+                android:id="@+id/tvCurrentPlayingAlbum"
                 android:text=""/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCurrentPlayingArtist"
+                android:text=""/>
             </LinearLayout>
 
     </RelativeLayout>

@@ -80,7 +80,7 @@ public class DatabaseService extends IntentService {
     //Create an HTTP Get Request to get all Artists
     private void getTotalArtists() throws IOException, JSONException {
         //Form the query String
-        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
         String query = "http://" + ip + "/api/Artist";
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
@@ -105,7 +105,7 @@ public class DatabaseService extends IntentService {
     //Create an HTTP Get Request to get albums associated with the Artist
     private void getTotalAlbums(String artist) throws IOException, JSONException {
         //Form the query String
-        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
         String query = "http://" + ip + "/api/Album?artist=" + URLEncoder.encode(artist, "UTF-8");
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
@@ -133,7 +133,7 @@ public class DatabaseService extends IntentService {
     //Create an HTTP Get Request to get albums associated with the Artist
     private void getTotalSongs(String key) throws IOException, JSONException {
         //Form the query String
-        String ip = "192.168.1.247";//"10.240.3.188";//192.168.1.247
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
         String query = "http://" + ip + "/api/Song?key=" + URLEncoder.encode(key, "UTF-8");
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
@@ -169,7 +169,8 @@ public class DatabaseService extends IntentService {
             sb.append(String.format("%02X", b));
         }
         //Form the query String
-        String query = "http://192.168.1.2/api/album?s=" + sb;
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
+        String query = "http://" + ip + "/api/album?s=" + sb;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -211,7 +212,8 @@ public class DatabaseService extends IntentService {
             sb.append(String.format("%02X", b));
         }
         //Form the query String
-        String query = "http://192.168.1.247/api/Song?s=" + sb;
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
+        String query = "http://" + ip + "/api/Song?s=" + sb;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -233,7 +235,8 @@ public class DatabaseService extends IntentService {
             sb.append(String.format("%02X", b));
         }
         //Form the query String
-        String query = "http://192.168.1.247/api/Song";
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
+        String query = "http://" + ip + "/api/Song";
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpPost request = new HttpPost(query);

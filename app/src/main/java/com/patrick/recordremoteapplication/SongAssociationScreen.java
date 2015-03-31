@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +24,8 @@ public class SongAssociationScreen extends ActionBarActivity {
     private int breaks;
     private String artistName;
     private String albumName;
-    private String csSongs;
     private String albumImageUrl;
+    SongListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,9 @@ public class SongAssociationScreen extends ActionBarActivity {
         //Get the Songs from the online database
         getSongs();
 
+        registerForContextMenu(mainListView);
+
         //Set up the item on click event
-        //TODO: Bring up a popup to delete/merge
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -61,6 +63,30 @@ public class SongAssociationScreen extends ActionBarActivity {
 //                }
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.songAssociationList) {
+            ListView lv = (ListView) v;
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            String obj = (String) lv.getItemAtPosition(acmi.position);
+
+            menu.add("Delete");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "Delete") {
+            //Remove from adapter
+            adapter.remove("");
+            mainListView.setAdapter(adapter);
+        }
+        else {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -96,8 +122,6 @@ public class SongAssociationScreen extends ActionBarActivity {
 
                 setAdapter(result);
 
-                csSongs = listToString(result);
-
                 //GET START TIME
                 Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
             }
@@ -106,22 +130,34 @@ public class SongAssociationScreen extends ActionBarActivity {
     }
 
     private void setAdapter(ArrayList<String> lst) {
-        SongListAdapter adapter = new SongListAdapter(this, lst);
+        adapter = new SongListAdapter(this, lst);
         mainListView.setAdapter(adapter);
     }
 
     //TODO:checkConditons
     private boolean checkConditions() {
-        return true;
+        if(breaks + 1 != adapter.getCount())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     //Create the Database Service
     //Create the Sync
     public void onAccept(View view) {
+        ((MyGlobalVariables) this.getApplication()).CurrentAlbum = albumName;
+        ((MyGlobalVariables) this.getApplication()).CurrentArtist = artistName;
+        ((MyGlobalVariables) this.getApplication()).CurrentBitmap = LastFmBaseLookup.getBitmapFromURL(albumImageUrl);
+        ((MyGlobalVariables) this.getApplication()).HasAlbum = true;
+
         Intent intent = new Intent(this, DatabaseService.class);
         intent.putExtra("type", "addAlbumData");
         intent.putExtra("key", key);
-        intent.putExtra("songs", csSongs);
+        intent.putExtra("songs", adapter.csSongs);
         intent.putExtra("album", albumName);
         intent.putExtra("artist", artistName);
         intent.putExtra("image", albumImageUrl);
@@ -131,16 +167,5 @@ public class SongAssociationScreen extends ActionBarActivity {
         dIntent.putExtra("type", "sync");
         dIntent.putExtra("key", key);
         startService(dIntent);
-    }
-
-    private String listToString(ArrayList<String> arr) {
-        String ret = "";
-        for (int i = 0; i < arr.size(); i++) {
-            if (i != 0) {
-                ret += ",";
-            }
-            ret += arr.get(i);
-        }
-        return ret;
     }
 }

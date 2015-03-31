@@ -1,6 +1,11 @@
 package com.patrick.recordremoteapplication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +37,21 @@ public class CurrentListScreen extends ActionBarActivity {
     private String albumName;
     private String[] arrSongs;
     private byte[] key;
+    private BroadcastReceiver receiver;
+    private SongListAdapter adapter;
+    private int selectedIndex = -1;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter("currentListScreen"));
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +79,7 @@ public class CurrentListScreen extends ActionBarActivity {
         }
 
         //Setup the adapter
-        SongListAdapter adapter = new SongListAdapter(this, songList);
+        adapter = new SongListAdapter(this, songList);
         mainListView.setAdapter(adapter);
 
         //Set up the item on click event
@@ -96,6 +116,27 @@ public class CurrentListScreen extends ActionBarActivity {
 
         imgbtnBack = (ImageButton) findViewById(R.id.imgbtnBack);
         imgbtnBack.setImageResource(R.drawable.ic_action_rewind);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String type = intent.getStringExtra("type");
+                if (type == "beginning") {
+                    SongText.setText(adapter.getItem(0));
+                    selectedIndex=0;
+                } else if (type == "location") {
+                    Byte defaultByte = 0;
+                    Byte location = intent.getByteExtra("location", defaultByte);
+                    for (int i = 0; i < key.length; i++) {
+                        if (key[i] == location) {
+                            SongText.setText(adapter.getItem(i+1));
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        };
     }
 
     @Override

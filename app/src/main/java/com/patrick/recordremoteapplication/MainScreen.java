@@ -29,7 +29,8 @@ public class MainScreen extends ActionBarActivity {
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private TextView tvCurrentText;
+    private TextView tvCurrentPlayingArtist;
+    private TextView tvCurrentPlayingAlbum;
     private ImageView ivCurrentAlbumArt;
     private BroadcastReceiver receiver;
 
@@ -72,9 +73,19 @@ public class MainScreen extends ActionBarActivity {
         final Switch mySwitch = (Switch) findViewById(R.id.swPower);
         final TextView textViewBusy = (TextView) findViewById(R.id.tvBusyStatusValue);
         textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.getString());
+        final LinearLayout currentLinearLayout = (LinearLayout) findViewById(R.id.llCurrent);
 
-        tvCurrentText = (TextView) findViewById(R.id.tvCurrentPlaying);
+        tvCurrentPlayingAlbum = (TextView) findViewById(R.id.tvCurrentPlayingAlbum);
+        tvCurrentPlayingArtist = (TextView) findViewById(R.id.tvCurrentPlayingArtist);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
+
+        if(((MyGlobalVariables) this.getApplication()).HasAlbum)
+        {
+            currentLinearLayout.setVisibility(View.VISIBLE);
+            ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables)this.getApplication()).CurrentBitmap);
+            tvCurrentPlayingArtist.setText(((MyGlobalVariables)this.getApplication()).CurrentArtist);
+            tvCurrentPlayingAlbum.setText(((MyGlobalVariables)this.getApplication()).CurrentAlbum);
+        }
 
         mySwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
 
@@ -149,12 +160,6 @@ public class MainScreen extends ActionBarActivity {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "scan");
         startService(intent);
-    }
-
-    private void setCurrentAlbum(String artist, String album, Bitmap bitmap) {
-        tvCurrentText.setText("Playing " + artist + "'s " + album);
-        ivCurrentAlbumArt.setImageBitmap(bitmap);
-        findViewById(R.id.llCurrent).setVisibility(View.VISIBLE);
     }
 
     public void goToCurrentList(View view) {

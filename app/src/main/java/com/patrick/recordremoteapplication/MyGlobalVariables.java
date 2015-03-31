@@ -20,5 +20,6 @@ public class MyGlobalVariables extends Application {
     public Bitmap CurrentBitmap;
     public String CurrentAlbum;
     public String CurrentArtist;
+    public boolean HasAlbum = false;
     public boolean IsPowerOn = false;
 }

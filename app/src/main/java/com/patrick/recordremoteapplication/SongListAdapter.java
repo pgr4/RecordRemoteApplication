@@ -17,11 +17,24 @@ import java.util.ArrayList;
 public class SongListAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private ArrayList<String> list;
+    public String csSongs;
 
     public SongListAdapter(Activity c, ArrayList<String> lst) {
         super(c, R.layout.editable_number_song_list_item, lst);
         list = lst;
         context = c;
+        csSongs = listToString(lst);
+    }
+
+    private String listToString(ArrayList<String> arr) {
+        String ret = "";
+        for (int i = 0; i < arr.size(); i++) {
+            if (i != 0) {
+                ret += ",";
+            }
+            ret += arr.get(i);
+        }
+        return ret;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
