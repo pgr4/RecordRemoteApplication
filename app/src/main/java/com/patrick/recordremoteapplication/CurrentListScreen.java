@@ -31,6 +31,7 @@ public class CurrentListScreen extends ActionBarActivity {
     private String artistName;
     private String albumName;
     private String[] arrSongs;
+    private byte[] key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class CurrentListScreen extends ActionBarActivity {
         arrSongs = b.getString("songs").split(",");
         artistName = b.getString("artist");
         albumName = b.getString("album");
+        key = b.getByteArray("key");
 
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);
@@ -118,5 +120,10 @@ public class CurrentListScreen extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
 
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 }

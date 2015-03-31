@@ -43,7 +43,7 @@
                 android:id="@+id/tvBusyStatusValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/tvBusyStatus"
+                android:layout_toEndOf="@+id/tvBusyStatus"
                 android:text="" />
 
         </LinearLayout>

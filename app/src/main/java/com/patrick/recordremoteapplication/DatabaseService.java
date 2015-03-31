@@ -200,7 +200,7 @@ public class DatabaseService extends IntentService {
         byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte);
+        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte, bytes);
     }
 
     //Create an HTTP GET Request to get all Songs associated with the album
@@ -258,16 +258,17 @@ public class DatabaseService extends IntentService {
         String res = LastFmBaseLookup.ConvertStreamToString(s);
         //TODO:Look at Response Code
         //Bring up the CurrentListScreen
-        goToCurrentSongListScreen(songs, artist, album, bitmap);
+        goToCurrentSongListScreen(songs, artist, album, bitmap, key);
     }
 
-    private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap) {
+    private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap, byte[] key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         //intent.putExtra("newAlbumKey", key);
         ((MyGlobalVariables) this.getApplication()).CurrentBitmap = bitmap;
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);
+        intent.putExtra("key", key);
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

@@ -32,6 +32,27 @@ public enum BusyStatus {
         return null;
     }
 
+    public String getString() {
+        switch (this) {
+            case Unknown:
+                return "Unknown";
+            case Pause:
+                return "Pausing";
+            case Play:
+                return "Playing";
+            case GoToTrack:
+                return "Going to Track";
+            case Stop:
+                return "Stopping";
+            case Scan:
+                return "Scanning";
+            case Ready:
+                return "Ready";
+            default:
+                return "Unknown";
+        }
+    }
+
     public byte getValue() {
         return (byte) value;
     }

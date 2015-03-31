@@ -70,12 +70,14 @@ public class MainScreen extends ActionBarActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         final Switch mySwitch = (Switch) findViewById(R.id.swPower);
+        final TextView textViewBusy = (TextView) findViewById(R.id.tvBusyStatusValue);
+        textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.getString());
 
         tvCurrentText = (TextView) findViewById(R.id.tvCurrentPlaying);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
 
-        //set the switch to ON
-        mySwitch.setChecked(false);
+        mySwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
+
         //attach a listener to check for changes in state
         mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -92,39 +94,27 @@ public class MainScreen extends ActionBarActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String s = intent.getStringExtra("Hello");
-                if (s == "on") {
-                    mySwitch.setChecked(true);
-                    mySwitch.setEnabled(true);
-                } else if (s == "off") {
-                    mySwitch.setChecked(false);
-                    mySwitch.setEnabled(true);
-                } else {
-                    mySwitch.setEnabled(false);
+                String s = intent.getStringExtra("type");
+                String status = intent.getStringExtra("status");
+
+                if (s == "power") {
+                    if (status == "on") {
+                        mySwitch.setChecked(true);
+                        mySwitch.setEnabled(true);
+                    } else if (status == "off") {
+                        mySwitch.setChecked(false);
+                        mySwitch.setEnabled(true);
+                    } else {
+                        mySwitch.setEnabled(false);
+                    }
+                } else if (s == "busy") {
+                    textViewBusy.setText(status);
                 }
             }
         };
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
-    }
-
-    public void sendPowerUpdate(String status) {
-        Intent intent = new Intent(this, SenderService.class);
-        intent.putExtra("type", status);
-        startService(intent);
-    }
-
-    public void requestScan(View view) {
-        Intent intent = new Intent(this, SenderService.class);
-        intent.putExtra("type", "scan");
-        startService(intent);
-    }
-
-    private void setCurrentAlbum(String artist, String album, Bitmap bitmap) {
-        tvCurrentText.setText("Playing " + artist + "'s " + album);
-        ivCurrentAlbumArt.setImageBitmap(bitmap);
-        findViewById(R.id.llCurrent).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -149,27 +139,30 @@ public class MainScreen extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToCurrentList(View view) {
-//        Intent intent = new Intent(this, CurrentListScreen.class);
-//        intent.putExtra("newAlbumBreaks", 5);
-//        intent.putExtra("newAlbumKey", new byte[]{24, 43});
-//        startActivity(intent);
-    }
-
-    public void goToTotalList(View view) {
-        Intent intent = new Intent(this, DatabaseService.class);
-        intent.putExtra("type", "getAllArtists");
+    public void sendPowerUpdate(String status) {
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", status);
         startService(intent);
     }
 
-    public void goToArtistAssociation(View view) {
-        Intent intent = new Intent(this, ArtistAssociationScreen.class);
-        intent.putExtra("newAlbumBreaks", 5);
-        intent.putExtra("newAlbumKey", new byte[]{24, 43});
+    public void requestScan(View view) {
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "scan");
+        startService(intent);
+    }
+
+    private void setCurrentAlbum(String artist, String album, Bitmap bitmap) {
+        tvCurrentText.setText("Playing " + artist + "'s " + album);
+        ivCurrentAlbumArt.setImageBitmap(bitmap);
+        findViewById(R.id.llCurrent).setVisibility(View.VISIBLE);
+    }
+
+    public void goToCurrentList(View view) {
+        Intent intent = new Intent(this, CurrentListScreen.class);
         startActivity(intent);
     }
 
-    public void launchWebService(View view) {
+    public void goToTotalList(View view) {
         Intent intent = new Intent(this, DatabaseService.class);
         intent.putExtra("type", "getAllArtists");
         startService(intent);
@@ -186,9 +179,6 @@ public class MainScreen extends ActionBarActivity {
                 case 1:
                     //Current List
                     goToCurrentList(view);
-                    break;
-                case 2:
-                    goToArtistAssociation(view);
                     break;
                 case 3:
                     //Settings

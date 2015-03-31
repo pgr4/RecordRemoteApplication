@@ -105,18 +105,19 @@ public class ListenerService extends IntentService {
                     case PowerUnknown:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
-                            UpdateMainScreen("mainScreen", "unknown");
+                            UpdateMainScreen("power", "unknown");
                         }
+                        break;
                     case On:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = true;
-                            UpdateMainScreen("mainScreen", "on");
+                            UpdateMainScreen("power", "on");
                         }
                         break;
                     case Off:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
-                            UpdateMainScreen("mainScreen", "off");
+                            UpdateMainScreen("power", "off");
                         }
                         break;
                     case GetPower:
@@ -144,6 +145,32 @@ public class ListenerService extends IntentService {
                         break;
                     default:
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
+                        switch (((MyGlobalVariables) this.getApplication()).Status) {
+                            case Unknown:
+                                UpdateMainScreen("busy", "Unknown");
+                                break;
+                            case Ready:
+                                UpdateMainScreen("busy", "Ready");
+                                break;
+                            case Play:
+                                UpdateMainScreen("busy", "Playing");
+                                break;
+                            case GoToTrack:
+                                UpdateMainScreen("busy", "Going to Track");
+                                break;
+                            case Pause:
+                                UpdateMainScreen("busy", "Pausing");
+                                break;
+                            case Stop:
+                                UpdateMainScreen("busy", "Stopping");
+                                break;
+                            case Scan:
+                                UpdateMainScreen("busy", "Scanning");
+                                break;
+                            default:
+                                UpdateMainScreen("busy", "Unknown");
+                                break;
+                        }
                         break;
                 }
             }
@@ -151,9 +178,10 @@ public class ListenerService extends IntentService {
     }
 
     //Update UI
-    private void UpdateMainScreen(String screen, String message) {
+    private void UpdateMainScreen(String type, String message) {
         Intent intent = new Intent("mainScreen");
-        intent.putExtra("hello", message);
+        intent.putExtra("type", type);
+        intent.putExtra("status", message);
         broadcaster.sendBroadcast(intent);
     }
 

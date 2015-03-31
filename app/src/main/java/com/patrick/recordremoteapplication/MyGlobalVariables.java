@@ -16,9 +16,9 @@ public class MyGlobalVariables extends Application {
     public ArrayList<JsonAlbum> Albums;
     public String TotalAlbumImage;
     public InetAddress MyIp;
-    public BusyStatus Status;
+    public BusyStatus Status = BusyStatus.Unknown;
     public Bitmap CurrentBitmap;
     public String CurrentAlbum;
     public String CurrentArtist;
-    public boolean IsPowerOn;
+    public boolean IsPowerOn = false;
 }
