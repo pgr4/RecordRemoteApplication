@@ -79,12 +79,11 @@ public class MainScreen extends ActionBarActivity {
         tvCurrentPlayingArtist = (TextView) findViewById(R.id.tvCurrentPlayingArtist);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
 
-        if(((MyGlobalVariables) this.getApplication()).HasAlbum)
-        {
+        if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
             currentLinearLayout.setVisibility(View.VISIBLE);
-            ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables)this.getApplication()).CurrentBitmap);
-            tvCurrentPlayingArtist.setText(((MyGlobalVariables)this.getApplication()).CurrentArtist);
-            tvCurrentPlayingAlbum.setText(((MyGlobalVariables)this.getApplication()).CurrentAlbum);
+            ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
+            tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
+            tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
         }
 
         mySwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
@@ -173,6 +172,13 @@ public class MainScreen extends ActionBarActivity {
         startService(intent);
     }
 
+    private void Test() {
+        Intent intent = new Intent(this, ArtistAssociationScreen.class);
+        intent.putExtra("newAlbumKey", new byte[]{10, 20, 30, 40, 50});
+        intent.putExtra("newAlbumBreaks", 5);
+        startActivity(intent);
+    }
+
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -185,8 +191,9 @@ public class MainScreen extends ActionBarActivity {
                     //Current List
                     goToCurrentList(view);
                     break;
-                case 3:
+                case 2:
                     //Settings
+                    Test();
                     break;
             }
         }

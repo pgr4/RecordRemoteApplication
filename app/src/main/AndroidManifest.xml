@@ -26,7 +26,8 @@
         <activity
             android:name=".SongAssociationScreen"
             android:label="@string/title_activity_song_association_screen"
-            android:parentActivityName=".SongAssociationScreen" >
+            android:parentActivityName=".SongAssociationScreen"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.AlbumAssociationScreen" />

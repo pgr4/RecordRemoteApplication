@@ -2,7 +2,6 @@ package com.patrick.recordremoteapplication;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,44 +29,17 @@ public class LastFmBaseLookup {
     public static String albumInfoArtistSubQuery = "artist=";
     public static String albumInfoAlbumSubQuery = "&album=";
 
-    //Get a bitmap from the provided url
-    public static Bitmap getBitmapFromURL(String src) {
-        //GET START TIME
-        Log.d("BitmapTiming", String.valueOf(System.currentTimeMillis()));
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            //GET START TIME
-            Log.d("BitmapTiming", String.valueOf(System.currentTimeMillis()));
-            return myBitmap;
-        } catch (IOException e) {
-            //TODO:LOG EXCEPTION
-            return null;
-        }
-    }
-
-    //TODO:PUT GARBAGE HERE
     public static JSONObject getFoundResultCount(JSONArray jsa, String type) throws JSONException {
-        //GET START TIME
-        Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
         switch (type) {
             case "Artist":
                 if (jsa.length() == 1) {
                     JSONObject value = jsa.getJSONObject(0);
-                    //GET START TIME
-                    Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
                     return value.getJSONObject("artistmatches");
                 }
                 break;
             case "Track":
                 if (jsa.length() == 1) {
                     JSONObject value = jsa.getJSONObject(0);
-                    //GET START TIME
-                    Log.d("getFoundResultCountTiming", String.valueOf(System.currentTimeMillis()));
                     return value.getJSONObject("tracks");
                 }
                 break;
@@ -78,8 +50,7 @@ public class LastFmBaseLookup {
     }
 
     public static String ConvertStreamToString(InputStream inputStream) throws IOException {
-        //GET START TIME
-        Log.d("ConvertStreamToStringTiming", String.valueOf(System.currentTimeMillis()));
+
         if (inputStream != null) {
             Writer writer = new StringWriter();
 
@@ -93,8 +64,7 @@ public class LastFmBaseLookup {
             } finally {
                 inputStream.close();
             }
-            //GET START TIME
-            Log.d("ConvertStreamToStringTiming", String.valueOf(System.currentTimeMillis()));
+
             return writer.toString();
         } else {
             return "";

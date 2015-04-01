@@ -92,7 +92,6 @@ public class IPAssociationScreen extends ActionBarActivity {
         return settingArr;
     }
 
-    //TODO:SHOW NUMBER KEYBOARD
     private void writeIpToFile(String ipText) {
         try {
             new IpLookup() {

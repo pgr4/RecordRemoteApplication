@@ -2,9 +2,9 @@ package com.patrick.recordremoteapplication;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -68,22 +72,24 @@ public class SongAssociationScreen extends ActionBarActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId() == R.id.songAssociationList) {
-            ListView lv = (ListView) v;
-            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            String obj = (String) lv.getItemAtPosition(acmi.position);
+            int w = adapter.getCount();
+            if (adapter.getCount() > breaks + 1) {
+                ListView lv = (ListView) v;
+                AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                String obj = (String) lv.getItemAtPosition(acmi.position);
 
-            menu.add("Delete");
+                menu.add("Delete");
+            }
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle() == "Delete") {
-            //Remove from adapter
-            adapter.remove("");
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            adapter.remove(adapter.getItem(info.position));
             mainListView.setAdapter(adapter);
-        }
-        else {
+        } else {
             return false;
         }
         return true;
@@ -101,8 +107,6 @@ public class SongAssociationScreen extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            //TODO: Check if everything is ok. Then show CurrentListScreen with Updated information
-            //handleAccept();
             return true;
         }
 
@@ -110,38 +114,32 @@ public class SongAssociationScreen extends ActionBarActivity {
     }
 
     private void getSongs() {
-        //GET START TIME
-        Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
         new LastFmSongLookup() {
 
             @Override
             protected void onPostExecute(ArrayList<String> result) {
-                //GET START TIME
-                Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
                 setAdapter(result);
 
-                //GET START TIME
-                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
             }
 
         }.execute(artistName, albumName);
     }
 
     private void setAdapter(ArrayList<String> lst) {
+        while (lst.size() < breaks + 1) {
+            lst.add("Title " + String.valueOf(lst.size() + 1));
+        }
+
         adapter = new SongListAdapter(this, lst);
         mainListView.setAdapter(adapter);
     }
 
-    //TODO:checkConditons
     private boolean checkConditions() {
-        if(breaks + 1 != adapter.getCount())
-        {
+        if (breaks + 1 != adapter.getCount()) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
@@ -149,23 +147,39 @@ public class SongAssociationScreen extends ActionBarActivity {
     //Create the Database Service
     //Create the Sync
     public void onAccept(View view) {
-        ((MyGlobalVariables) this.getApplication()).CurrentAlbum = albumName;
-        ((MyGlobalVariables) this.getApplication()).CurrentArtist = artistName;
-        ((MyGlobalVariables) this.getApplication()).CurrentBitmap = LastFmBaseLookup.getBitmapFromURL(albumImageUrl);
-        ((MyGlobalVariables) this.getApplication()).HasAlbum = true;
+        if (checkConditions()) {
+            ((MyGlobalVariables) this.getApplication()).CurrentAlbum = albumName;
+            ((MyGlobalVariables) this.getApplication()).CurrentArtist = artistName;
+            ((MyGlobalVariables) this.getApplication()).CurrentBitmap = getBitmapFromURL(albumImageUrl);
+            ((MyGlobalVariables) this.getApplication()).HasAlbum = true;
 
-        Intent intent = new Intent(this, DatabaseService.class);
-        intent.putExtra("type", "addAlbumData");
-        intent.putExtra("key", key);
-        intent.putExtra("songs", adapter.csSongs);
-        intent.putExtra("album", albumName);
-        intent.putExtra("artist", artistName);
-        intent.putExtra("image", albumImageUrl);
-        startService(intent);
+            Intent intent = new Intent(this, DatabaseService.class);
+            intent.putExtra("type", "addAlbumData");
+            intent.putExtra("key", key);
+            intent.putExtra("songs", adapter.csSongs);
+            intent.putExtra("album", albumName);
+            intent.putExtra("artist", artistName);
+            intent.putExtra("image", albumImageUrl);
+            startService(intent);
 
-        Intent dIntent = new Intent(this, SenderService.class);
-        dIntent.putExtra("type", "sync");
-        dIntent.putExtra("key", key);
-        startService(dIntent);
+            Intent dIntent = new Intent(this, SenderService.class);
+            dIntent.putExtra("type", "sync");
+            dIntent.putExtra("key", key);
+            startService(dIntent);
+        }
+    }
+
+    private Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

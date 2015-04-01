@@ -1,7 +1,6 @@
 package com.patrick.recordremoteapplication;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,8 +24,7 @@ import java.util.Comparator;
  */
 public class LastFmSongLookup extends AsyncTask<String, Void, ArrayList<String>> {
     protected ArrayList doInBackground(String... strings) {
-        //GET START TIME
-        Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
+
         ArrayList<String> songList = new ArrayList<>();
 
         try {
@@ -44,28 +42,19 @@ public class LastFmSongLookup extends AsyncTask<String, Void, ArrayList<String>>
             //Execute the request
             response = client.execute(request);
             //Get the InputStream from the response
-            InputStream s = response.getEntity().getContent();
             //Convert the Stream to a String
-            String res = LastFmBaseLookup.ConvertStreamToString(s);
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             //Create the JSONObject from the string
-            JSONObject jso = new JSONObject(res);
-            //Get the names from the JSONObject
-            JSONArray names = jso.names();
+            JSONObject jso = new JSONObject(LastFmBaseLookup.ConvertStreamToString(response.getEntity().getContent()));
             //Create a JSONArray from the names (This should only get us one object!)
-            JSONArray jsonArray = jso.toJSONArray(names);
             //Get the "artistmatches" array in our object
-            JSONObject artists = LastFmBaseLookup.getFoundResultCount(jsonArray, "Track");
+            JSONObject artists = LastFmBaseLookup.getFoundResultCount(jso.toJSONArray(jso.names()), "Track");
             JSONArray lst = artists.getJSONArray("track");
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
+
             for (int i = 0; i < lst.length(); i++) {
                 JSONObject obj = lst.getJSONObject(i);
                 songList.add(obj.getString("name"));
             }
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
+
             return songList;
         } catch (URISyntaxException | IOException | JSONException e) {
             e.printStackTrace();

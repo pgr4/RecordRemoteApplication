@@ -10,10 +10,12 @@ import java.util.Comparator;
 public class LastFmArtist {
     public Bitmap Bitmap;
     public String Name;
+    public int Order;
 
-    public LastFmArtist(String name, Bitmap bitmap) {
+    public LastFmArtist(String name, Bitmap bitmap, int order) {
         Name = name;
         Bitmap = bitmap;
+        Order = order;
     }
 
     public static Comparator<LastFmArtist> StuNameComparator = new Comparator<LastFmArtist>() {

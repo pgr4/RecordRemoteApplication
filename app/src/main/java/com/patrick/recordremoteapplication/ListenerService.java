@@ -3,7 +3,6 @@ package com.patrick.recordremoteapplication;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -32,7 +31,6 @@ public class ListenerService extends IntentService {
             ListenAndWait(broadcastIP, port);
 
         } catch (Exception e) {
-            Log.i("UDP", "no longer listening for UDP broadcasts cause of error " + e.getMessage());
         }
     }
 

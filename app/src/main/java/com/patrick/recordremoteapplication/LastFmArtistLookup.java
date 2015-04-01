@@ -1,7 +1,6 @@
 package com.patrick.recordremoteapplication;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,11 +24,8 @@ import java.util.Collections;
 
 public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFmArtist>> {
 
-    //TODO:CLEAN THIS GARBAGE UP
     protected ArrayList doInBackground(String... strings) {
-        //GET START TIME
-        Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
-        ArrayList<LastFmArtist> artistList = new ArrayList<LastFmArtist>();
+        final ArrayList<LastFmArtist> artistList = new ArrayList<LastFmArtist>();
 
         try {
             //Form the query String
@@ -44,37 +40,40 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
             //Get the InputStream from the response
             InputStream s = response.getEntity().getContent();
             //Convert the Stream to a String
-            String res = LastFmBaseLookup.ConvertStreamToString(s);
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             //Create the JSONObject from the string
-            JSONObject jso = new JSONObject(res);
-            //Get the names from the JSONObject
-            JSONArray names = jso.names();
-            //Create a JSONArray from the names (This should only get us one object!)
-            JSONArray jsonArray = jso.toJSONArray(names);
+            JSONObject jso = new JSONObject(LastFmBaseLookup.ConvertStreamToString(s));
             //Get the "artistmatches" array in our object
-            JSONObject artists = LastFmBaseLookup.getFoundResultCount(jsonArray, "Artist");
+            JSONObject artists = LastFmBaseLookup.getFoundResultCount(jso.toJSONArray(jso.names()), "Artist");
+            //Get the Json Artists
             JSONArray lst = artists.getJSONArray("artist");
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
             for (int i = 0; i < lst.length(); i++) {
                 JSONObject obj = lst.getJSONObject(i);
-                //TODO:USE DEFAULT IMAGE
-                String imageUrl = "";
+                String imageUrl = "http://s3.amazonaws.com/t11wire/media/img/artist-default.jpg";
                 JSONArray images = obj.getJSONArray("image");
                 if (images.length() > 0) {
                     JSONObject imgObj = images.getJSONObject(images.length() - 1);
                     imageUrl = imgObj.getString("#text");
                 }
 
-                artistList.add(new LastFmArtist(obj.getString("name"), LastFmBaseLookup.getBitmapFromURL(imageUrl)));
+                new BitmapRetriever() {
+
+                    @Override
+                    protected void onPostExecute(BitmapWithNumber result) {
+                        for (int j = 0; j < artistList.size(); j++) {
+                            LastFmArtist lastFmArtist = artistList.get(j);
+                            if (lastFmArtist.Order == result.Order) {
+                                lastFmArtist.Bitmap = result.BitmapImage;
+                            }
+                        }
+                    }
+
+                }.execute(imageUrl, String.valueOf(i));
+
+                artistList.add(new LastFmArtist(obj.getString("name"), null, i));
             }
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
+
             Collections.sort(artistList, LastFmArtist.StuNameComparator);
-            //GET START TIME
-            Log.d("LastFmLookupTiming", String.valueOf(System.currentTimeMillis()));
+
             return artistList;
         } catch (URISyntaxException | IOException | JSONException e) {
             e.printStackTrace();

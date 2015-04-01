@@ -12,6 +12,7 @@ public class LastFmAlbum {
     public String AlbumName;
     public String ArtistName;
     public String ImageUrl;
+    public int Order;
 
     @Override
     public String toString() {
@@ -19,11 +20,12 @@ public class LastFmAlbum {
     }
 
 
-    public LastFmAlbum(String albumName, String artistName, Bitmap bitmap, String imgUrl) {
+    public LastFmAlbum(String albumName, String artistName, Bitmap bitmap, String imgUrl, int order) {
         AlbumName = albumName;
         ArtistName = artistName;
         Bitmap = bitmap;
         ImageUrl = imgUrl;
+        Order = order;
     }
 
     public static Comparator<LastFmAlbum> StuNameComparator = new Comparator<LastFmAlbum>() {

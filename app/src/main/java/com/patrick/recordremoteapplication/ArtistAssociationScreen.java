@@ -1,13 +1,14 @@
 package com.patrick.recordremoteapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ public class ArtistAssociationScreen extends ActionBarActivity {
     private LastFmArtist SelectedArtist;
     private byte[] key;
     private int breaks;
+    private EditText editTextArtist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +36,12 @@ public class ArtistAssociationScreen extends ActionBarActivity {
         key = b.getByteArray("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
 
+        editTextArtist = (EditText) findViewById(R.id.artistText);
+
         //Get the List
         mainListView = (ListView) findViewById(R.id.artistAssociationList);
 
         //Set up the item on click event
-        //TODO: Bring up a popup to delete/merge
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -85,22 +88,20 @@ public class ArtistAssociationScreen extends ActionBarActivity {
     }
 
     public void getArtists(View view) throws IOException {
-        EditText et = (EditText) findViewById(R.id.artistText);
 
         new LastFmArtistLookup() {
 
             @Override
             protected void onPostExecute(ArrayList<LastFmArtist> result) {
-                //GET START TIME
-                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
-
+            	
                 setAdapter(result);
 
-                //GET START TIME
-                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editTextArtist.getWindowToken(), 0);
+
             }
 
-        }.execute(et.getText().toString());
+        }.execute(editTextArtist.getText().toString());
     }
 
     public void setAdapter(ArrayList<LastFmArtist> lst) {

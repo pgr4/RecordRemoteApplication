@@ -8,14 +8,11 @@ import android.os.Bundle;
 import android.util.Base64;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,12 +20,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by pat on 1/5/2015.
@@ -174,19 +170,15 @@ public class DatabaseService extends IntentService {
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
-        //Set URI
-        //request.setURI(new URI(query));
         //Execute the request
         response = client.execute(request);
         //Get the InputStream from the response
-        InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
-        String res = LastFmBaseLookup.ConvertStreamToString(s);
+        String res = LastFmBaseLookup.ConvertStreamToString(response.getEntity().getContent());
 
         JSONObject jsAlbum = new JSONObject(res);
 
         String songs = "";
-
 
         JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
         for (int i = 0; i < jsSongs.length(); i++) {
@@ -205,6 +197,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP GET Request to get all Songs associated with the album
+    //TODO:LOOKS LIKE WE AREN'T USING THIS
     private void getAlbumSongs(byte[] by) throws IOException {
         byte[] bytes = {(byte) 0x54, (byte) 0x54};
         StringBuilder sb = new StringBuilder();
@@ -229,7 +222,7 @@ public class DatabaseService extends IntentService {
 
     //Create an HTTP POST Request with album and song data from a new album
     private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
-        Bitmap bitmap = LastFmBaseLookup.getBitmapFromURL(image);
+        Bitmap bitmap = getBitmapFromURL(image);
         StringBuilder sb = new StringBuilder();
         for (byte b : key) {
             sb.append(String.format("%02X", b));
@@ -256,17 +249,15 @@ public class DatabaseService extends IntentService {
         //Execute the request
         response = client.execute(request);
         //Get the InputStream from the response
-        InputStream s = response.getEntity().getContent();
+        //InputStream s = response.getEntity().getContent();
         //Convert the Stream to a String
-        String res = LastFmBaseLookup.ConvertStreamToString(s);
-        //TODO:Look at Response Code
+        //String res = LastFmBaseLookup.ConvertStreamToString(s);
         //Bring up the CurrentListScreen
         goToCurrentSongListScreen(songs, artist, album, bitmap, key);
     }
 
     private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap, byte[] key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
-        //intent.putExtra("newAlbumKey", key);
         ((MyGlobalVariables) this.getApplication()).CurrentBitmap = bitmap;
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
@@ -301,4 +292,17 @@ public class DatabaseService extends IntentService {
         startActivity(intent);
     }
 
+    private Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

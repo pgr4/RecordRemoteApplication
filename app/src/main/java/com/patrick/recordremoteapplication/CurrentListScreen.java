@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,13 +122,13 @@ public class CurrentListScreen extends ActionBarActivity {
                 String type = intent.getStringExtra("type");
                 if (type == "beginning") {
                     SongText.setText(adapter.getItem(0));
-                    selectedIndex=0;
+                    selectedIndex = 0;
                 } else if (type == "location") {
                     Byte defaultByte = 0;
                     Byte location = intent.getByteExtra("location", defaultByte);
                     for (int i = 0; i < key.length; i++) {
                         if (key[i] == location) {
-                            SongText.setText(adapter.getItem(i+1));
+                            SongText.setText(adapter.getItem(i + 1));
                             selectedIndex = i;
                             break;
                         }

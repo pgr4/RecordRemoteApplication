@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,14 +44,11 @@ public class AlbumAssociationScreen extends ActionBarActivity {
         getAlbums(artistName);
 
         //Set up the item on click event
-        //TODO: Bring up a popup to delete/merge
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
                 view.setSelected(true);
                 SelectedAlbum = (LastFmAlbum) adapter.getAdapter().getItem(position);
-                //TextView tv = (TextView) findViewById(R.id.artistText);
-                //tv.setText(SelectedAlbum.AlbumName.toString());
                 goToSongAssociationScreen(SelectedAlbum.AlbumName, SelectedAlbum.ImageUrl);
             }
         });
@@ -82,20 +78,14 @@ public class AlbumAssociationScreen extends ActionBarActivity {
 
     //Get the album list from the online database
     private void getAlbums(String artistName) {
-        //GET START TIME
-        Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
         new LastFmAlbumLookup() {
 
             @Override
             protected void onPostExecute(ArrayList<LastFmAlbum> result) {
-                //GET START TIME
-                Log.d("getAlbumsTiming", String.valueOf(System.currentTimeMillis()));
 
                 setAdapter(result);
-
-                //GET START TIME
-                Log.d("getArtistsTiming", String.valueOf(System.currentTimeMillis()));
+                
             }
 
         }.execute(artistName);
