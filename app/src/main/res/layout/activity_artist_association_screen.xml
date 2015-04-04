@@ -1,6 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -11,6 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
         android:text="Artist:" />
 
     <EditText
@@ -29,13 +33,22 @@
         android:layout_height="wrap_content"
         android:text="Get"
         android:onClick="getArtists"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/artistAssociationList" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
 
     <ListView
         android:id="@+id/artistAssociationList"
         android:layout_below="@+id/btnArtistGet"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/loadingProgressBar"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

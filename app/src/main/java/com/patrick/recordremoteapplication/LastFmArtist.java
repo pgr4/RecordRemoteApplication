@@ -11,6 +11,7 @@ public class LastFmArtist {
     public Bitmap Bitmap;
     public String Name;
     public int Order;
+    public int PostOrder;
 
     public LastFmArtist(String name, Bitmap bitmap, int order) {
         Name = name;

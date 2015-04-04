@@ -54,6 +54,12 @@ public class SenderService extends IntentService {
                             sendHeader(MessageCommand.Off.getValue());
                         }
                         break;
+                    case "playBeginning":
+                        break;
+                    case "play":
+                        break;
+                    case "pause":
+                        break;
                     default:
                         break;
                 }

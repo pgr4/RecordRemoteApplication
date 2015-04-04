@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class CurrentListScreen extends ActionBarActivity {
     private ImageView imgAlbumArt;
-    private ImageButton imgbtnPlay;
+    private ImageButton imgbtnPlayPause;
     private ImageButton imgbtnSkip;
     private ImageButton imgbtnBack;
     private ListView mainListView;
@@ -39,6 +39,7 @@ public class CurrentListScreen extends ActionBarActivity {
     private BroadcastReceiver receiver;
     private SongListAdapter adapter;
     private int selectedIndex = -1;
+    private int currentIndex = -1;
 
     @Override
     protected void onStart() {
@@ -73,8 +74,8 @@ public class CurrentListScreen extends ActionBarActivity {
         ArrayList<String> songList = new ArrayList<>();
 
         //Fill the list
-        for (int i = 0; i < arrSongs.length; i++) {
-            songList.add(arrSongs[i]);
+        for (String arrSong : arrSongs) {
+            songList.add(arrSong);
         }
 
         //Setup the adapter
@@ -84,10 +85,19 @@ public class CurrentListScreen extends ActionBarActivity {
         //Set up the item on click event
         //TODO: Bring up a popup to play or.....
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
                 view.setSelected(true);
+                selectedIndex = position;
+
+                if (currentIndex == selectedIndex) {
+                    imgbtnPlayPause.setImageResource(R.drawable.ic_action_pause);
+                } else {
+                    imgbtnPlayPause.setImageResource(R.drawable.ic_action_play);
+                }
             }
+
         });
 
         //Set the Album Text
@@ -107,8 +117,8 @@ public class CurrentListScreen extends ActionBarActivity {
         imgAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
 
         /* Media Control Images */
-        imgbtnPlay = (ImageButton) findViewById(R.id.imgbtnPlay);
-        imgbtnPlay.setImageResource(R.drawable.ic_action_play);
+        imgbtnPlayPause = (ImageButton) findViewById(R.id.imgbtnPlayPause);
+        imgbtnPlayPause.setImageResource(R.drawable.ic_action_play);
 
         imgbtnSkip = (ImageButton) findViewById(R.id.imgbtnSkip);
         imgbtnSkip.setImageResource(R.drawable.ic_action_fast_forward);
@@ -117,19 +127,20 @@ public class CurrentListScreen extends ActionBarActivity {
         imgbtnBack.setImageResource(R.drawable.ic_action_rewind);
 
         receiver = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
                 String type = intent.getStringExtra("type");
                 if (type == "beginning") {
                     SongText.setText(adapter.getItem(0));
-                    selectedIndex = 0;
+                    currentIndex = 0;
                 } else if (type == "location") {
                     Byte defaultByte = 0;
                     Byte location = intent.getByteExtra("location", defaultByte);
                     for (int i = 0; i < key.length; i++) {
                         if (key[i] == location) {
                             SongText.setText(adapter.getItem(i + 1));
-                            selectedIndex = i;
+                            currentIndex = i + 1;
                             break;
                         }
                     }
@@ -166,4 +177,63 @@ public class CurrentListScreen extends ActionBarActivity {
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
+
+    public void PlayPause(View view) {
+        if (selectedIndex != -1) {
+            if (currentIndex == selectedIndex) {
+                //Send pause
+                Intent intent = new Intent(this, SenderService.class);
+                intent.putExtra("type", "pause");
+                startService(intent);
+            } else {
+                //Send play for selectedIndex
+                if (selectedIndex == 0) {
+                    Intent intent = new Intent(this, SenderService.class);
+                    intent.putExtra("type", "playBeginning");
+                    startService(intent);
+                } else {
+                    //Send play for first song
+                    Intent intent = new Intent(this, SenderService.class);
+                    intent.putExtra("type", "play");
+                    intent.putExtra("location", key[currentIndex]);
+                    startService(intent);
+                }
+            }
+        }
+    }
+
+    public void Skip(View view) {
+        if (currentIndex != -1) {
+            if (currentIndex == adapter.getCount() - 1) {
+                //Send play for first song
+                Intent intent = new Intent(this, SenderService.class);
+                intent.putExtra("type", "playBeginning");
+                startService(intent);
+            } else {
+                //Send play for first song
+                Intent intent = new Intent(this, SenderService.class);
+                intent.putExtra("type", "play");
+                intent.putExtra("location", key[currentIndex + 1]);
+                startService(intent);
+            }
+        }
+    }
+
+    public void Back(View view) {
+        if (currentIndex != -1) {
+            if (currentIndex == 0) {
+                //Send play for first song
+                Intent intent = new Intent(this, SenderService.class);
+                intent.putExtra("type", "playBeginning");
+                startService(intent);
+            } else {
+                //Send play for first song
+                Intent intent = new Intent(this, SenderService.class);
+                intent.putExtra("type", "play");
+                intent.putExtra("location", key[currentIndex - 1]);
+                startService(intent);
+            }
+        }
+    }
+
 }

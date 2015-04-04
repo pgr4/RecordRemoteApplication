@@ -28,6 +28,8 @@ public class AlbumListAdapter extends ArrayAdapter<LastFmAlbum> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.picture_text_list_item, null, true);
 
+        rowView.setId(R.string.row_id + position);
+
         TextView txtTitle = (TextView) rowView.findViewById(R.id.textView);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView);
 

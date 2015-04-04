@@ -13,6 +13,7 @@ public class LastFmAlbum {
     public String ArtistName;
     public String ImageUrl;
     public int Order;
+    public int PostOrder;
 
     @Override
     public String toString() {

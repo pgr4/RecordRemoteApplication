@@ -187,6 +187,7 @@ public class ListenerService extends IntentService {
         Intent intent = new Intent("currentListScreen");
         intent.putExtra("type", "beginning");
         broadcaster.sendBroadcast(intent);
+       // ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables)this.getApplication()).
     }
 
     private void UpdateCurrentScreen(byte message) {

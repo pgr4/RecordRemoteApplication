@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
     private int breaks;
     private String artistName;
     private Bitmap artistBitmap;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
 
         //Get the List
         mainListView = (ListView) findViewById(R.id.albumAssociationList);
+        progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
         //Get and fill the List with albums from the online database matching the artist selected
         getAlbums(artistName);
@@ -79,11 +82,12 @@ public class AlbumAssociationScreen extends ActionBarActivity {
     //Get the album list from the online database
     private void getAlbums(String artistName) {
 
-        new LastFmAlbumLookup() {
+        new LastFmAlbumLookup(this) {
 
             @Override
             protected void onPostExecute(ArrayList<LastFmAlbum> result) {
 
+                progressBar.setVisibility(View.GONE);
                 setAdapter(result);
                 
             }

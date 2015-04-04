@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ArtistAssociationScreen extends ActionBarActivity {
     private byte[] key;
     private int breaks;
     private EditText editTextArtist;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +34,17 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
         //Grab the NewAlbum from the intent
         Bundle b = getIntent().getExtras();
-
         key = b.getByteArray("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
 
+        //Get the controls
         editTextArtist = (EditText) findViewById(R.id.artistText);
-
-        //Get the List
         mainListView = (ListView) findViewById(R.id.artistAssociationList);
+        progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
         //Set up the item on click event
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
                 view.setSelected(true);
@@ -52,6 +54,7 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
                 goToAlbumAssociationScreen(SelectedArtist.Name.toString(), SelectedArtist.Bitmap);
             }
+
         });
 
     }
@@ -89,15 +92,17 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
     public void getArtists(View view) throws IOException {
 
-        new LastFmArtistLookup() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editTextArtist.getWindowToken(), 0);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        new LastFmArtistLookup(this) {
 
             @Override
             protected void onPostExecute(ArrayList<LastFmArtist> result) {
-            	
-                setAdapter(result);
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(editTextArtist.getWindowToken(), 0);
+                setAdapter(result);
 
             }
 
@@ -105,6 +110,8 @@ public class ArtistAssociationScreen extends ActionBarActivity {
     }
 
     public void setAdapter(ArrayList<LastFmArtist> lst) {
+        progressBar.setVisibility(View.GONE);
+        mainListView.setVisibility(View.VISIBLE);
         ArtistListAdapter adapter = new ArtistListAdapter(this, lst);
         mainListView.setAdapter(adapter);
     }

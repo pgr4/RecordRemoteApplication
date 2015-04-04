@@ -1,6 +1,10 @@
 package com.patrick.recordremoteapplication;
 
+import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,7 +26,13 @@ import java.util.Collections;
  * Created by pat on 12/30/2014.
  */
 
-public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFmArtist>> {
+public class LastFmArtistLookup extends AsyncTask<String, Integer, ArrayList<LastFmArtist>> {
+
+    private ListView lv;
+
+    public LastFmArtistLookup(Activity activity) {
+        lv = (ListView) activity.findViewById(R.id.artistAssociationList);
+    }
 
     protected ArrayList doInBackground(String... strings) {
         final ArrayList<LastFmArtist> artistList = new ArrayList<LastFmArtist>();
@@ -63,6 +73,13 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
                             LastFmArtist lastFmArtist = artistList.get(j);
                             if (lastFmArtist.Order == result.Order) {
                                 lastFmArtist.Bitmap = result.BitmapImage;
+                                try {
+                                    View view = lv.getChildAt(lastFmArtist.PostOrder);
+                                    ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                                    imageView.setImageBitmap(result.BitmapImage);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -74,10 +91,15 @@ public class LastFmArtistLookup extends AsyncTask<String, Void, ArrayList<LastFm
 
             Collections.sort(artistList, LastFmArtist.StuNameComparator);
 
-            return artistList;
+            for (int i = 0; i < artistList.size(); i++) {
+                artistList.get(i).PostOrder = i;
+            }
+
         } catch (URISyntaxException | IOException | JSONException e) {
             e.printStackTrace();
+        } finally {
+            return artistList;
         }
-        return artistList;
     }
+
 }
