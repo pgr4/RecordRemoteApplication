@@ -56,6 +56,9 @@ public class DatabaseService extends IntentService {
                     case "getAlbumSongs":
                         getAlbumSongs(b.getByteArray("key"));
                         break;
+                    case "isAlbumNew":
+                        findAlbum(b.getByteArray("key"), b.getInt("breaks"));
+                        break;
                     case "addAlbumData":
                         addAlbumData(b.getByteArray("key"),
                                 b.getString("songs"),
@@ -194,6 +197,54 @@ public class DatabaseService extends IntentService {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
         goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte, bytes);
+    }
+
+    //Create an HTTP GET Request to get an album
+    //Used after getting a newAlbum message to check if there is a match in the database
+    private void findAlbum(byte[] bytes, int breaks) throws IOException, JSONException {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X", b));
+        }
+        //Form the query String
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
+        String query = "http://" + ip + "/api/album?s=" + sb;
+        HttpResponse response = null;
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(query);
+        //Execute the request
+        response = client.execute(request);
+        //Get the InputStream from the response
+        //Convert the Stream to a String
+        String res = LastFmBaseLookup.ConvertStreamToString(response.getEntity().getContent());
+        //TODO:Check to see what we get when its not found
+        if (true) {
+            JSONObject jsAlbum = new JSONObject(res);
+
+            String songs = "";
+
+            JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
+            for (int i = 0; i < jsSongs.length(); i++) {
+                songs += (String) jsSongs.get(i) + ",";
+            }
+
+            //TODO: THIS IS BAD PRACTICE YOU SHOULD BE ASHAMED!
+            songs += "REMOVETHIS";
+
+            songs = songs.replace(",REMOVETHIS", "");
+
+            byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte, bytes);
+        } else {
+            Intent intent = new Intent(this, ArtistAssociationScreen.class);
+            intent.putExtra("newAlbumBreaks", breaks);
+            intent.putExtra("newAlbumKey", bytes);
+            //This is necessary
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     //Create an HTTP GET Request to get all Songs associated with the album

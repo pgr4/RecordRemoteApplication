@@ -137,11 +137,7 @@ public class SongAssociationScreen extends ActionBarActivity {
     }
 
     private boolean checkConditions() {
-        if (breaks + 1 != adapter.getCount()) {
-            return false;
-        } else {
-            return true;
-        }
+        return breaks + 1 == adapter.getCount();
     }
 
     //Create the Database Service

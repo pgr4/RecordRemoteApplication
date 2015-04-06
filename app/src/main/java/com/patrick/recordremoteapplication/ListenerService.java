@@ -78,9 +78,15 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
+                        //TODO:Need to check our database for matching key
                         if (mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
-                            showArtistAssociationScreen(na);
+
+                            Intent intent = new Intent(this, DatabaseService.class);
+                            intent.putExtra("type", "isNewAlbum");
+                            intent.putExtra("breaks", na.Breaks);
+                            intent.putExtra("key", na.Key);
+                            startService(intent);
                         }
                         break;
                     case CurrentAlbum:
@@ -137,8 +143,6 @@ public class ListenerService extends IntentService {
                     case GoToTrack:
                     case GoToBeginning:
                     case MediaPlay:
-                    case MediaRewind:
-                    case MediaSkip:
                     case MediaStop:
                         break;
                     default:
@@ -195,15 +199,5 @@ public class ListenerService extends IntentService {
         intent.putExtra("type", "location");
         intent.putExtra("location", message);
         broadcaster.sendBroadcast(intent);
-    }
-
-    //Bring up the currentListScreen with the NewAlbum information
-    private void showArtistAssociationScreen(NewAlbum na) {
-        Intent intent = new Intent(this, ArtistAssociationScreen.class);
-        intent.putExtra("newAlbumBreaks", na.Breaks);
-        intent.putExtra("newAlbumKey", na.Key);
-        //This is necessary
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 }

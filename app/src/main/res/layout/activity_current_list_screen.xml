@@ -56,10 +56,19 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imgbtnPlayPause"
+                android:id="@+id/imgbtnPlay"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:onClick="PlayPause"/>
+                android:onClick="Play"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgbtnPause"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:onClick="Pause"
+                />
 
             <ImageButton
                 android:layout_width="wrap_content"

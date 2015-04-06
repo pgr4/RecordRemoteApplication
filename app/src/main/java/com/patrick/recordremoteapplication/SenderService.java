@@ -55,10 +55,16 @@ public class SenderService extends IntentService {
                         }
                         break;
                     case "playBeginning":
+                        sendHeader(MessageCommand.GoToBeginning.getValue());
+                        break;
+                    case "playTrack":
+                        sendGoToTrack(b.getByte("location"));
                         break;
                     case "play":
+                        sendHeader(MessageCommand.MediaPlay.getValue());
                         break;
                     case "pause":
+                        sendHeader(MessageCommand.MediaStop.getValue());
                         break;
                     default:
                         break;
@@ -153,6 +159,35 @@ public class SenderService extends IntentService {
         for (int i = pointer; i < pointer + 6; i++) {
             buf[i] = 111;
         }
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
+        socket.send(packet);
+        socket.close();
+    }
+
+    private void sendGoToTrack(byte loc) throws IOException{
+        final DatagramSocket socket = new DatagramSocket();
+        int pointer = 0;
+        byte[] buf = new byte[16];
+
+        for (int i = 0; i < 4; i++) {
+            buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
+        }
+
+        pointer = 4;
+
+        for (int i = pointer; i < pointer + 4; i++) {
+            buf[i] = 12;
+        }
+        pointer = 8;
+
+        buf[pointer++] = (byte) MessageCommand.GoToTrack.getValue();
+
+        for (int i = pointer; i < pointer + 6; i++) {
+            buf[i] = 111;
+        }
+
+        buf[15] = loc;
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
         socket.send(packet);
