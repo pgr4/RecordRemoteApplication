@@ -127,20 +127,14 @@ public class MessageParser {
                 return MessageCommand.sStop;
             case 26:
                 return MessageCommand.sScan;
-
             case 30:
                 return MessageCommand.GoToTrack;
             case 31:
                 return MessageCommand.MediaPlay;
             case 32:
                 return MessageCommand.MediaStop;
-            case 33:
-                return MessageCommand.MediaRewind;
-            case 34:
-                return MessageCommand.MediaSkip;
             case 35:
                 return MessageCommand.GoToBeginning;
-
             default:
                 return MessageCommand.None;
         }

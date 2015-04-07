@@ -26,6 +26,17 @@ public class SongListAdapter extends ArrayAdapter<String> {
         csSongs = listToString(lst);
     }
 
+    @Override
+    public void remove(String x){
+        for(int i = 0;i<list.size();i++){
+            if(x.equals(list.get(i))){
+                list.remove(i);
+                break;
+            }
+        }
+        csSongs = listToString(list);
+    }
+
     private String listToString(ArrayList<String> arr) {
         String ret = "";
         for (int i = 0; i < arr.size(); i++) {

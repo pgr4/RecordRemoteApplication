@@ -25,4 +25,5 @@ public class MyGlobalVariables extends Application {
     public byte[] CurrentKey;
     public boolean HasAlbum = false;
     public boolean IsPowerOn = false;
+    public boolean IsPlaying = false;
 }

@@ -78,12 +78,11 @@ public class ListenerService extends IntentService {
                     case None:
                         break;
                     case NewAlbum:
-                        //TODO:Need to check our database for matching key
                         if (mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
-                            intent.putExtra("type", "isNewAlbum");
+                            intent.putExtra("type", "isAlbumNew");
                             intent.putExtra("breaks", na.Breaks);
                             intent.putExtra("key", na.Key);
                             startService(intent);
@@ -138,6 +137,7 @@ public class ListenerService extends IntentService {
                     case AtBeginning:
                         UpdateCurrentScreen();
                         break;
+                    case Scan:
                     case SwitchPowerOn:
                     case SwitchPowerOff:
                     case GoToTrack:
@@ -145,35 +145,63 @@ public class ListenerService extends IntentService {
                     case MediaPlay:
                     case MediaStop:
                         break;
-                    default:
-                        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
-                        switch (((MyGlobalVariables) this.getApplication()).Status) {
-                            case Unknown:
-                                UpdateMainScreen("busy", "Unknown");
-                                break;
-                            case Ready:
-                                UpdateMainScreen("busy", "Ready");
-                                break;
-                            case Play:
-                                UpdateMainScreen("busy", "Playing");
-                                break;
-                            case GoToTrack:
-                                UpdateMainScreen("busy", "Going to Track");
-                                break;
-                            case Pause:
-                                UpdateMainScreen("busy", "Pausing");
-                                break;
-                            case Stop:
-                                UpdateMainScreen("busy", "Stopping");
-                                break;
-                            case Scan:
-                                UpdateMainScreen("busy", "Scanning");
-                                break;
-                            default:
-                                UpdateMainScreen("busy", "Unknown");
-                                break;
-                        }
+                    case sGoToTrack:
+                        UpdateMainScreen("busy", "Going to Track");
+                        ((MyGlobalVariables) this.getApplication()).IsPlaying = false;
+                        UpdateCurrentScreen(false);
                         break;
+                    case sPause:
+                        UpdateMainScreen("busy", "Pausing");
+                        ((MyGlobalVariables) this.getApplication()).IsPlaying = false;
+                        UpdateCurrentScreen(false);
+                        break;
+                    case sPlay:
+                        UpdateMainScreen("busy", "Playing");
+                        ((MyGlobalVariables) this.getApplication()).IsPlaying = true;
+                        UpdateCurrentScreen(true);
+                        break;
+                    case sReady:
+                        UpdateMainScreen("busy", "Ready");
+                        break;
+                    case sScan:
+                        UpdateMainScreen("busy", "Scanning");
+                        break;
+                    case sStop:
+                        UpdateMainScreen("busy", "Stopping");
+                        break;
+                    case sUnknown:
+                        UpdateMainScreen("busy", "Unknown");
+                        break;
+                    default:
+                        throw new Exception();
+//                        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
+//                        switch (((MyGlobalVariables) this.getApplication()).Status) {
+//                            case Unknown:
+//                                UpdateMainScreen("busy", "Unknown");
+//                                break;
+//                            case Ready:
+//                                UpdateMainScreen("busy", "Ready");
+//                                break;
+//                            case Play:
+//                                UpdateMainScreen("busy", "Playing");
+//                                break;
+//                            case GoToTrack:
+//                                UpdateMainScreen("busy", "Going to Track");
+//                                break;
+//                            case Pause:
+//                                UpdateMainScreen("busy", "Pausing");
+//                                break;
+//                            case Stop:
+//                                UpdateMainScreen("busy", "Stopping");
+//                                break;
+//                            case Scan:
+//                                UpdateMainScreen("busy", "Scanning");
+//                                break;
+//                            default:
+//                                UpdateMainScreen("busy", "Unknown");
+//                                break;
+//                        }
+//                        break;
                 }
             }
         }
@@ -198,6 +226,13 @@ public class ListenerService extends IntentService {
         Intent intent = new Intent("currentListScreen");
         intent.putExtra("type", "location");
         intent.putExtra("location", message);
+        broadcaster.sendBroadcast(intent);
+    }
+
+    private void UpdateCurrentScreen(boolean message) {
+        Intent intent = new Intent("currentListScreen");
+        intent.putExtra("type", "isPlaying");
+        intent.putExtra("value", message);
         broadcaster.sendBroadcast(intent);
     }
 }

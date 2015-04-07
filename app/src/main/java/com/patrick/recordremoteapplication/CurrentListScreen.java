@@ -37,13 +37,14 @@ public class CurrentListScreen extends ActionBarActivity {
     private SongListAdapter adapter;
     private int selectedIndex = -1;
     private int currentIndex = -1;
-    private boolean isPlaying = false;
+    private boolean isPlaying;
     private ImageButton imgbtnPause;
 
     @Override
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter("currentListScreen"));
+        isPlaying = ((MyGlobalVariables) this.getApplication()).IsPlaying;
     }
 
     @Override
@@ -92,6 +93,8 @@ public class CurrentListScreen extends ActionBarActivity {
             }
 
         });
+
+        isPlaying = ((MyGlobalVariables) this.getApplication()).IsPlaying;
 
         //Set the Album Text
         AlbumText = (TextView) findViewById(R.id.albumText);
@@ -143,6 +146,9 @@ public class CurrentListScreen extends ActionBarActivity {
                         }
                     }
                     imgbtnPause.setEnabled(true);
+                } else if (type == "isPlaying") {
+                    isPlaying = intent.getBooleanExtra("value", false);
+                    imgbtnPause.setEnabled(false);
                 }
             }
         };
@@ -206,7 +212,6 @@ public class CurrentListScreen extends ActionBarActivity {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "pause");
         startService(intent);
-        imgbtnPause.setEnabled(false);
     }
 
     public void Skip(View view) {

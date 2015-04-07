@@ -128,6 +128,13 @@ public class SongAssociationScreen extends ActionBarActivity {
     }
 
     private void setAdapter(ArrayList<String> lst) {
+        findViewById(R.id.lastSpace).setVisibility(View.GONE);
+        findViewById(R.id.firstSpace).setVisibility(View.GONE);
+        findViewById(R.id.loadingProgressBar).setVisibility(View.GONE);
+
+        findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.songAssociationList).setVisibility(View.VISIBLE);
+
         while (lst.size() < breaks + 1) {
             lst.add("Title " + String.valueOf(lst.size() + 1));
         }
@@ -146,7 +153,16 @@ public class SongAssociationScreen extends ActionBarActivity {
         if (checkConditions()) {
             ((MyGlobalVariables) this.getApplication()).CurrentAlbum = albumName;
             ((MyGlobalVariables) this.getApplication()).CurrentArtist = artistName;
-            ((MyGlobalVariables) this.getApplication()).CurrentBitmap = getBitmapFromURL(albumImageUrl);
+
+            new BitmapRetriever() {
+
+                @Override
+                protected void onPostExecute(BitmapWithNumber result) {
+                    setGlobalBitmap(result.BitmapImage);
+                }
+
+            }.execute(albumImageUrl, "0");
+
             ((MyGlobalVariables) this.getApplication()).HasAlbum = true;
 
             Intent intent = new Intent(this, DatabaseService.class);
@@ -165,17 +181,8 @@ public class SongAssociationScreen extends ActionBarActivity {
         }
     }
 
-    private Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            return null;
-        }
+    public void setGlobalBitmap(Bitmap b){
+        ((MyGlobalVariables) this.getApplication()).CurrentBitmap = b;
     }
+
 }

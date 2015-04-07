@@ -106,7 +106,7 @@ public class SenderService extends IntentService {
     private void sendSync(byte[] key) throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[15];
+        byte[] buf = new byte[15 + key.length];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];

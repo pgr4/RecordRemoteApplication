@@ -33,6 +33,7 @@ public class MainScreen extends ActionBarActivity {
     private TextView tvCurrentPlayingAlbum;
     private ImageView ivCurrentAlbumArt;
     private BroadcastReceiver receiver;
+    private LinearLayout currentLinearLayout;
 
     @Override
     protected void onStart() {
@@ -44,6 +45,23 @@ public class MainScreen extends ActionBarActivity {
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
+                currentLinearLayout.setVisibility(View.VISIBLE);
+                ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
+                tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
+                tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
+            } else {
+                currentLinearLayout.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -73,7 +91,7 @@ public class MainScreen extends ActionBarActivity {
         final Switch mySwitch = (Switch) findViewById(R.id.swPower);
         final TextView textViewBusy = (TextView) findViewById(R.id.tvBusyStatusValue);
         textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.getString());
-        final LinearLayout currentLinearLayout = (LinearLayout) findViewById(R.id.llCurrent);
+        currentLinearLayout = (LinearLayout) findViewById(R.id.llCurrent);
 
         tvCurrentPlayingAlbum = (TextView) findViewById(R.id.tvCurrentPlayingAlbum);
         tvCurrentPlayingArtist = (TextView) findViewById(R.id.tvCurrentPlayingArtist);

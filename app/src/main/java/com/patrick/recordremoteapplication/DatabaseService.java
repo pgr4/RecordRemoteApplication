@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -25,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by pat on 1/5/2015.
@@ -80,7 +82,7 @@ public class DatabaseService extends IntentService {
     private void getTotalArtists() throws IOException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/Artist";
+        String query = "http:/" + ip + "/api/Artist";
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -105,7 +107,7 @@ public class DatabaseService extends IntentService {
     private void getTotalAlbums(String artist) throws IOException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/Album?artist=" + URLEncoder.encode(artist, "UTF-8");
+        String query = "http:/" + ip + "/api/Album?artist=" + URLEncoder.encode(artist, "UTF-8");
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -133,7 +135,7 @@ public class DatabaseService extends IntentService {
     private void getTotalSongs(String key) throws IOException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/Song?key=" + URLEncoder.encode(key, "UTF-8");
+        String query = "http:/" + ip + "/api/Song?key=" + URLEncoder.encode(key, "UTF-8");
         HttpResponse response;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -169,7 +171,7 @@ public class DatabaseService extends IntentService {
         }
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/album?s=" + sb;
+        String query = "http:/" + ip + "/api/album?s=" + sb;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -208,7 +210,7 @@ public class DatabaseService extends IntentService {
         }
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/album?s=" + sb;
+        String query = "http:/" + ip + "/api/album?s=" + sb;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -217,8 +219,14 @@ public class DatabaseService extends IntentService {
         //Get the InputStream from the response
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(response.getEntity().getContent());
-        //TODO:Check to see what we get when its not found
-        if (true) {
+        if (res.equals("null")) {
+            Intent intent = new Intent(this, ArtistAssociationScreen.class);
+            intent.putExtra("newAlbumBreaks", breaks);
+            intent.putExtra("newAlbumKey", bytes);
+            //This is necessary
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
             JSONObject jsAlbum = new JSONObject(res);
 
             String songs = "";
@@ -236,14 +244,18 @@ public class DatabaseService extends IntentService {
             byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-            goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte, bytes);
-        } else {
-            Intent intent = new Intent(this, ArtistAssociationScreen.class);
-            intent.putExtra("newAlbumBreaks", breaks);
-            intent.putExtra("newAlbumKey", bytes);
-            //This is necessary
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            String albumName = jsAlbum.getString("Name");
+            String artistName = jsAlbum.getString("Artist");
+
+            ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
+            ((MyGlobalVariables) getApplication()).CurrentAlbum = albumName;
+            ((MyGlobalVariables) getApplication()).CurrentArtist = artistName;
+            ((MyGlobalVariables) getApplication()).CurrentKey = bytes;
+            ((MyGlobalVariables) getApplication()).CurrentSong = null;
+            ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<String>(Arrays.asList(songs.split(",")));
+            ((MyGlobalVariables) getApplication()).HasAlbum = true;
+
+            goToCurrentSongListScreen(songs, artistName, albumName, decodedByte, bytes);
         }
     }
 
@@ -273,14 +285,15 @@ public class DatabaseService extends IntentService {
 
     //Create an HTTP POST Request with album and song data from a new album
     private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
-        Bitmap bitmap = getBitmapFromURL(image);
+
         StringBuilder sb = new StringBuilder();
         for (byte b : key) {
             sb.append(String.format("%02X", b));
         }
+
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/Song";
+        String query = "http:/" + ip + "/api/Song";
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpPost request = new HttpPost(query);
@@ -290,7 +303,7 @@ public class DatabaseService extends IntentService {
         Song.put("Songs", songs);
         Song.put("Artist", artist);
         Song.put("Album", album);
-        Song.put("Image", bitmap);
+        Song.put("Image", image);
 
         StringEntity entity = new StringEntity(Song.toString(), HTTP.UTF_8);
         entity.setContentType("application/json");
@@ -299,12 +312,9 @@ public class DatabaseService extends IntentService {
 
         //Execute the request
         response = client.execute(request);
-        //Get the InputStream from the response
-        //InputStream s = response.getEntity().getContent();
-        //Convert the Stream to a String
-        //String res = LastFmBaseLookup.ConvertStreamToString(s);
+
         //Bring up the CurrentListScreen
-        goToCurrentSongListScreen(songs, artist, album, bitmap, key);
+        goToCurrentSongListScreen(songs, artist, album, getBitmapFromURL(image), key);
     }
 
     private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap, byte[] key) {
@@ -314,6 +324,15 @@ public class DatabaseService extends IntentService {
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);
         intent.putExtra("key", key);
+
+        ((MyGlobalVariables) getApplication()).CurrentBitmap = bitmap;
+        ((MyGlobalVariables) getApplication()).CurrentAlbum = album;
+        ((MyGlobalVariables) getApplication()).CurrentArtist = artist;
+        ((MyGlobalVariables) getApplication()).CurrentKey = key;
+        ((MyGlobalVariables) getApplication()).CurrentSong = null;
+        ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<String>(Arrays.asList(songs.split(",")));
+        ((MyGlobalVariables) getApplication()).HasAlbum = true;
+
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -350,8 +369,7 @@ public class DatabaseService extends IntentService {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            return BitmapFactory.decodeStream(input);
         } catch (IOException e) {
             return null;
         }
