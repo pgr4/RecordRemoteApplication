@@ -34,6 +34,8 @@ public class MainScreen extends ActionBarActivity {
     private ImageView ivCurrentAlbumArt;
     private BroadcastReceiver receiver;
     private LinearLayout currentLinearLayout;
+    private TextView CurrentRecordHeader;
+    private TextView CurrentSongTextView;
 
     @Override
     protected void onStart() {
@@ -56,8 +58,10 @@ public class MainScreen extends ActionBarActivity {
                 ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
                 tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
                 tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
+                CurrentRecordHeader.setVisibility(View.VISIBLE);
             } else {
                 currentLinearLayout.setVisibility(View.GONE);
+                CurrentRecordHeader.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,12 +100,15 @@ public class MainScreen extends ActionBarActivity {
         tvCurrentPlayingAlbum = (TextView) findViewById(R.id.tvCurrentPlayingAlbum);
         tvCurrentPlayingArtist = (TextView) findViewById(R.id.tvCurrentPlayingArtist);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
+        CurrentRecordHeader = (TextView) findViewById(R.id.CurrentRecordHeader);
+        CurrentSongTextView = (TextView) findViewById(R.id.CurrentSongTextView);
 
         if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
             currentLinearLayout.setVisibility(View.VISIBLE);
             ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
             tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
             tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
+            CurrentRecordHeader.setVisibility(View.VISIBLE);
         }
 
         mySwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
@@ -123,21 +130,28 @@ public class MainScreen extends ActionBarActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra("type");
-                String status = intent.getStringExtra("status");
+
 
                 if (s == "power") {
+                    String status = intent.getStringExtra("status");
                     if (status == "on") {
                         mySwitch.setChecked(true);
                         mySwitch.setEnabled(true);
                     } else if (status == "off") {
                         mySwitch.setChecked(false);
                         mySwitch.setEnabled(true);
+                        currentLinearLayout.setVisibility(View.GONE);
+                        CurrentRecordHeader.setVisibility(View.GONE);
                     } else {
                         mySwitch.setEnabled(false);
                     }
                 } else if (s == "busy") {
+                    String status = intent.getStringExtra("status");
                     textViewBusy.setText(status);
+                }else if( s == "song") {
+
                 }
+
             }
         };
 

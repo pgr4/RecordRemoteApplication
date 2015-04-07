@@ -120,6 +120,14 @@ public class ListenerService extends IntentService {
                     case Off:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
+                            ((MyGlobalVariables) this.getApplication()).CurrentSong = null;
+                            ((MyGlobalVariables) this.getApplication()).CurrentAlbum = null;
+                            ((MyGlobalVariables) this.getApplication()).CurrentBitmap = null;
+                            ((MyGlobalVariables) this.getApplication()).CurrentArtist = null;
+                            ((MyGlobalVariables) this.getApplication()).CurrentKey = null;
+                            ((MyGlobalVariables) this.getApplication()).HasAlbum = false;
+                            ((MyGlobalVariables) this.getApplication()).CurrentSongList.clear();
+
                             UpdateMainScreen("power", "off");
                         }
                         break;
@@ -132,10 +140,11 @@ public class ListenerService extends IntentService {
                         }
                         break;
                     case UpdatePosition:
-                        UpdateCurrentScreen(MessageParser.GetByte(message, startingPoint));
+                        byte b = MessageParser.GetByte(message, startingPoint);
+                        PositionUpdate(b);
                         break;
                     case AtBeginning:
-                        UpdateCurrentScreen();
+                        PositionUpdate();
                         break;
                     case Scan:
                     case SwitchPowerOn:
@@ -174,58 +183,45 @@ public class ListenerService extends IntentService {
                         break;
                     default:
                         throw new Exception();
-//                        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.fromInteger(mh.Command.getValue() - 20);
-//                        switch (((MyGlobalVariables) this.getApplication()).Status) {
-//                            case Unknown:
-//                                UpdateMainScreen("busy", "Unknown");
-//                                break;
-//                            case Ready:
-//                                UpdateMainScreen("busy", "Ready");
-//                                break;
-//                            case Play:
-//                                UpdateMainScreen("busy", "Playing");
-//                                break;
-//                            case GoToTrack:
-//                                UpdateMainScreen("busy", "Going to Track");
-//                                break;
-//                            case Pause:
-//                                UpdateMainScreen("busy", "Pausing");
-//                                break;
-//                            case Stop:
-//                                UpdateMainScreen("busy", "Stopping");
-//                                break;
-//                            case Scan:
-//                                UpdateMainScreen("busy", "Scanning");
-//                                break;
-//                            default:
-//                                UpdateMainScreen("busy", "Unknown");
-//                                break;
-//                        }
-//                        break;
                 }
             }
         }
     }
 
-    //Update UI
+    private void PositionUpdate(byte message){
+        Intent intent = new Intent("mainScreen");
+        intent.putExtra("type", "song");
+        for (int i = 0; i < ((MyGlobalVariables) this.getApplication()).CurrentKey.length; i++) {
+            if (((MyGlobalVariables) this.getApplication()).CurrentKey[i] == message) {
+
+                intent.putExtra("value", ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i));
+                ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i);
+            }
+        }
+        broadcaster.sendBroadcast(intent);
+
+        Intent intent1 = new Intent("currentListScreen");
+        intent1.putExtra("type", "location");
+        intent1.putExtra("location", message);
+        broadcaster.sendBroadcast(intent1);
+    }
+
+    private void PositionUpdate(){
+        Intent intent = new Intent("mainScreen");
+        intent.putExtra("type", "song");
+        intent.putExtra("value", ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(0));
+        ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(0);
+        broadcaster.sendBroadcast(intent);
+
+        Intent intent1 = new Intent("currentListScreen");
+        intent1.putExtra("type", "beginning");
+        broadcaster.sendBroadcast(intent1);
+    }
+
     private void UpdateMainScreen(String type, String message) {
         Intent intent = new Intent("mainScreen");
         intent.putExtra("type", type);
         intent.putExtra("status", message);
-        broadcaster.sendBroadcast(intent);
-    }
-
-    private void UpdateCurrentScreen() {
-        Intent intent = new Intent("currentListScreen");
-        intent.putExtra("type", "beginning");
-        broadcaster.sendBroadcast(intent);
-       // ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables)this.getApplication()).
-    }
-
-    private void UpdateCurrentScreen(byte message) {
-        Intent intent = new Intent("currentListScreen");
-        intent.putExtra("type", "location");
-        intent.putExtra("location", message);
         broadcaster.sendBroadcast(intent);
     }
 

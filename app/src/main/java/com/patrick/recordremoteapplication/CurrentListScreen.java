@@ -39,6 +39,7 @@ public class CurrentListScreen extends ActionBarActivity {
     private int currentIndex = -1;
     private boolean isPlaying;
     private ImageButton imgbtnPause;
+    private String currentSong;
 
     @Override
     protected void onStart() {
@@ -51,6 +52,14 @@ public class CurrentListScreen extends ActionBarActivity {
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        isPlaying = ((MyGlobalVariables) this.getApplication()).IsPlaying;
+        currentSong = ((MyGlobalVariables) this.getApplication()).CurrentSong;
+        SetCurrentSong(currentSong);
     }
 
     @Override
@@ -152,6 +161,10 @@ public class CurrentListScreen extends ActionBarActivity {
                 }
             }
         };
+    }
+
+    private void SetCurrentSong(String song){
+        SongText.setText(song);
     }
 
     @Override

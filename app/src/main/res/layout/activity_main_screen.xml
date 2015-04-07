@@ -22,7 +22,7 @@
                 android:enabled="true"
                 android:gravity="center"
                 android:checked="false"
-                android:text="Status"/>
+                android:text="Status" />
 
         </LinearLayout>
 
@@ -58,30 +58,55 @@
             android:onClick="requestScan"
             android:text="Scan" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Current Record"
+            android:id="@+id/CurrentRecordHeader"
+            android:visibility="gone"/>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:id="@+id/llCurrent"
-            android:layout_below="@+id/btnScan">
+            android:layout_below="@+id/btnScan"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/ivCurrentAlbumArt"/>
+                android:id="@+id/ivCurrentAlbumArt"
+                android:layout_weight="1"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvCurrentPlayingAlbum"
-                android:text=""/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvCurrentPlayingArtist"
-                android:text=""/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvCurrentPlayingAlbum"
+                    android:text="" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvCurrentPlayingArtist"
+                    android:text="" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/CurrentSongTextView"
+                    android:text=""/fs>
             </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 
