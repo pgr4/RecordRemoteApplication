@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pressed_color">#4d90fe</color>
+    <color name="pressed_color">#66FF66</color>
     <color name="default_color">#ffffff</color>
     <color name="red">#FF0000</color>
     <color name="white">#ffffff</color>
     <color name="transparent">#80000000</color>
+    <color name="backgroundGrid">#9900FF7F</color>
 </resources>

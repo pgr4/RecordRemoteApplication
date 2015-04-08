@@ -55,7 +55,7 @@ public class CurrentListScreen extends ActionBarActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         isPlaying = ((MyGlobalVariables) this.getApplication()).IsPlaying;
         currentSong = ((MyGlobalVariables) this.getApplication()).CurrentSong;
@@ -70,12 +70,19 @@ public class CurrentListScreen extends ActionBarActivity {
         //Grab the NewAlbum from the intent
         //Go through database to fill in the view.
         Bundle b = getIntent().getExtras();
+        String type = b.getString("type");
+        if(type.equals("reload")){
+            arrSongs = ((MyGlobalVariables) this.getApplication()).CurrentSongList.toArray(new String[((MyGlobalVariables) this.getApplication()).CurrentSongList.size()]);
+            artistName = ((MyGlobalVariables) this.getApplication()).CurrentArtist;
+            albumName = ((MyGlobalVariables) this.getApplication()).CurrentAlbum;
+            key = ((MyGlobalVariables) this.getApplication()).CurrentKey;
 
-        arrSongs = b.getString("songs").split(",");
-        artistName = b.getString("artist");
-        albumName = b.getString("album");
-        key = b.getByteArray("key");
-
+        }else if(type.equals("normal")) {
+            arrSongs = b.getString("songs").split(",");
+            artistName = b.getString("artist");
+            albumName = b.getString("album");
+            key = b.getByteArray("key");
+        }
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);
 
@@ -163,7 +170,7 @@ public class CurrentListScreen extends ActionBarActivity {
         };
     }
 
-    private void SetCurrentSong(String song){
+    private void SetCurrentSong(String song) {
         SongText.setText(song);
     }
 

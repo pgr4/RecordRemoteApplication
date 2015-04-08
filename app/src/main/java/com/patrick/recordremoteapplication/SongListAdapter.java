@@ -20,7 +20,7 @@ public class SongListAdapter extends ArrayAdapter<String> {
     public String csSongs;
 
     public SongListAdapter(Activity c, ArrayList<String> lst) {
-        super(c, R.layout.editable_number_song_list_item, lst);
+        super(c, R.layout.current_list_item, lst);
         list = lst;
         context = c;
         csSongs = listToString(lst);
@@ -50,10 +50,10 @@ public class SongListAdapter extends ArrayAdapter<String> {
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.editable_number_song_list_item, null, true);
+        View rowView = inflater.inflate(R.layout.current_list_item, null, true);
 
         TextView txtNumber = (TextView) rowView.findViewById(R.id.textViewNumber);
-        EditText txtSong = (EditText) rowView.findViewById(R.id.editTextSong);
+        TextView txtSong = (TextView) rowView.findViewById(R.id.editTextSong);
 
 
         txtSong.setText(list.get(position));

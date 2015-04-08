@@ -320,6 +320,7 @@ public class DatabaseService extends IntentService {
     private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap, byte[] key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         ((MyGlobalVariables) this.getApplication()).CurrentBitmap = bitmap;
+        intent.putExtra("type","normal");
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);

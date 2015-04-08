@@ -4,8 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.opengl.Visibility;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -34,8 +35,9 @@ public class MainScreen extends ActionBarActivity {
     private ImageView ivCurrentAlbumArt;
     private BroadcastReceiver receiver;
     private LinearLayout currentLinearLayout;
-    private TextView CurrentRecordHeader;
     private TextView CurrentSongTextView;
+    private TextView textViewBusy;
+    private  Switch powerSwitch;
 
     @Override
     protected void onStart() {
@@ -52,20 +54,43 @@ public class MainScreen extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
-                currentLinearLayout.setVisibility(View.VISIBLE);
-                ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
-                tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
-                tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
-                CurrentRecordHeader.setVisibility(View.VISIBLE);
-            } else {
-                currentLinearLayout.setVisibility(View.GONE);
-                CurrentRecordHeader.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        //Reset Current Album
+
+        if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
+            currentLinearLayout.setVisibility(View.VISIBLE);
+            ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
+            tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
+            tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
+        } else {
+            currentLinearLayout.setVisibility(View.INVISIBLE);
         }
+
+
+        //Reset Status
+
+        switch (((MyGlobalVariables) this.getApplication()).Status) {
+            case Ready:
+                findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.green_circle));
+                break;
+            case Pause:
+            case Play:
+            case GoToTrack:
+            case Scan:
+            case Stop:
+                findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.red_circle));
+                break;
+            case Unknown:
+                findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.orange_circle));
+                break;
+        }
+
+        textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.toString());
+
+        //Reset Power
+
+        powerSwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
+
     }
 
     @Override
@@ -92,15 +117,14 @@ public class MainScreen extends ActionBarActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        final Switch mySwitch = (Switch) findViewById(R.id.swPower);
-        final TextView textViewBusy = (TextView) findViewById(R.id.tvBusyStatusValue);
+        powerSwitch = (Switch) findViewById(R.id.swPower);
+        textViewBusy = (TextView) findViewById(R.id.tvBusyStatusValue);
         textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.getString());
         currentLinearLayout = (LinearLayout) findViewById(R.id.llCurrent);
 
         tvCurrentPlayingAlbum = (TextView) findViewById(R.id.tvCurrentPlayingAlbum);
         tvCurrentPlayingArtist = (TextView) findViewById(R.id.tvCurrentPlayingArtist);
         ivCurrentAlbumArt = (ImageView) findViewById(R.id.ivCurrentAlbumArt);
-        CurrentRecordHeader = (TextView) findViewById(R.id.CurrentRecordHeader);
         CurrentSongTextView = (TextView) findViewById(R.id.CurrentSongTextView);
 
         if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
@@ -108,13 +132,12 @@ public class MainScreen extends ActionBarActivity {
             ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
             tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
             tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
-            CurrentRecordHeader.setVisibility(View.VISIBLE);
         }
 
-        mySwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
+        powerSwitch.setChecked(((MyGlobalVariables) this.getApplication()).IsPowerOn);
 
         //attach a listener to check for changes in state
-        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        powerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -131,25 +154,34 @@ public class MainScreen extends ActionBarActivity {
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra("type");
 
-
                 if (s == "power") {
                     String status = intent.getStringExtra("status");
                     if (status == "on") {
-                        mySwitch.setChecked(true);
-                        mySwitch.setEnabled(true);
+                        powerSwitch.setChecked(true);
+                        powerSwitch.setEnabled(true);
                     } else if (status == "off") {
-                        mySwitch.setChecked(false);
-                        mySwitch.setEnabled(true);
-                        currentLinearLayout.setVisibility(View.GONE);
-                        CurrentRecordHeader.setVisibility(View.GONE);
+                        powerSwitch.setChecked(false);
+                        powerSwitch.setEnabled(true);
+                        currentLinearLayout.setVisibility(View.INVISIBLE);
+                        setBusyInfo();
                     } else {
-                        mySwitch.setEnabled(false);
+                        powerSwitch.setEnabled(false);
                     }
                 } else if (s == "busy") {
-                    String status = intent.getStringExtra("status");
-                    textViewBusy.setText(status);
-                }else if( s == "song") {
-
+                    textViewBusy.setText(((MyGlobalVariables)getApplication()).Status.getString());
+                    switch (intent.getIntExtra("color", 0)) {
+                        case 0:
+                            findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.green_circle));
+                            break;
+                        case 1:
+                            findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.red_circle));
+                            break;
+                        case 2:
+                            findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.orange_circle));
+                            break;
+                    }
+                } else if (s == "song") {
+                    CurrentSongTextView.setText(intent.getStringExtra("value"));
                 }
 
             }
@@ -157,6 +189,11 @@ public class MainScreen extends ActionBarActivity {
 
         // use this to start and trigger a service
         startService(new Intent(this, ListenerService.class));
+    }
+
+    private void setBusyInfo(){
+        findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.orange_circle));
+        textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.toString());
     }
 
     @Override
@@ -195,6 +232,7 @@ public class MainScreen extends ActionBarActivity {
 
     public void goToCurrentList(View view) {
         Intent intent = new Intent(this, CurrentListScreen.class);
+        intent.putExtra("type", "reload");
         startActivity(intent);
     }
 

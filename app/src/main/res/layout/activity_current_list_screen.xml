@@ -1,17 +1,15 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:orientation="vertical"
-    android:weightSum="5"
-    >
+    android:weightSum="5">
 
     <ListView
         android:id="@+id/currentListView"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,71 +22,77 @@
             android:id="@+id/imgAlbumArt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ALBUM"
                 android:id="@+id/albumText"
-                android:paddingStart="2dp"/>
+                android:paddingStart="2dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ARTIST"
                 android:id="@+id/artistText"
-                android:layout_below="@+id/albumText"
-                android:paddingStart="2dp"/>
+                android:paddingStart="2dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SONG"
                 android:id="@+id/songText"
-                android:layout_below="@+id/artistText"
-                android:paddingStart="2dp"/>
+                android:paddingStart="2dp"
+                android:layout_weight="1" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/imgbtnPlay"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:onClick="Play"/>
+                android:layout_weight="2">
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgbtnPause"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:onClick="Pause"
-                />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imgbtnBack"
+                    android:onClick="Back"
+                    android:layout_weight="1" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgbtnSkip"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="Skip"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgbtnBack"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:onClick="Back"/>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imgbtnPause"
+                    android:onClick="Pause"
+                    android:layout_weight="1" />
 
-        </RelativeLayout>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imgbtnPlay"
+                    android:onClick="Play"
+                    android:layout_weight="1" />
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imgbtnSkip"
+                    android:onClick="Skip"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout >
+</LinearLayout>

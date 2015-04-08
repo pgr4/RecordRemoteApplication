@@ -1,115 +1,238 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:weightSum="4"
         android:orientation="vertical">
 
-        <LinearLayout
+        <!--Power Status-->
+        <RelativeLayout
             android:id="@+id/llStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/backgroundGrid">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Power Information"
+                android:layout_alignParentTop="true"
+                android:id="@+id/PowerInfoTextView"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_centerInParent="true" />
 
             <Switch
                 android:id="@+id/swPower"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:enabled="true"
-                android:gravity="center"
                 android:checked="false"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
                 android:text="Status" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <!--Busy Status-->
+        <RelativeLayout
             android:id="@+id/llBusyStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llStatus"
-            android:layout_centerInParent="true">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/tvBusyStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Currently: " />
-
-            <TextView
-                android:id="@+id/tvBusyStatusValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/tvBusyStatus"
-                android:text="" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Busy Information"
+                android:layout_alignParentTop="true"
+                android:id="@+id/BusyInfoTextView"
+                android:layout_centerInParent="true" />
 
-        </LinearLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/orange_circle"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/circle"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"/>
 
-        <Button
-            android:id="@+id/btnScan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llBusyStatus"
-            android:layout_centerHorizontal="true"
-            android:onClick="requestScan"
-            android:text="Scan" />
+                <TextView
+                    android:id="@+id/tvBusyStatusValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:layout_toRightOf="@+id/circle"
+                    android:layout_centerInParent="true"
+                    android:text="" />
 
-        <TextView
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <!--Current Album-->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="Current Record"
-            android:id="@+id/CurrentRecordHeader"
-            android:visibility="gone"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/backgroundGrid">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Record Information"
+                android:layout_alignParentTop="true"
+                android:id="@+id/CurrentAlbumInfoTextView"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_centerInParent="true"
+                android:paddingBottom="10dp" />
+
+            <LinearLayout
+                android:layout_below="@+id/CurrentAlbumInfoTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/llCurrent"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:weightSum="2">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/ivCurrentAlbumArt"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvCurrentPlayingAlbum"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_marginStart="10dp"
+                        android:text="" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvCurrentPlayingArtist"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_marginStart="10dp"
+                        android:text="" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/CurrentSongTextView"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_marginStart="10dp"
+                        android:text="" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!--Settings-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/llCurrent"
-            android:layout_below="@+id/btnScan"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:weightSum="3"
+            android:orientation="vertical">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/ivCurrentAlbumArt"
-                android:layout_weight="1"/>
+                android:layout_height="wrap_content"
+                android:text="Settings &amp; Functions"
+                android:id="@+id/SettingsTextView"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
 
-                <TextView
+                <Button
+                    android:id="@+id/btnGetPower"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvCurrentPlayingAlbum"
-                    android:text="" />
+                    android:onClick="getPower"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="Get Power" />
 
-                <TextView
+
+                <Button
+                    android:id="@+id/btnGetStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvCurrentPlayingArtist"
-                    android:text="" />
+                    android:onClick="getStatus"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="Get Status" />
+            </LinearLayout>
 
-                <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+
+                <Button
+                    android:id="@+id/btnScan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/CurrentSongTextView"
-                    android:text=""/fs>
+                    android:onClick="requestScan"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="Scan" />
+
+
+                <Button
+                    android:id="@+id/btnIP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="setIP"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="Set IP" />
             </LinearLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
-
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/content_frame"
@@ -125,6 +248,5 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp" />
-
 
 </android.support.v4.widget.DrawerLayout>
