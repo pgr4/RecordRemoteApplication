@@ -115,6 +115,18 @@ public class SongAssociationScreen extends ActionBarActivity {
 
     private void getSongs() {
 
+        new BitmapRetriever() {
+
+            @Override
+            protected void onPostExecute(BitmapWithNumber result) {
+                if(result != null)
+                {
+                    setGlobalBitmap(result.BitmapImage);
+                }
+            }
+
+        }.execute(albumImageUrl, "0");
+
         new LastFmSongLookup() {
 
             @Override
@@ -153,15 +165,6 @@ public class SongAssociationScreen extends ActionBarActivity {
         if (checkConditions()) {
             ((MyGlobalVariables) this.getApplication()).CurrentAlbum = albumName;
             ((MyGlobalVariables) this.getApplication()).CurrentArtist = artistName;
-
-            new BitmapRetriever() {
-
-                @Override
-                protected void onPostExecute(BitmapWithNumber result) {
-                    setGlobalBitmap(result.BitmapImage);
-                }
-
-            }.execute(albumImageUrl, "0");
 
             ((MyGlobalVariables) this.getApplication()).HasAlbum = true;
 

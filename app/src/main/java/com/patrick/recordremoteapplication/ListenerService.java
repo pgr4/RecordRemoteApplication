@@ -97,7 +97,7 @@ public class ListenerService extends IntentService {
                             byte[] key = MessageParser.GetKey(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
-                            intent.putExtra("type", "getAlbum");
+                            intent.putExtra("type", "syncAlbum");
                             intent.putExtra("key", key);
                             startService(intent);
                         }
@@ -105,6 +105,7 @@ public class ListenerService extends IntentService {
                     case PowerUnknown:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             ((MyGlobalVariables) this.getApplication()).IsPowerOn = false;
+
                             PowerUpdate("unknown");
                         }
                         break;
@@ -154,38 +155,38 @@ public class ListenerService extends IntentService {
                     case MediaStop:
                         break;
                     case sReady:
-                        BusyUpdate("Ready", 0);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Ready;
+                        BusyUpdate("Ready", 0);
                         break;
                     case sGoToTrack:
-                        BusyUpdate("Going to Track", 1);
                         ((MyGlobalVariables) this.getApplication()).IsPlaying = false;
                         PlayingUpdate(false);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.GoToTrack;
+                        BusyUpdate("Going to Track", 1);
                         break;
                     case sPause:
-                        BusyUpdate("Pausing", 1);
                         ((MyGlobalVariables) this.getApplication()).IsPlaying = false;
                         PlayingUpdate(false);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Pause;
+                        BusyUpdate("Pausing", 1);
                         break;
                     case sPlay:
-                        BusyUpdate("Playing", 1);
                         ((MyGlobalVariables) this.getApplication()).IsPlaying = true;
                         PlayingUpdate(true);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Play;
+                        BusyUpdate("Playing", 1);
                         break;
                     case sScan:
-                        BusyUpdate("Scanning", 1);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Scan;
+                        BusyUpdate("Scanning", 1);
                         break;
                     case sStop:
-                        BusyUpdate("Stopping", 1);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Stop;
+                        BusyUpdate("Stopping", 1);
                         break;
                     case sUnknown:
-                        BusyUpdate("Unknown", 2);
                         ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Unknown;
+                        BusyUpdate("Unknown", 2);
                         break;
                     default:
                         throw new Exception();

@@ -52,8 +52,8 @@ public class DatabaseService extends IntentService {
                     case "getSongs":
                         getTotalSongs(b.getString("key"));
                         break;
-                    case "getAlbum":
-                        getAlbum(b.getByteArray("key"));
+                    case "syncAlbum":
+                        syncAlbum(b.getByteArray("key"));
                         break;
                     case "getAlbumSongs":
                         getAlbumSongs(b.getByteArray("key"));
@@ -164,7 +164,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP GET Request to get an album
-    private void getAlbum(byte[] bytes) throws IOException, JSONException {
+    private void syncAlbum(byte[] bytes) throws IOException, JSONException {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
@@ -198,7 +198,9 @@ public class DatabaseService extends IntentService {
         byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), decodedByte, bytes);
+        ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
+
+        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"),jsAlbum.getString("Name"), bytes);
     }
 
     //Create an HTTP GET Request to get an album
@@ -248,14 +250,8 @@ public class DatabaseService extends IntentService {
             String artistName = jsAlbum.getString("Artist");
 
             ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
-            ((MyGlobalVariables) getApplication()).CurrentAlbum = albumName;
-            ((MyGlobalVariables) getApplication()).CurrentArtist = artistName;
-            ((MyGlobalVariables) getApplication()).CurrentKey = bytes;
-            ((MyGlobalVariables) getApplication()).CurrentSong = null;
-            ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<String>(Arrays.asList(songs.split(",")));
-            ((MyGlobalVariables) getApplication()).HasAlbum = true;
 
-            goToCurrentSongListScreen(songs, artistName, albumName, decodedByte, bytes);
+            goToCurrentSongListScreen(songs, artistName, albumName, bytes);
         }
     }
 
@@ -284,6 +280,7 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP POST Request with album and song data from a new album
+    //Image is previously added to globals
     private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
 
         StringBuilder sb = new StringBuilder();
@@ -314,19 +311,17 @@ public class DatabaseService extends IntentService {
         response = client.execute(request);
 
         //Bring up the CurrentListScreen
-        goToCurrentSongListScreen(songs, artist, album, getBitmapFromURL(image), key);
+        goToCurrentSongListScreen(songs, artist, album, key);
     }
 
-    private void goToCurrentSongListScreen(String songs, String artist, String album, Bitmap bitmap, byte[] key) {
+    private void goToCurrentSongListScreen(String songs, String artist, String album, byte[] key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
-        ((MyGlobalVariables) this.getApplication()).CurrentBitmap = bitmap;
         intent.putExtra("type","normal");
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);
         intent.putExtra("key", key);
 
-        ((MyGlobalVariables) getApplication()).CurrentBitmap = bitmap;
         ((MyGlobalVariables) getApplication()).CurrentAlbum = album;
         ((MyGlobalVariables) getApplication()).CurrentArtist = artist;
         ((MyGlobalVariables) getApplication()).CurrentKey = key;
@@ -361,18 +356,5 @@ public class DatabaseService extends IntentService {
         //This is necessary
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-    }
-
-    private Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            return null;
-        }
     }
 }
