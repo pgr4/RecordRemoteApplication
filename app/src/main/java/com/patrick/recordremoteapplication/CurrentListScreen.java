@@ -147,11 +147,11 @@ public class CurrentListScreen extends ActionBarActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String type = intent.getStringExtra("type");
-                if (type == "beginning") {
+                if (type.equals("beginning")) {
                     SongText.setText(adapter.getItem(0));
                     currentIndex = 0;
                     imgbtnPause.setEnabled(true);
-                } else if (type == "location") {
+                } else if (type.equals("location")) {
                     Byte defaultByte = 0;
                     Byte location = intent.getByteExtra("location", defaultByte);
                     for (int i = 0; i < key.length; i++) {
@@ -162,12 +162,22 @@ public class CurrentListScreen extends ActionBarActivity {
                         }
                     }
                     imgbtnPause.setEnabled(true);
-                } else if (type == "isPlaying") {
+                } else if (type.equals("isPlaying")) {
                     isPlaying = intent.getBooleanExtra("value", false);
                     imgbtnPause.setEnabled(false);
+                } else if(type.equals("power")){
+                    switch (intent.getStringExtra("status")){
+                        case "unknown":
+                        case "off":
+                            killMe();
+                    }
                 }
             }
         };
+    }
+
+    private void killMe(){
+        finish();
     }
 
     private void SetCurrentSong(String song) {

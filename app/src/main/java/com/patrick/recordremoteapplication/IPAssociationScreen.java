@@ -67,8 +67,10 @@ public class IPAssociationScreen extends ActionBarActivity {
         try {
             String editText = ((EditText) findViewById(R.id.editText)).getText().toString();
             InetAddress inetAddress = InetAddress.getByName(editText);
+            ((MyGlobalVariables) getApplication()).DatabaseIp = inetAddress;
             writeIpToFile(inetAddress.toString());
 
+            finish();
         } catch (Exception e) {
             showError();
             e.printStackTrace();
@@ -82,8 +84,10 @@ public class IPAssociationScreen extends ActionBarActivity {
 
         String line;
         while ((line = br.readLine()) != null) {
-            if (line.contains("IPAddress:") == false) {
+            if (!line.contains("IPAddress:")) {
                 settingArr.add(line);
+            } else {
+                ((EditText) findViewById(R.id.editText)).setText(line.replace("IPAddress:", "").replace("/", "").trim());
             }
         }
 
@@ -129,6 +133,8 @@ public class IPAssociationScreen extends ActionBarActivity {
     public void goToMainScreen() {
         Intent intent = new Intent(this, MainScreen.class);
         startActivity(intent);
+
+        finish();
     }
 
     public void showError() {

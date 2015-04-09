@@ -37,7 +37,7 @@ public class MainScreen extends ActionBarActivity {
     private LinearLayout currentLinearLayout;
     private TextView CurrentSongTextView;
     private TextView textViewBusy;
-    private  Switch powerSwitch;
+    private Switch powerSwitch;
 
     @Override
     protected void onStart() {
@@ -154,21 +154,23 @@ public class MainScreen extends ActionBarActivity {
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra("type");
 
-                if (s == "power") {
+                if (s.equals("power")) {
                     String status = intent.getStringExtra("status");
-                    if (status == "on") {
+                    if (status.equals("on")) {
                         powerSwitch.setChecked(true);
                         powerSwitch.setEnabled(true);
-                    } else if (status == "off") {
+                    } else if (status.equals("off")) {
                         powerSwitch.setChecked(false);
                         powerSwitch.setEnabled(true);
                         currentLinearLayout.setVisibility(View.INVISIBLE);
                         setBusyInfo();
                     } else {
                         powerSwitch.setEnabled(false);
+                        currentLinearLayout.setVisibility(View.INVISIBLE);
+                        setBusyInfo();
                     }
-                } else if (s == "busy") {
-                    textViewBusy.setText(((MyGlobalVariables)getApplication()).Status.getString());
+                } else if (s.equals("busy")) {
+                    textViewBusy.setText(((MyGlobalVariables) getApplication()).Status.getString());
                     switch (intent.getIntExtra("color", 0)) {
                         case 0:
                             findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.green_circle));
@@ -180,7 +182,7 @@ public class MainScreen extends ActionBarActivity {
                             findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.orange_circle));
                             break;
                     }
-                } else if (s == "song") {
+                } else if (s.equals("song")) {
                     CurrentSongTextView.setText(intent.getStringExtra("value"));
                 }
 
@@ -191,7 +193,7 @@ public class MainScreen extends ActionBarActivity {
         startService(new Intent(this, ListenerService.class));
     }
 
-    private void setBusyInfo(){
+    private void setBusyInfo() {
         findViewById(R.id.circle).setBackground(getResources().getDrawable(R.drawable.orange_circle));
         textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.toString());
     }
@@ -249,6 +251,23 @@ public class MainScreen extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void setIP(View view){
+        Intent intent = new Intent(this,IPAssociationScreen.class);
+        startActivity(intent);
+    }
+
+    public void getPower(View view){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "getPower");
+        startService(intent);
+    }
+
+    public void getStatus(View view){
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "getStatus");
+        startService(intent);
+    }
+
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -259,7 +278,9 @@ public class MainScreen extends ActionBarActivity {
                     break;
                 case 1:
                     //Current List
-                    goToCurrentList(view);
+                    if (((MyGlobalVariables) getApplication()).HasAlbum) {
+                        goToCurrentList(view);
+                    }
                     break;
                 case 2:
                     //Settings

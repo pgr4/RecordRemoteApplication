@@ -32,28 +32,18 @@ public class TotalSongScreen extends ActionBarActivity {
         ListView lv = (ListView) findViewById(R.id.listView);
         TextView artistText = (TextView) findViewById(R.id.artistText);
         TextView albumText = (TextView) findViewById(R.id.albumText);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.mainBlock);
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, b.getStringArrayList("Songs"));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, b.getStringArrayList("Songs"));
 
         lv.setAdapter(adapter);
 
         artistText.setText(b.getString("Artist"));
         albumText.setText(b.getString("Album"));
 
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        ImageView imageView = new ImageView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(metrics.widthPixels, metrics.heightPixels);
-        layoutParams.weight = 1;
-        imageView.setLayoutParams(layoutParams);
         byte[] decodedString = Base64.decode(((MyGlobalVariables) this.getApplication()).TotalAlbumImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        imageView.setImageBitmap(decodedByte);
-        ll.addView(imageView, 0);
+
+        ((ImageView)findViewById(R.id.imageView)).setImageBitmap(decodedByte);
     }
 
 

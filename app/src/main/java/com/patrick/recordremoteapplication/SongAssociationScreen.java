@@ -181,6 +181,8 @@ public class SongAssociationScreen extends ActionBarActivity {
             dIntent.putExtra("type", "sync");
             dIntent.putExtra("key", key);
             startService(dIntent);
+
+            finish();
         }
     }
 

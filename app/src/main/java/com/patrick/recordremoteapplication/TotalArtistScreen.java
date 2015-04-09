@@ -19,8 +19,7 @@ public class TotalArtistScreen extends ActionBarActivity {
         setContentView(R.layout.activity_total_artist_screen);
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ((MyGlobalVariables) this.getApplication()).Artists);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ((MyGlobalVariables) this.getApplication()).Artists);
 
         lv.setAdapter(adapter);
 

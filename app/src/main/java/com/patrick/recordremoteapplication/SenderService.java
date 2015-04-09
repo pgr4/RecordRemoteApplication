@@ -48,7 +48,10 @@ public class SenderService extends IntentService {
                         sendHeader(MessageCommand.SwitchPowerOff.getValue());
                         break;
                     case "getPower":
-                        if (b.getBoolean("power")) {
+                        sendHeader(MessageCommand.GetPower.getValue());
+                        break;
+                    case "sendPower":
+                        if (((MyGlobalVariables)getApplication()).IsPowerOn) {
                             sendHeader(MessageCommand.On.getValue());
                         } else {
                             sendHeader(MessageCommand.Off.getValue());

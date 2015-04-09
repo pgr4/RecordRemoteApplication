@@ -21,6 +21,7 @@ public class TotalAlbumScreen extends ActionBarActivity {
         ListView lv = (ListView) findViewById(R.id.listView);
 
         TotalAlbumListAdapter adapter = new TotalAlbumListAdapter(this, ((MyGlobalVariables) this.getApplication()).Albums);
+
         lv.setAdapter(adapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

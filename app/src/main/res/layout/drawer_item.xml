@@ -3,7 +3,8 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="10dp" >
+    android:padding="10dp"
+    >
 
     <TextView
         android:id="@+id/textViewName"
@@ -11,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:paddingRight="10dp"
-        android:text="Folder name here."
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:textColor="#ffffff" />
 

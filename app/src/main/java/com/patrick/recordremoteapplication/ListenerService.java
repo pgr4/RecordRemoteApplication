@@ -135,7 +135,6 @@ public class ListenerService extends IntentService {
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
                             Intent intent = new Intent(this, SenderService.class);
                             intent.putExtra("type", "sendPower");
-                            intent.putExtra("power", ((MyGlobalVariables) this.getApplication()).IsPowerOn);
                             startService(intent);
                         }
                         break;
@@ -239,6 +238,11 @@ public class ListenerService extends IntentService {
         intent.putExtra("type", "power");
         intent.putExtra("status", message);
         broadcaster.sendBroadcast(intent);
+
+        Intent intent1 = new Intent("currentListScreen");
+        intent1.putExtra("type", "power");
+        intent1.putExtra("status", message);
+        broadcaster.sendBroadcast(intent1);
     }
 
     private void PlayingUpdate(boolean message) {
