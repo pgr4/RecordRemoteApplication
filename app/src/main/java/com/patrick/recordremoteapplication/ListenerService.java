@@ -138,10 +138,11 @@ public class ListenerService extends IntentService {
                             startService(intent);
                         }
                         break;
+                    case QueueGoToTrack:
                     case UpdatePosition:
-                        byte b = MessageParser.GetByte(message, startingPoint);
-                        PositionUpdate(b);
+                        PositionUpdate(MessageParser.GetByte(message, startingPoint));
                         break;
+                    case QueueGoToBeginning:
                     case AtBeginning:
                         PositionUpdate();
                         break;

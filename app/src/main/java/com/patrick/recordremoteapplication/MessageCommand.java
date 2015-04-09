@@ -31,7 +31,9 @@ public enum MessageCommand {
     GoToTrack(30),
     MediaPlay(31),
     MediaStop(32),
-    GoToBeginning(33);
+    GoToBeginning(33),
+    QueueGoToTrack(34),
+    QueueGoToBeginning(35);
 
     public int getValue() {
         return value;

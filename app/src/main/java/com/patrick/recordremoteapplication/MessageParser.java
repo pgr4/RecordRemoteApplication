@@ -133,8 +133,12 @@ public class MessageParser {
                 return MessageCommand.MediaPlay;
             case 32:
                 return MessageCommand.MediaStop;
-            case 35:
+            case 33:
                 return MessageCommand.GoToBeginning;
+            case 34:
+                return MessageCommand.QueueGoToTrack;
+            case 35:
+                return MessageCommand.QueueGoToBeginning;
             default:
                 return MessageCommand.None;
         }
