@@ -32,7 +32,7 @@ public class CurrentListScreen extends ActionBarActivity {
     private String artistName;
     private String albumName;
     private String[] arrSongs;
-    private byte[] key;
+    private int[] key;
     private BroadcastReceiver receiver;
     private SongListAdapter adapter;
     private int selectedIndex = -1;
@@ -81,7 +81,7 @@ public class CurrentListScreen extends ActionBarActivity {
             arrSongs = b.getString("songs").split(",");
             artistName = b.getString("artist");
             albumName = b.getString("album");
-            key = b.getByteArray("key");
+            key = b.getIntArray("key");
         }
         //Get the List
         mainListView = (ListView) findViewById(R.id.currentListView);

@@ -24,7 +24,7 @@ public class SongAssociationScreen extends ActionBarActivity {
     private ListView mainListView;
     private ArrayAdapter<String> listAdapter;
     private String SelectedSong;
-    private byte[] key;
+    private String key;
     private int breaks;
     private String artistName;
     private String albumName;
@@ -39,7 +39,7 @@ public class SongAssociationScreen extends ActionBarActivity {
         //Grab the NewAlbum from the intent
         Bundle b = getIntent().getExtras();
 
-        key = b.getByteArray("newAlbumKey");
+        key = b.getString("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
         albumName = b.getString("albumName");
         artistName = b.getString("artistName");

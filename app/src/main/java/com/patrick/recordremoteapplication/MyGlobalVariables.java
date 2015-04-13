@@ -22,7 +22,7 @@ public class MyGlobalVariables extends Application {
     public String CurrentArtist;
     public ArrayList<String> CurrentSongList;
     public String CurrentSong;
-    public byte[] CurrentKey;
+    public int[] CurrentKey;
     public boolean HasAlbum = false;
     public boolean IsPowerOn = false;
     public boolean IsPlaying = false;

@@ -5,6 +5,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -19,10 +20,12 @@ public class MessageParser {
                 endingPoint = i - startingPoint;
             }
         }
-        byte[] arr = new byte[endingPoint];
+        int[] arr = new int[endingPoint / 2];
 
-        for (int i = 0; i < endingPoint; i++) {
-            arr[i] = message[startingPoint + i];
+        for (int i = 0; i < endingPoint / 2; i++) {
+            //arr[i] = message[startingPoint + i];
+            ByteBuffer wrapped = ByteBuffer.wrap(new byte[]{message[startingPoint + i], message[startingPoint + i + 1]});
+            arr[i] = wrapped.getShort();
         }
 
         int breaks = endingPoint;
@@ -42,17 +45,25 @@ public class MessageParser {
         }
     }
 
-    public static byte[] GetKey(byte[] message, int startPoint) {
-        ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(100);
-        for (int i = startPoint; i < message.length; i++) {
+    //TODO:CHeck
+    public static int[] GetKey(byte[] message, int startingPoint) {
+        int endPoint = 0;
+        for (int i = startingPoint; i < message.length; i++) {
             if (message[i] == 111 && message[i + 1] == 111 && message[i + 2] == 111 &&
                     message[i + 3] == 111 && message[i + 4] == 111 && message[i + 5] == 111) {
+                endPoint = i;
                 break;
-            } else {
-                byteArrayBuffer.append(message[i]);
             }
         }
-        return byteArrayBuffer.toByteArray();
+        int length = (endPoint-startingPoint)/2;
+        int[] ret = new int[length];
+        int iter=0;
+        for(int i = startingPoint;i<endPoint;i++)
+        {
+            ret[iter] = Utils.byteArrayToInt(new byte[]{message[i],message[i+1]});
+            iter++;
+        }
+        return ret;
     }
 
     public static InetAddress GetIP(byte[] message, int startPoint) throws UnknownHostException {

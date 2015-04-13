@@ -81,7 +81,7 @@ public class ListenerService extends IntentService {
                             Intent intent = new Intent(this, DatabaseService.class);
                             intent.putExtra("type", "isAlbumNew");
                             intent.putExtra("breaks", na.Breaks);
-                            intent.putExtra("key", na.Key);
+                            intent.putExtra("key", Utils.KeyToString(na.Key));
                             startService(intent);
                         }
                         break;
@@ -94,11 +94,11 @@ public class ListenerService extends IntentService {
                         break;
                     case Sync:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
-                            byte[] key = MessageParser.GetKey(message, startingPoint);
+                            int[] key = MessageParser.GetKey(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
                             intent.putExtra("type", "syncAlbum");
-                            intent.putExtra("key", key);
+                            intent.putExtra("key", Utils.KeyToString(key));
                             startService(intent);
                         }
                         break;

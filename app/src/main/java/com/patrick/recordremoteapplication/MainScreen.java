@@ -246,7 +246,7 @@ public class MainScreen extends ActionBarActivity {
 
     private void Test() {
         Intent intent = new Intent(this, ArtistAssociationScreen.class);
-        intent.putExtra("newAlbumKey", new byte[]{10, 20, 30, 40, 50});
+        intent.putExtra("newAlbumKey", "1,5,7");
         intent.putExtra("newAlbumBreaks", 5);
         startActivity(intent);
     }

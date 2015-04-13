@@ -2,6 +2,7 @@ package com.patrick.recordremoteapplication;
 
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 import org.apache.http.conn.util.InetAddressUtils;
@@ -34,4 +35,34 @@ public class Utils {
         return "";
     }
 
+    public static String KeyToString(int[] key) {
+        String ret = "";
+        for (int i = 0; i < key.length; i++) {
+            ret += key[0];
+            if (i == key.length - 1) {
+                ret += ",";
+            }
+        }
+        return ret;
+    }
+
+    public static int[] KeyToString(String key) {
+        String[] total = key.split(",");
+        int[] ret = new int[total.length];
+        for (int i = 0; i < total.length; i++) {
+            ret[i] = Integer.getInteger(total[i]);
+        }
+        return ret;
+    }
+
+    public static int byteArrayToInt(byte[] b){
+        ByteBuffer wrapped = ByteBuffer.wrap(b); // big-endian by default
+        return wrapped.getShort();
+    }
+
+    public static byte[] intToByteArray(int i) {
+        ByteBuffer dbuf = ByteBuffer.allocate(2);
+        dbuf.putShort((short)i);
+        return dbuf.array();
+    }
 }

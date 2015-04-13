@@ -53,16 +53,13 @@ public class DatabaseService extends IntentService {
                         getTotalSongs(b.getString("key"));
                         break;
                     case "syncAlbum":
-                        syncAlbum(b.getByteArray("key"));
-                        break;
-                    case "getAlbumSongs":
-                        getAlbumSongs(b.getByteArray("key"));
+                        syncAlbum(b.getString("key"));
                         break;
                     case "isAlbumNew":
-                        findAlbum(b.getByteArray("key"), b.getInt("breaks"));
+                        findAlbum(b.getString("key"), b.getInt("breaks"));
                         break;
                     case "addAlbumData":
-                        addAlbumData(b.getByteArray("key"),
+                        addAlbumData(b.getString("key"),
                                 b.getString("songs"),
                                 b.getString("artist"),
                                 b.getString("album"),
@@ -164,14 +161,10 @@ public class DatabaseService extends IntentService {
     }
 
     //Create an HTTP GET Request to get an album
-    private void syncAlbum(byte[] bytes) throws IOException, JSONException {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
+    private void syncAlbum(String key) throws IOException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http:/" + ip + "/api/album?s=" + sb;
+        String query = "http:/" + ip + "/api/album?s=" + key;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -200,19 +193,15 @@ public class DatabaseService extends IntentService {
 
         ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
 
-        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"),jsAlbum.getString("Name"), bytes);
+        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"),jsAlbum.getString("Name"), key);
     }
 
     //Create an HTTP GET Request to get an album
     //Used after getting a newAlbum message to check if there is a match in the database
-    private void findAlbum(byte[] bytes, int breaks) throws IOException, JSONException {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
+    private void findAlbum(String key, int breaks) throws IOException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http:/" + ip + "/api/album?s=" + sb;
+        String query = "http:/" + ip + "/api/album?s=" + key;
         HttpResponse response = null;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(query);
@@ -224,7 +213,7 @@ public class DatabaseService extends IntentService {
         if (res.equals("null")) {
             Intent intent = new Intent(this, ArtistAssociationScreen.class);
             intent.putExtra("newAlbumBreaks", breaks);
-            intent.putExtra("newAlbumKey", bytes);
+            intent.putExtra("newAlbumKey", key);
             //This is necessary
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -251,43 +240,13 @@ public class DatabaseService extends IntentService {
 
             ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
 
-            goToCurrentSongListScreen(songs, artistName, albumName, bytes);
+            goToCurrentSongListScreen(songs, artistName, albumName, key);
         }
-    }
-
-    //Create an HTTP GET Request to get all Songs associated with the album
-    //TODO:LOOKS LIKE WE AREN'T USING THIS
-    private void getAlbumSongs(byte[] by) throws IOException {
-        byte[] bytes = {(byte) 0x54, (byte) 0x54};
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
-        //Form the query String
-        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
-        String query = "http://" + ip + "/api/Song?s=" + sb;
-        HttpResponse response = null;
-        HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(query);
-        //Set URI
-        //request.setURI(new URI(query));
-        //Execute the request
-        response = client.execute(request);
-        //Get the InputStream from the response
-        InputStream s = response.getEntity().getContent();
-        //Convert the Stream to a String
-        String res = LastFmBaseLookup.ConvertStreamToString(s);
     }
 
     //Create an HTTP POST Request with album and song data from a new album
     //Image is previously added to globals
-    private void addAlbumData(byte[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
-
-        StringBuilder sb = new StringBuilder();
-        for (byte b : key) {
-            sb.append(String.format("%02X", b));
-        }
-
+    private void addAlbumData(String key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
         String query = "http:/" + ip + "/api/Song";
@@ -296,7 +255,7 @@ public class DatabaseService extends IntentService {
         HttpPost request = new HttpPost(query);
 
         JSONObject Song = new JSONObject();
-        Song.put("Key", sb);
+        Song.put("Key", key);
         Song.put("Songs", songs);
         Song.put("Artist", artist);
         Song.put("Album", album);
@@ -314,7 +273,7 @@ public class DatabaseService extends IntentService {
         goToCurrentSongListScreen(songs, artist, album, key);
     }
 
-    private void goToCurrentSongListScreen(String songs, String artist, String album, byte[] key) {
+    private void goToCurrentSongListScreen(String songs, String artist, String album, String key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         intent.putExtra("type","normal");
         intent.putExtra("songs", songs);
@@ -324,7 +283,7 @@ public class DatabaseService extends IntentService {
 
         ((MyGlobalVariables) getApplication()).CurrentAlbum = album;
         ((MyGlobalVariables) getApplication()).CurrentArtist = artist;
-        ((MyGlobalVariables) getApplication()).CurrentKey = key;
+        ((MyGlobalVariables) getApplication()).CurrentKey = Utils.KeyToString(key);
         ((MyGlobalVariables) getApplication()).CurrentSong = null;
         ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<String>(Arrays.asList(songs.split(",")));
         ((MyGlobalVariables) getApplication()).HasAlbum = true;
