@@ -20,6 +20,8 @@ public enum MessageCommand {
     On(15),
     Off(16),
 
+    RequestSync(18),
+
     sUnknown(20),
     sReady(21),
     sPlay(22),
@@ -41,7 +43,7 @@ public enum MessageCommand {
 
     private int value;
 
-    private MessageCommand(int value) {
+    MessageCommand(int value) {
         this.value = value;
     }
 }

@@ -35,6 +35,10 @@ public class SenderService extends IntentService {
                         break;
                     case "sync":
                         sendSync(b.getIntArray("key"));
+                        break;
+                    case "requestSync":
+                        sendHeader(MessageCommand.RequestSync.getValue());
+                        break;
                     case "getStatus":
                         sendHeader(MessageCommand.Status.getValue());
                         break;
@@ -109,7 +113,7 @@ public class SenderService extends IntentService {
     private void sendSync(int[] key) throws IOException {
         final DatagramSocket socket = new DatagramSocket();
         int pointer = 0;
-        byte[] buf = new byte[15 + (key.length * 2)];
+        byte[] buf = new byte[15 + (key.length * 2) + 6];
 
         for (int i = 0; i < 4; i++) {
             buf[i] = ((MyGlobalVariables) this.getApplication()).MyIp.getAddress()[i];
@@ -135,6 +139,10 @@ public class SenderService extends IntentService {
             byte[] b = Utils.intToByteArray(key[i]);
             buf[pointer++] = b[0];
             buf[pointer++] = b[1];
+        }
+
+        for(int i = 0; i<6; i++){
+            buf[pointer++] = 111;
         }
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length, ip, port);
@@ -194,7 +202,6 @@ public class SenderService extends IntentService {
 
         byte[] bLoc = Utils.intToByteArray(loc);
 
-        //TODO:Test
         buf[15] = bLoc[0];
         buf[16] = bLoc[1];
 

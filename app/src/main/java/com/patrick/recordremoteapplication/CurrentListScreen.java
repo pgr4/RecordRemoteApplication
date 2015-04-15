@@ -25,7 +25,6 @@ import java.util.Arrays;
 public class CurrentListScreen extends ActionBarActivity {
     private ImageView imgAlbumArt;
     private ListView mainListView;
-    private ArrayAdapter<String> listAdapter;
     private TextView ArtistText;
     private TextView AlbumText;
     private TextView SongText;
@@ -71,13 +70,13 @@ public class CurrentListScreen extends ActionBarActivity {
         //Go through database to fill in the view.
         Bundle b = getIntent().getExtras();
         String type = b.getString("type");
-        if(type.equals("reload")){
+        if (type.equals("reload")) {
             arrSongs = ((MyGlobalVariables) this.getApplication()).CurrentSongList.toArray(new String[((MyGlobalVariables) this.getApplication()).CurrentSongList.size()]);
             artistName = ((MyGlobalVariables) this.getApplication()).CurrentArtist;
             albumName = ((MyGlobalVariables) this.getApplication()).CurrentAlbum;
             key = ((MyGlobalVariables) this.getApplication()).CurrentKey;
 
-        }else if(type.equals("normal")) {
+        } else if (type.equals("normal")) {
             arrSongs = b.getString("songs").split(",");
             artistName = b.getString("artist");
             albumName = b.getString("album");
@@ -153,7 +152,7 @@ public class CurrentListScreen extends ActionBarActivity {
                     imgbtnPause.setEnabled(true);
                 } else if (type.equals("location")) {
                     Byte defaultByte = 0;
-                    Byte location = intent.getByteExtra("location", defaultByte);
+                    int location = intent.getIntExtra("location", defaultByte);
                     for (int i = 0; i < key.length; i++) {
                         if (key[i] == location) {
                             SongText.setText(adapter.getItem(i + 1));
@@ -161,22 +160,25 @@ public class CurrentListScreen extends ActionBarActivity {
                             break;
                         }
                     }
-                    imgbtnPause.setEnabled(true);
+                    //imgbtnPause.setEnabled(true);
                 } else if (type.equals("isPlaying")) {
                     isPlaying = intent.getBooleanExtra("value", false);
-                    imgbtnPause.setEnabled(false);
-                } else if(type.equals("power")){
-                    switch (intent.getStringExtra("status")){
+                    imgbtnPause.setEnabled(isPlaying);
+                } else if (type.equals("power")) {
+                    switch (intent.getStringExtra("status")) {
                         case "unknown":
                         case "off":
                             killMe();
                     }
+                }else if(type.equals("kill")){
+                    killMe();
                 }
+
             }
         };
     }
 
-    private void killMe(){
+    private void killMe() {
         finish();
     }
 
@@ -222,16 +224,15 @@ public class CurrentListScreen extends ActionBarActivity {
                 intent.putExtra("type", "play");
                 startService(intent);
             } else {
-                //Send play for selectedIndex
                 if (selectedIndex == 0) {
                     Intent intent = new Intent(this, SenderService.class);
                     intent.putExtra("type", "playBeginning");
                     startService(intent);
                 } else {
-                    //Send play for first song
+
                     Intent intent = new Intent(this, SenderService.class);
                     intent.putExtra("type", "playTrack");
-                    intent.putExtra("location", key[currentIndex]);
+                    intent.putExtra("location", key[selectedIndex - 1]);
                     startService(intent);
                 }
             }
@@ -252,10 +253,9 @@ public class CurrentListScreen extends ActionBarActivity {
                 intent.putExtra("type", "playBeginning");
                 startService(intent);
             } else {
-                //Send play for first song
                 Intent intent = new Intent(this, SenderService.class);
-                intent.putExtra("type", "play");
-                intent.putExtra("location", key[currentIndex + 1]);
+                intent.putExtra("type", "playTrack");
+                intent.putExtra("location", key[currentIndex]);
                 startService(intent);
             }
         }
@@ -263,7 +263,7 @@ public class CurrentListScreen extends ActionBarActivity {
 
     public void Back(View view) {
         if (currentIndex != -1) {
-            if (currentIndex == 0) {
+            if (currentIndex == 1 || currentIndex==0) {
                 //Send play for first song
                 Intent intent = new Intent(this, SenderService.class);
                 intent.putExtra("type", "playBeginning");
@@ -271,8 +271,8 @@ public class CurrentListScreen extends ActionBarActivity {
             } else {
                 //Send play for first song
                 Intent intent = new Intent(this, SenderService.class);
-                intent.putExtra("type", "play");
-                intent.putExtra("location", key[currentIndex - 1]);
+                intent.putExtra("type", "playTrack");
+                intent.putExtra("location", key[currentIndex - 2]);
                 startService(intent);
             }
         }

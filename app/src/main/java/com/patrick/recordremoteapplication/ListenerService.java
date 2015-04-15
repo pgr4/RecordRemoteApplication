@@ -28,10 +28,19 @@ public class ListenerService extends IntentService {
             InetAddress broadcastIP = InetAddress.getByName("192.168.1.255");
             Integer port = 30003;
             GetStatus();
+            GetPower();
+            RequestSync();
             ListenAndWait(broadcastIP, port);
-
         } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    //Make an attempt to get a sync
+    private void RequestSync() {
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "requestSync");
+        startService(intent);
     }
 
     //Send our Status
@@ -45,6 +54,20 @@ public class ListenerService extends IntentService {
     private void GetStatus() {
         Intent intent = new Intent(this, SenderService.class);
         intent.putExtra("type", "getStatus");
+        startService(intent);
+    }
+
+    //Send our Status
+    private void SendPower() {
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "sendPower");
+        startService(intent);
+    }
+
+    //Request Status
+    private void GetPower() {
+        Intent intent = new Intent(this, SenderService.class);
+        intent.putExtra("type", "getPower");
         startService(intent);
     }
 
@@ -76,12 +99,14 @@ public class ListenerService extends IntentService {
                         break;
                     case NewAlbum:
                         if (mh.DestinationAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
+                            SendKillUpdate();
+
                             NewAlbum na = MessageParser.ParseNewAlbum(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
                             intent.putExtra("type", "isAlbumNew");
                             intent.putExtra("breaks", na.Breaks);
-                            intent.putExtra("key", Utils.KeyToString(na.Key));
+                            intent.putExtra("key", Utils.IntArrayToString(na.Key));
                             startService(intent);
                         }
                         break;
@@ -94,12 +119,24 @@ public class ListenerService extends IntentService {
                         break;
                     case Sync:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
-                            int[] key = MessageParser.GetKey(message, startingPoint);
+                            SendKillUpdate();
+
+                            int[] key = MessageParser.GetSyncKey(message, startingPoint);
 
                             Intent intent = new Intent(this, DatabaseService.class);
                             intent.putExtra("type", "syncAlbum");
-                            intent.putExtra("key", Utils.KeyToString(key));
+                            intent.putExtra("key", Utils.IntArrayToString(key));
                             startService(intent);
+                        }
+                        break;
+                    case RequestSync:
+                        if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
+                            if (((MyGlobalVariables) this.getApplication()).CurrentKey != null) {
+                                Intent intent = new Intent(this, SenderService.class);
+                                intent.putExtra("type", "sync");
+                                intent.putExtra("key", ((MyGlobalVariables) this.getApplication()).CurrentKey);
+                                startService(intent);
+                            }
                         }
                         break;
                     case PowerUnknown:
@@ -133,14 +170,12 @@ public class ListenerService extends IntentService {
                         break;
                     case GetPower:
                         if (!mh.SourceAddress.equals(((MyGlobalVariables) this.getApplication()).MyIp)) {
-                            Intent intent = new Intent(this, SenderService.class);
-                            intent.putExtra("type", "sendPower");
-                            startService(intent);
+                            SendPower();
                         }
                         break;
                     case QueueGoToTrack:
                     case UpdatePosition:
-                        PositionUpdate(MessageParser.GetByte(message, startingPoint));
+                        PositionUpdate(Utils.byteArrayToInt(new byte[]{MessageParser.GetByte(message, startingPoint), MessageParser.GetByte(message, startingPoint + 1)}));
                         break;
                     case QueueGoToBeginning:
                     case AtBeginning:
@@ -195,22 +230,25 @@ public class ListenerService extends IntentService {
         }
     }
 
-    private void PositionUpdate(byte message) {
-        Intent intent = new Intent("mainScreen");
-        intent.putExtra("type", "song");
-        for (int i = 0; i < ((MyGlobalVariables) this.getApplication()).CurrentKey.length; i++) {
-            if (((MyGlobalVariables) this.getApplication()).CurrentKey[i] == message) {
+    private void PositionUpdate(int message) {
+        if (((MyGlobalVariables) this.getApplication()).HasAlbum) {
+            Intent intent = new Intent("mainScreen");
+            intent.putExtra("type", "song");
+            for (int i = 0; i < ((MyGlobalVariables) this.getApplication()).CurrentKey.length; i++) {
+                if (((MyGlobalVariables) this.getApplication()).CurrentKey[i] == message) {
 
-                intent.putExtra("value", ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i));
-                ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i);
+                    intent.putExtra("value", ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i + 1));
+                    ((MyGlobalVariables) this.getApplication()).CurrentSong = ((MyGlobalVariables) this.getApplication()).CurrentSongList.get(i + 1);
+                    break;
+                }
             }
-        }
-        broadcaster.sendBroadcast(intent);
+            broadcaster.sendBroadcast(intent);
 
-        Intent intent1 = new Intent("currentListScreen");
-        intent1.putExtra("type", "location");
-        intent1.putExtra("location", message);
-        broadcaster.sendBroadcast(intent1);
+            Intent intent1 = new Intent("currentListScreen");
+            intent1.putExtra("type", "location");
+            intent1.putExtra("location", message);
+            broadcaster.sendBroadcast(intent1);
+        }
     }
 
     private void PositionUpdate() {
@@ -228,7 +266,6 @@ public class ListenerService extends IntentService {
     private void BusyUpdate(String message, int type) {
         Intent intent = new Intent("mainScreen");
         intent.putExtra("type", "busy");
-        //Not needed
         intent.putExtra("status", message);
         intent.putExtra("color", type);
         broadcaster.sendBroadcast(intent);
@@ -251,5 +288,11 @@ public class ListenerService extends IntentService {
         intent.putExtra("type", "isPlaying");
         intent.putExtra("value", message);
         broadcaster.sendBroadcast(intent);
+    }
+
+    private void SendKillUpdate(){
+        Intent intent1 = new Intent("currentListScreen");
+        intent1.putExtra("type", "kill");
+        broadcaster.sendBroadcast(intent1);
     }
 }

@@ -35,34 +35,37 @@ public class Utils {
         return "";
     }
 
-    public static String KeyToString(int[] key) {
+    public static String IntArrayToString(int[] key) {
         String ret = "";
         for (int i = 0; i < key.length; i++) {
-            ret += key[0];
-            if (i == key.length - 1) {
+
+            ret += key[i];
+
+            if (i != key.length - 1) {
                 ret += ",";
             }
         }
+
         return ret;
     }
 
-    public static int[] KeyToString(String key) {
+    public static int[] StringToIntArray(String key) {
         String[] total = key.split(",");
         int[] ret = new int[total.length];
         for (int i = 0; i < total.length; i++) {
-            ret[i] = Integer.getInteger(total[i]);
+            ret[i] = Integer.parseInt(total[i]);
         }
         return ret;
     }
 
-    public static int byteArrayToInt(byte[] b){
+    public static int byteArrayToInt(byte[] b) {
         ByteBuffer wrapped = ByteBuffer.wrap(b); // big-endian by default
         return wrapped.getShort();
     }
 
     public static byte[] intToByteArray(int i) {
         ByteBuffer dbuf = ByteBuffer.allocate(2);
-        dbuf.putShort((short)i);
+        dbuf.putShort((short) i);
         return dbuf.array();
     }
 }

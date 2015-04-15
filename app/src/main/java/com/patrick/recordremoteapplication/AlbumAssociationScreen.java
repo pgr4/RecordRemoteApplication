@@ -20,7 +20,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
     private ListView mainListView;
     private ArrayAdapter<LastFmAlbum> listAdapter;
     private LastFmAlbum SelectedAlbum = null;
-    private byte[] key;
+    private int[] key;
     private int breaks;
     private String artistName;
     private Bitmap artistBitmap;
@@ -34,7 +34,7 @@ public class AlbumAssociationScreen extends ActionBarActivity {
         //Grab the NewAlbum from the intent
         Bundle b = getIntent().getExtras();
 
-        key = b.getByteArray("newAlbumKey");
+        key = b.getIntArray("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
         artistName = b.getString("artistName");
         //artistBitmap = b.getParcelable("artistBitmap");

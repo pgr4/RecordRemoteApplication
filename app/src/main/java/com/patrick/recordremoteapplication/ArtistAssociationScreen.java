@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class ArtistAssociationScreen extends ActionBarActivity {
     private ListView mainListView;
     private LastFmArtist SelectedArtist;
-    private byte[] key;
+    private int[] key;
     private int breaks;
     private EditText editTextArtist;
     private ProgressBar progressBar;
@@ -34,7 +34,7 @@ public class ArtistAssociationScreen extends ActionBarActivity {
 
         //Grab the NewAlbum from the intent
         Bundle b = getIntent().getExtras();
-        key = b.getByteArray("newAlbumKey");
+        key = b.getIntArray("newAlbumKey");
         breaks = b.getInt("newAlbumBreaks");
 
         //Get the controls

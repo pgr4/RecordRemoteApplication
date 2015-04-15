@@ -18,12 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +29,7 @@ import java.util.Arrays;
  * Created by pat on 1/5/2015.
  */
 public class DatabaseService extends IntentService {
+
     public DatabaseService() {
         super("DatabaseService");
     }
@@ -59,7 +57,7 @@ public class DatabaseService extends IntentService {
                         findAlbum(b.getString("key"), b.getInt("breaks"));
                         break;
                     case "addAlbumData":
-                        addAlbumData(b.getString("key"),
+                        addAlbumData(b.getIntArray("key"),
                                 b.getString("songs"),
                                 b.getString("artist"),
                                 b.getString("album"),
@@ -180,20 +178,19 @@ public class DatabaseService extends IntentService {
 
         JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
         for (int i = 0; i < jsSongs.length(); i++) {
-            songs += (String) jsSongs.get(i) + ",";
+            if (i != 0) {
+                songs += ",";
+            }
+            songs += jsSongs.get(i);
         }
 
-        //TODO: THIS IS BAD PRACTICE YOU SHOULD BE ASHAMED!
-        songs += "REMOVETHIS";
-
-        songs = songs.replace(",REMOVETHIS", "");
 
         byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
         ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
 
-        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"),jsAlbum.getString("Name"), key);
+        goToCurrentSongListScreen(songs, jsAlbum.getString("Artist"), jsAlbum.getString("Name"), key);
     }
 
     //Create an HTTP GET Request to get an album
@@ -213,7 +210,7 @@ public class DatabaseService extends IntentService {
         if (res.equals("null")) {
             Intent intent = new Intent(this, ArtistAssociationScreen.class);
             intent.putExtra("newAlbumBreaks", breaks);
-            intent.putExtra("newAlbumKey", key);
+            intent.putExtra("newAlbumKey", Utils.StringToIntArray(key));
             //This is necessary
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -224,13 +221,11 @@ public class DatabaseService extends IntentService {
 
             JSONArray jsSongs = jsAlbum.getJSONArray("Songs");
             for (int i = 0; i < jsSongs.length(); i++) {
-                songs += (String) jsSongs.get(i) + ",";
+                if (i != 0) {
+                    songs += ",";
+                }
+                songs += (String) jsSongs.get(i);
             }
-
-            //TODO: THIS IS BAD PRACTICE YOU SHOULD BE ASHAMED!
-            songs += "REMOVETHIS";
-
-            songs = songs.replace(",REMOVETHIS", "");
 
             byte[] decodedString = Base64.decode(jsAlbum.getString("Image"), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -246,7 +241,7 @@ public class DatabaseService extends IntentService {
 
     //Create an HTTP POST Request with album and song data from a new album
     //Image is previously added to globals
-    private void addAlbumData(String key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
+    private void addAlbumData(int[] key, String songs, String artist, String album, String image) throws IOException, URISyntaxException, JSONException {
         //Form the query String
         String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
         String query = "http:/" + ip + "/api/Song";
@@ -255,7 +250,7 @@ public class DatabaseService extends IntentService {
         HttpPost request = new HttpPost(query);
 
         JSONObject Song = new JSONObject();
-        Song.put("Key", key);
+        Song.put("Key", Utils.IntArrayToString(key));
         Song.put("Songs", songs);
         Song.put("Artist", artist);
         Song.put("Album", album);
@@ -270,22 +265,22 @@ public class DatabaseService extends IntentService {
         response = client.execute(request);
 
         //Bring up the CurrentListScreen
-        goToCurrentSongListScreen(songs, artist, album, key);
+        goToCurrentSongListScreen(songs, artist, album, Utils.IntArrayToString(key));
     }
 
     private void goToCurrentSongListScreen(String songs, String artist, String album, String key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
-        intent.putExtra("type","normal");
+        intent.putExtra("type", "normal");
         intent.putExtra("songs", songs);
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);
-        intent.putExtra("key", key);
+        intent.putExtra("key", Utils.StringToIntArray(key));
 
         ((MyGlobalVariables) getApplication()).CurrentAlbum = album;
         ((MyGlobalVariables) getApplication()).CurrentArtist = artist;
-        ((MyGlobalVariables) getApplication()).CurrentKey = Utils.KeyToString(key);
+        ((MyGlobalVariables) getApplication()).CurrentKey = Utils.StringToIntArray(key);
         ((MyGlobalVariables) getApplication()).CurrentSong = null;
-        ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<String>(Arrays.asList(songs.split(",")));
+        ((MyGlobalVariables) getApplication()).CurrentSongList = new ArrayList<>(Arrays.asList(songs.split(",")));
         ((MyGlobalVariables) getApplication()).HasAlbum = true;
 
         //This is necessary

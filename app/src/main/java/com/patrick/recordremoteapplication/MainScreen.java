@@ -62,6 +62,7 @@ public class MainScreen extends ActionBarActivity {
             ivCurrentAlbumArt.setImageBitmap(((MyGlobalVariables) this.getApplication()).CurrentBitmap);
             tvCurrentPlayingArtist.setText(((MyGlobalVariables) this.getApplication()).CurrentArtist);
             tvCurrentPlayingAlbum.setText(((MyGlobalVariables) this.getApplication()).CurrentAlbum);
+            CurrentSongTextView.setText(((MyGlobalVariables) this.getApplication()).CurrentSong);
         } else {
             currentLinearLayout.setVisibility(View.INVISIBLE);
         }
@@ -85,7 +86,7 @@ public class MainScreen extends ActionBarActivity {
                 break;
         }
 
-        textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.toString());
+        textViewBusy.setText(((MyGlobalVariables) this.getApplication()).Status.getString());
 
         //Reset Power
 
@@ -104,8 +105,6 @@ public class MainScreen extends ActionBarActivity {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-        ((MyGlobalVariables) this.getApplication()).Status = BusyStatus.Unknown;
 
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.drawerActivities);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

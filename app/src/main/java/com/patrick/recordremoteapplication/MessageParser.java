@@ -20,15 +20,16 @@ public class MessageParser {
                 endingPoint = i - startingPoint;
             }
         }
+
         int[] arr = new int[endingPoint / 2];
 
         for (int i = 0; i < endingPoint / 2; i++) {
-            //arr[i] = message[startingPoint + i];
-            ByteBuffer wrapped = ByteBuffer.wrap(new byte[]{message[startingPoint + i], message[startingPoint + i + 1]});
-            arr[i] = wrapped.getShort();
+            byte fByte = message[startingPoint++];
+            byte sByte = message[startingPoint++];
+            arr[i] = ByteBuffer.allocate(4).put(new byte[]{0, 0,fByte, sByte}).getInt(0);
         }
 
-        int breaks = endingPoint;
+        int breaks = arr.length;
 
         return new NewAlbum(breaks, arr);
     }
@@ -45,8 +46,7 @@ public class MessageParser {
         }
     }
 
-    //TODO:CHeck
-    public static int[] GetKey(byte[] message, int startingPoint) {
+    public static int[] GetSyncKey(byte[] message, int startingPoint) {
         int endPoint = 0;
         for (int i = startingPoint; i < message.length; i++) {
             if (message[i] == 111 && message[i + 1] == 111 && message[i + 2] == 111 &&
@@ -55,13 +55,14 @@ public class MessageParser {
                 break;
             }
         }
-        int length = (endPoint-startingPoint)/2;
+
+        int length = (endPoint - startingPoint) / 2;
         int[] ret = new int[length];
-        int iter=0;
-        for(int i = startingPoint;i<endPoint;i++)
-        {
-            ret[iter] = Utils.byteArrayToInt(new byte[]{message[i],message[i+1]});
-            iter++;
+
+        for (int i = 0; i < length; i++) {
+            byte fByte = message[startingPoint++];
+            byte sByte = message[startingPoint++];
+            ret[i] = ByteBuffer.allocate(4).put(new byte[]{0, 0,fByte, sByte}).getInt(0);
         }
         return ret;
     }
@@ -124,6 +125,8 @@ public class MessageParser {
                 return MessageCommand.On;
             case 16:
                 return MessageCommand.Off;
+            case 18:
+                return MessageCommand.RequestSync;
             case 20:
                 return MessageCommand.sUnknown;
             case 21:
