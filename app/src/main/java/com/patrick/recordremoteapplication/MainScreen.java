@@ -244,10 +244,12 @@ public class MainScreen extends ActionBarActivity {
     }
 
     private void Test() {
-        Intent intent = new Intent(this, ArtistAssociationScreen.class);
-        intent.putExtra("newAlbumKey", "1,5,7");
-        intent.putExtra("newAlbumBreaks", 5);
+        Intent intent = new Intent(this, SettingsScreen.class);
         startActivity(intent);
+        //Intent intent = new Intent(this, ArtistAssociationScreen.class);
+        //intent.putExtra("newAlbumKey", "1,5,7");
+        //intent.putExtra("newAlbumBreaks", 5);
+        //startActivity(intent);
     }
 
     public void setIP(View view){

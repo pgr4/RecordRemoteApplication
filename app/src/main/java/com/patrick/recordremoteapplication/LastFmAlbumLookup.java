@@ -29,7 +29,7 @@ public class LastFmAlbumLookup extends AsyncTask<String, Void, ArrayList<LastFmA
 
     ListView lv;
 
-    public LastFmAlbumLookup(Activity activity){
+    public LastFmAlbumLookup(Activity activity) {
         lv = (ListView) activity.findViewById(R.id.albumAssociationList);
     }
 
@@ -70,16 +70,20 @@ public class LastFmAlbumLookup extends AsyncTask<String, Void, ArrayList<LastFmA
 
                     @Override
                     protected void onPostExecute(BitmapWithNumber result) {
-                        for (int j = 0; j < albumList.size(); j++) {
-                            LastFmAlbum lastFmAlbum = albumList.get(j);
-                            if (lastFmAlbum.Order == result.Order) {
-                                lastFmAlbum.Bitmap = result.BitmapImage;
-                                try {
-                                    View view = lv.getChildAt(lastFmAlbum.PostOrder);
-                                    ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-                                    imageView.setImageBitmap(result.BitmapImage);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                        if (result != null) {
+                            for (int j = 0; j < albumList.size(); j++) {
+                                LastFmAlbum lastFmAlbum = albumList.get(j);
+                                if (lastFmAlbum.Order == result.Order) {
+                                    lastFmAlbum.Bitmap = result.BitmapImage;
+                                    try {
+                                        View view = lv.getChildAt(lastFmAlbum.PostOrder);
+                                        if (view != null) {
+                                            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                                            imageView.setImageBitmap(result.BitmapImage);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -92,7 +96,7 @@ public class LastFmAlbumLookup extends AsyncTask<String, Void, ArrayList<LastFmA
 
             Collections.sort(albumList, LastFmAlbum.StuNameComparator);
 
-            for(int i = 0;i<albumList.size();i++){
+            for (int i = 0; i < albumList.size(); i++) {
                 albumList.get(i).PostOrder = i;
             }
 

@@ -20,4 +20,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="row_id">RowId</string>
+    <string name="title_activity_manual_association_screen">Manual Association</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_settings_screen">SettingsScreen</string>
 </resources>

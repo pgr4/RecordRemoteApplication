@@ -2,13 +2,25 @@
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ImageView android:id="@+id/splashscreen" android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:src="@drawable/ic_launcher"
+    <ImageView android:id="@+id/splashscreen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/vinyl"
         android:layout_gravity="center"/>
 
-    <TextView android:layout_width="fill_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World, splash"/>
-
+        android:layout_gravity="center"
+        android:textSize="10pt"
+        android:text="Finally an application for lazy hipsters!"/>
+<Space
+    android:layout_width="fill_parent"
+    android:layout_height="150dp" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_gravity="bottom"
+        android:text="Created by Pat Ryan"/>
 </LinearLayout>

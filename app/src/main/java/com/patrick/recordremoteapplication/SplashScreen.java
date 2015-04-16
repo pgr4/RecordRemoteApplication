@@ -16,7 +16,6 @@ public class SplashScreen extends Activity {
      * Duration of wait *
      */
     private final int SPLASH_DISPLAY_LENGTH = 1000;
-    InetAddress ipAddress = null;
 
     /**
      * Called when the activity is first created.
@@ -38,11 +37,19 @@ public class SplashScreen extends Activity {
                         BufferedReader br = new BufferedReader(new FileReader(file));
                         String line;
                         String ipText = "";
+                        String mode = "auto";
                         while ((line = br.readLine()) != null) {
                             if (line.contains("IPAddress: ")) {
-                                br.close();
                                 ipText = line.replace("IPAddress: ", "").replace("/", "");
-                                break;
+                            }
+                            if (line.contains("Mode: ")) {
+                                mode = line.replace("Mode: ", "");
+                                if(mode.equals("auto")){
+                                    ((MyGlobalVariables) getApplication()).IsAuto = true;
+                                }
+                                else{
+                                    ((MyGlobalVariables) getApplication()).IsAuto = false;
+                                }
                             }
                         }
                         br.close();
@@ -67,7 +74,6 @@ public class SplashScreen extends Activity {
                             goToIPAssociationScreen();
                         }
                     } else {
-                        file.createNewFile();
                         goToIPAssociationScreen();
                     }
                 } catch (Exception e) {

@@ -60,11 +60,6 @@ public class SongAssociationScreen extends ActionBarActivity {
                 view.setSelected(true);
                 SelectedSong = (String) adapter.getAdapter().getItem(position);
 
-//                if (checkConditions()) {
-//                    goToCurrentSongListScreen();
-//                } else {
-//
-//                }
             }
         });
     }

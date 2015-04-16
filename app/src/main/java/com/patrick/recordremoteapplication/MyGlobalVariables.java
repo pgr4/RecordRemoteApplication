@@ -26,4 +26,5 @@ public class MyGlobalVariables extends Application {
     public boolean HasAlbum = false;
     public boolean IsPowerOn = false;
     public boolean IsPlaying = false;
+    public boolean IsAuto = true ;
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.patrick.recordremoteapplication">
+    package="com.patrick.recordremoteapplication" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
@@ -8,16 +8,16 @@
     <application
         android:name=".MyGlobalVariables"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/vinyl"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".MainScreen"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".CurrentListScreen"
             android:label="@string/title_activity_current_list_screen"
-            android:parentActivityName=".MainScreen">
+            android:parentActivityName=".MainScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.MainScreen" />
@@ -26,7 +26,7 @@
             android:name=".SongAssociationScreen"
             android:label="@string/title_activity_song_association_screen"
             android:parentActivityName=".SongAssociationScreen"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.AlbumAssociationScreen" />
@@ -34,21 +34,21 @@
         <activity
             android:name=".AlbumAssociationScreen"
             android:label="@string/title_activity_album_association_screen"
-            android:parentActivityName=".AlbumAssociationScreen">
+            android:parentActivityName=".AlbumAssociationScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.ArtistAssociationScreen" />
         </activity>
         <activity
             android:name=".ArtistAssociationScreen"
-            android:label="@string/title_activity_artist_association_screen"></activity>
+            android:label="@string/title_activity_artist_association_screen" />
         <activity
             android:name=".TotalArtistScreen"
-            android:label="@string/title_activity_total_artist_screen"></activity>
+            android:label="@string/title_activity_total_artist_screen" />
         <activity
             android:name=".TotalAlbumScreen"
             android:label="@string/title_activity_total_album_screen"
-            android:parentActivityName=".TotalArtistScreen">
+            android:parentActivityName=".TotalArtistScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.TotalArtistScreen" />
@@ -56,17 +56,17 @@
         <activity
             android:name=".TotalSongScreen"
             android:label="@string/title_activity_total_songs_screen"
-            android:parentActivityName=".TotalAlbumScreen">
+            android:parentActivityName=".TotalAlbumScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.patrick.recordremoteapplication.TotalAlbumScreen" />
         </activity>
         <activity
             android:name=".IPAssociationScreen"
-            android:label="@string/title_activity_ipassociation_screen"></activity>
+            android:label="@string/title_activity_ipassociation_screen" />
         <activity
             android:name=".SplashScreen"
-            android:label="@string/title_activity_splash_screen">
+            android:label="@string/title_activity_splash_screen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -76,15 +76,23 @@
 
         <service
             android:name=".ListenerService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".DatabaseService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".SenderService"
-            android:exported="false"></service>
+            android:exported="false" />
 
-
+        <activity
+            android:name=".ManualAssociationScreen"
+            android:label="@string/title_activity_manual_association_screen"
+            android:windowSoftInputMode="stateHidden|adjustPan">
+        </activity>
+        <activity
+            android:name=".SettingsScreen"
+            android:label="@string/title_activity_settings_screen" >
+        </activity>
     </application>
 
 </manifest>

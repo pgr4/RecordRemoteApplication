@@ -110,9 +110,11 @@ public class IPAssociationScreen extends ActionBarActivity {
 
                             for (int i = 0; i < settingArr.size(); i++) {
                                 bw.write(settingArr.get(i));
+                                bw.newLine();
                             }
 
                             bw.write("IPAddress: " + result);
+
                             bw.close();
                             goToMainScreen();
 

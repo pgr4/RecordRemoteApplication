@@ -64,6 +64,13 @@ public class DatabaseService extends IntentService {
                                 b.getString("image"));
 
                         break;
+                    case "addAlbumDataSans":
+                        addAlbumData(b.getIntArray("key"),
+                                b.getString("songs"),
+                                b.getString("artist"),
+                                b.getString("album"));
+
+                        break;
                     default:
                         throw new Exception("missed");
                 }
@@ -208,12 +215,21 @@ public class DatabaseService extends IntentService {
         //Convert the Stream to a String
         String res = LastFmBaseLookup.ConvertStreamToString(response.getEntity().getContent());
         if (res.equals("null")) {
-            Intent intent = new Intent(this, ArtistAssociationScreen.class);
-            intent.putExtra("newAlbumBreaks", breaks);
-            intent.putExtra("newAlbumKey", Utils.StringToIntArray(key));
-            //This is necessary
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if(((MyGlobalVariables)this.getApplication()).IsAuto) {
+                Intent intent = new Intent(this, ArtistAssociationScreen.class);
+                intent.putExtra("newAlbumBreaks", breaks);
+                intent.putExtra("newAlbumKey", Utils.StringToIntArray(key));
+                //This is necessary
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }else{
+                Intent intent = new Intent(this, ManualAssociationScreen.class);
+                intent.putExtra("newAlbumBreaks", breaks);
+                intent.putExtra("newAlbumKey", Utils.StringToIntArray(key));
+                //This is necessary
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         } else {
             JSONObject jsAlbum = new JSONObject(res);
 
@@ -232,10 +248,11 @@ public class DatabaseService extends IntentService {
 
             String albumName = jsAlbum.getString("Name");
             String artistName = jsAlbum.getString("Artist");
+            String newKey = jsAlbum.getString("Key");
 
             ((MyGlobalVariables) getApplication()).CurrentBitmap = decodedByte;
 
-            goToCurrentSongListScreen(songs, artistName, albumName, key);
+            goToCurrentSongListScreen(songs, artistName, albumName, newKey);
         }
     }
 
@@ -268,6 +285,34 @@ public class DatabaseService extends IntentService {
         goToCurrentSongListScreen(songs, artist, album, Utils.IntArrayToString(key));
     }
 
+    //Create an HTTP POST Request with album and song data from a new album
+    //Image is previously added to globals
+    private void addAlbumData(int[] key, String songs, String artist, String album) throws IOException, URISyntaxException, JSONException {
+        //Form the query String
+        String ip = ((MyGlobalVariables) getApplication()).DatabaseIp.toString();
+        String query = "http:/" + ip + "/api/Song";
+        HttpResponse response = null;
+        HttpClient client = new DefaultHttpClient();
+        HttpPost request = new HttpPost(query);
+
+        JSONObject Song = new JSONObject();
+        Song.put("Key", Utils.IntArrayToString(key));
+        Song.put("Songs", songs);
+        Song.put("Artist", artist);
+        Song.put("Album", album);
+
+        StringEntity entity = new StringEntity(Song.toString(), HTTP.UTF_8);
+        entity.setContentType("application/json");
+
+        request.setEntity(entity);
+
+        //Execute the request
+        response = client.execute(request);
+
+        //Bring up the CurrentListScreen
+        goToCurrentSongListScreen(songs, artist, album, Utils.IntArrayToString(key));
+    }
+
     private void goToCurrentSongListScreen(String songs, String artist, String album, String key) {
         Intent intent = new Intent(this, CurrentListScreen.class);
         intent.putExtra("type", "normal");
@@ -275,6 +320,11 @@ public class DatabaseService extends IntentService {
         intent.putExtra("album", album);
         intent.putExtra("artist", artist);
         intent.putExtra("key", Utils.StringToIntArray(key));
+
+        Intent dIntent = new Intent(this, SenderService.class);
+        dIntent.putExtra("type", "sync");
+        dIntent.putExtra("key", Utils.StringToIntArray(key));
+        startService(dIntent);
 
         ((MyGlobalVariables) getApplication()).CurrentAlbum = album;
         ((MyGlobalVariables) getApplication()).CurrentArtist = artist;

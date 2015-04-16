@@ -69,14 +69,18 @@ public class LastFmArtistLookup extends AsyncTask<String, Integer, ArrayList<Las
 
                     @Override
                     protected void onPostExecute(BitmapWithNumber result) {
-                        for (int j = 0; j < artistList.size(); j++) {
-                            LastFmArtist lastFmArtist = artistList.get(j);
-                            if (lastFmArtist.Order == result.Order) {
-                                lastFmArtist.Bitmap = result.BitmapImage;
+                        if (result != null) {
+                            for (int j = 0; j < artistList.size(); j++) {
                                 try {
-                                    View view = lv.getChildAt(lastFmArtist.PostOrder);
-                                    ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-                                    imageView.setImageBitmap(result.BitmapImage);
+                                    LastFmArtist lastFmArtist = artistList.get(j);
+                                    if (lastFmArtist.Order == result.Order) {
+                                        lastFmArtist.Bitmap = result.BitmapImage;
+                                        View view = lv.getChildAt(lastFmArtist.PostOrder);
+                                        if (view != null) {
+                                            ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                                            imageView.setImageBitmap(result.BitmapImage);
+                                        }
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
